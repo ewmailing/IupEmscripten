@@ -26,15 +26,10 @@
 
 #include "iupemscripten_drv.h"
 
-#include <emscripten/log.h>
-#include <jni.h>
-#include <pthread.h>
 
-
-
+#if 0
 static int s_isInitialized = 0;
 
-static JavaVM* s_javaVM = NULL;
 
 // This is intended to be the God Context object you need for a lot of Emscripten APIs (e.g. AssetManager).
 // It uses the Application context because that supposedly will be available for the life of the program.
@@ -198,6 +193,7 @@ void iupEmscripten_AddWidgetToParent(JNIEnv* jni_env, Ihandle* ih)
 
 }
 
+#endif
 
 
 void iupdrvActivate(Ihandle* ih)
@@ -287,8 +283,6 @@ void iupdrvBaseUnMapMethod(Ihandle* ih)
 
 void iupdrvDisplayUpdate(Ihandle *ih)
 {
-	jobject the_handle = ih->handle;
-	
 	// call ViewGroup.invalidate()
 
 }
@@ -311,7 +305,6 @@ int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
 
 void iupdrvSetVisible(Ihandle* ih, int visible)
 {
-	jobject the_object = ih->handle;
 }
 
 int iupdrvIsVisible(Ihandle* ih)

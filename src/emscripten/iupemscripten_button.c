@@ -38,6 +38,7 @@ void iupdrvButtonAddBorders(int *x, int *y)
 
 static int emscriptenButtonMapMethod(Ihandle* ih)
 {
+#if 0
     JNIEnv* jni_env;
 	jclass java_class;
     jmethodID method_id;
@@ -57,7 +58,6 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 	{
 		ih->data->type |= IUP_BUTTON_IMAGE;
 	
-		__emscripten_log_print(ANDROID_LOG_INFO, "emscriptenButtonMapMethod", "TODO: ImageButton not implemented"); 
 		
 	}
 	else
@@ -94,13 +94,14 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 	}
 
 	iupEmscripten_AddWidgetToParent(jni_env, ih);
-
+#endif
 	return IUP_NOERROR;	
 }
 
 static void emscriptenButtonUnMapMethod(Ihandle* ih)
 {
 
+#if 0
 
 
 	if(ih && ih->handle)
@@ -119,6 +120,7 @@ static void emscriptenButtonUnMapMethod(Ihandle* ih)
 		(*jni_env)->DeleteGlobalRef(jni_env, ih->handle);
 		ih->handle = NULL;
 	}
+#endif
 }
 
 void iupdrvButtonInitClass(Iclass* ic)
@@ -126,7 +128,6 @@ void iupdrvButtonInitClass(Iclass* ic)
 	/* Driver Dependent Class functions */
 	ic->Map = emscriptenButtonMapMethod;
 	ic->UnMap = emscriptenButtonUnMapMethod;
-		__emscripten_log_print(ANDROID_LOG_INFO, "iupdrvButtonInitClass", "entered"); 
 	
 #if 0
 

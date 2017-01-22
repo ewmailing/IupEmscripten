@@ -24,6 +24,7 @@ typedef struct EmscriptenHandleWrapper EmscriptenHandleWrapper;
 
 */
 
+/*
 JNIEnv* iupEmscripten_GetEnvThreadSafe();
 
 void iupEmscripten_RetainIhandle(JNIEnv* jni_env, jobject native_widget, Ihandle* ih);
@@ -33,7 +34,7 @@ jobject iupEmscripten_GetApplication(JNIEnv* jni_env);
 jobject iupEmscripten_GetCurrentActivity(JNIEnv* jni_env);
 
 void iupEmscripten_AddWidgetToParent(JNIEnv* jni_env, Ihandle* ih);
-
+*/
 
 
 #if 0

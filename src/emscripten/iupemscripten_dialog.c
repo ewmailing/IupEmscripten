@@ -182,6 +182,7 @@ static int emscriptenDialogSetTitleAttrib(Ihandle* ih, const char* value)
 
 static int emscriptenDialogMapMethod(Ihandle* ih)
 {
+#if 0
     JNIEnv* jni_env;
 	jclass java_class;
     jmethodID method_id;
@@ -250,14 +251,15 @@ static int emscriptenDialogMapMethod(Ihandle* ih)
 
 //	ih->currentwidth = 200;
 //	ih->currentheight = 200;
-	
+#endif
 	return IUP_NOERROR;
 
 }
 
 static void emscriptenDialogUnMapMethod(Ihandle* ih)
 {
-	__emscripten_log_print(ANDROID_LOG_ERROR, "Iup", "emscriptenDialogUnMapMethod");
+#if 0
+
 	if(ih && ih->handle)
 	{
 		jclass java_class;
@@ -278,7 +280,7 @@ static void emscriptenDialogUnMapMethod(Ihandle* ih)
 	
 		iupEmscripten_ReleaseIhandle(jni_env, ih);
 	}
-	
+#endif	
 }
 
 static void emscriptenDialogLayoutUpdateMethod(Ihandle* ih)
@@ -307,7 +309,6 @@ void iupdrvDialogInitClass(Iclass* ic)
 	ic->Map = emscriptenDialogMapMethod;
 	ic->UnMap = emscriptenDialogUnMapMethod;
 	ic->LayoutUpdate = emscriptenDialogLayoutUpdateMethod;
-		__emscripten_log_print(ANDROID_LOG_INFO, "iupdrvDialogInitClass", "entered"); 
 
 #if 0
 	ic->LayoutUpdate = gtkDialogLayoutUpdateMethod;

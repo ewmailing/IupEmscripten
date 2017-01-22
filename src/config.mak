@@ -67,6 +67,20 @@ ifdef USE_HAIKU
   INCLUDES += haiku
 #  DEFINES += _WIN32_WINNT=$(WIN32VER) _WIN32_IE=$(WIN32VER) WINVER=$(WIN32VER) NOTREEVIEW
 else
+ifdef USE_EMSCRIPTEN
+  INCLUDES += emscripten
+  SRC += emscripten/iupemscripten_focus.c emscripten/iupemscripten_clipboard.c emscripten/iupemscripten_val.c \
+         emscripten/iupemscripten_globalattrib.c emscripten/iupemscripten_key.c emscripten/iupemscripten_tips.c \
+         emscripten/iupemscripten_loop.c emscripten/iupemscripten_open.c emscripten/iupemscripten_messagedlg.c \
+         emscripten/iupemscripten_timer.c emscripten/iupemscripten_label.c emscripten/iupemscripten_font.c \
+         emscripten/iupemscripten_colordlg.c emscripten/iupemscripten_fontdlg.c emscripten/iupemscripten_filedlg.c \
+         emscripten/iupemscripten_button.c emscripten/iupemscripten_toggle.c emscripten/iupemscripten_dragdrop.c \
+         emscripten/iupemscripten_text.c emscripten/iupemscripten_frame.c emscripten/iupemscripten_progressbar.c \
+         emscripten/iupemscripten_tabs.c emscripten/iupemscripten_list.c emscripten/iupemscripten_tree.c \
+         emscripten/iupemscripten_canvas.c emscripten/iupemscripten_image.c emscripten/iupemscripten_dialog.c \
+         emscripten/iupemscripten_common.c emscripten/iupemscripten_menu.c 
+  
+else
 ifdef USE_GTK
   CHECK_GTK = Yes
   DEFINES += GTK_DISABLE_DEPRECATED 
@@ -124,6 +138,8 @@ ifdef USE_MOTIF
   USE_X11 = Yes
 
   INCLUDES += mot
+
+
 else
   SRC += win/iupwin_common.c win/iupwin_brush.c win/iupwin_focus.c win/iupwin_font.c \
          win/iupwin_globalattrib.c win/iupwin_handle.c win/iupwin_key.c win/iupwin_str.c \
@@ -140,6 +156,7 @@ else
   INCLUDES += win
   DEFINES += _WIN32_WINNT=$(WIN32VER) _WIN32_IE=0x600 WINVER=$(WIN32VER) NOTREEVIEW
   DEFINES += UNICODE
+endif
 endif
 endif
 endif
