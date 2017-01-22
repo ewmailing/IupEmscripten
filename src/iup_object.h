@@ -69,6 +69,8 @@ typedef struct _GtkWidget InativeHandle;
 typedef struct _WidgetRec InativeHandle;
 #elif defined(WINVER)
 typedef struct HWND__ InativeHandle;
+#elif defined(__EMSCRIPTEN__)
+typedef int InativeHandle;
 #else
 typedef struct _InativeHandle InativeHandle;
 #endif
