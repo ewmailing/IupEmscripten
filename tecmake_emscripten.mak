@@ -1159,6 +1159,12 @@ ifdef USE_MOTIF
   endif
 endif
 
+ifdef USE_EMSCRIPTEN
+EMLIBFLAGS += --js-library emscripten/iupemscripten_dialog.js --js-library emscripten/iupemscripten_button.js
+#EMLIBFLAGS += --js-library src/emscripten/iupemscripten_dialog.js --js-library src/emscripten/iupemscripten_button.js
+endif
+
+
 ifdef USE_GTK
   ifdef USE_GTK3
     GTKSFX:=3
@@ -1329,9 +1335,9 @@ endif
 # Library flags for application and dynamic library linker
 LFLAGS += $(LDIR) $(LIBS) $(PKGLIBS)
 # C compiler flags
-CFLAGS   = $(FLAGS) $(STDFLAGS) $(INCLUDES) $(STDINCS) $(PKGINCS) $(EXTRAINCS) $(DEFINES) $(STDDEFS)
+CFLAGS   = $(FLAGS) $(STDFLAGS) $(INCLUDES) $(STDINCS) $(PKGINCS) $(EXTRAINCS) $(DEFINES) $(STDDEFS) $(EMLIBFLAGS)
 # C++ compiler flags
-CXXFLAGS = $(CPPFLAGS) $(STDFLAGS) $(INCLUDES) $(STDINCS) $(PKGINCS) $(EXTRAINCS) $(DEFINES) $(STDDEFS)
+CXXFLAGS = $(CPPFLAGS) $(STDFLAGS) $(INCLUDES) $(STDINCS) $(PKGINCS) $(EXTRAINCS) $(DEFINES) $(STDDEFS) $(EMLIBFLAGS)
 
 # Sources with relative path
 SOURCES := $(addprefix $(SRCDIR)/, $(SRC))
@@ -1452,7 +1458,7 @@ dynamic-lib: $(TARGETDIR)/$(TARGETDLIBNAME)
 
 $(TARGETDIR)/$(TARGETDLIBNAME) : $(LUAS) $(OBJS) $(EXTRADEPS)
 	@echo ''; echo Tecmake: linking $(@F) ...
-	$(ECHO)$(LD) $(STDLDFLAGS) -o $@ $(OBJS) $(SLIB) $(LFLAGS)
+	$(ECHO)$(LD) $(STDLDFLAGS)  -o $@ $(OBJS) $(EMLIBFLAGS) $(SLIB) $(LFLAGS)
 	@echo ''; echo 'Tecmake: Dynamic Library ($@) Done.'; echo ''
 
 

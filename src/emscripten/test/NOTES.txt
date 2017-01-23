@@ -1,0 +1,11 @@
+Use the build_all.sh script because the build_link.sh doesn't work. (See below)
+
+- I am still unable to properly build a library. Symbols are getting stripped (see below) and the --js-library modules don't seem to be appearing.
+
+
+- IUP is oddly one of the few cross-platform projects that doesn't use visibility export annotations for public APIs. Emscripten doesn't support export files, so we need the marker, otherwise all public symbols get stripped when building a library. Emscripten provides the marker EMSCRIPTEN_KEEPALIVE which is easily compatible with the Windows __declspec and gcc visibility attributes.
+
+
+
+
+

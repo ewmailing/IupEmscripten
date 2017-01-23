@@ -70,7 +70,11 @@ typedef struct _WidgetRec InativeHandle;
 #elif defined(WINVER)
 typedef struct HWND__ InativeHandle;
 #elif defined(__EMSCRIPTEN__)
-typedef int InativeHandle;
+struct InativeHandleEmscripten
+{
+	int handleID;
+};
+typedef struct InativeHandleEmscripten InativeHandle;
 #else
 typedef struct _InativeHandle InativeHandle;
 #endif

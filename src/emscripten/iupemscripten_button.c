@@ -27,8 +27,31 @@
 
 #include "iupemscripten_drv.h"
 
+#include <emscripten.h>
+#include <inttypes.h>
 
 
+static Itable* s_integerIdToIhandleMap = NULL;
+
+//EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, Ihandle* ih)
+//EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, intptr_t ih_ptr)
+//EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, int ih_ptr)
+EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id)
+{
+	Icallback callback_function;
+	Ihandle* ih = (Ihandle*)((intptr_t)iupTableGet(s_integerIdToIhandleMap, (const char*)((intptr_t)handle_id)));
+	//Ihandle* ih = (Ihandle*)ih_ptr;
+	callback_function = IupGetCallback(ih, "ACTION");
+#if 1
+	if(callback_function)
+	{
+		if(callback_function(ih) == IUP_CLOSE)
+		{
+			IupExitLoop();
+		}
+	}
+#endif
+}
 
 void iupdrvButtonAddBorders(int *x, int *y)
 {
@@ -36,21 +59,19 @@ void iupdrvButtonAddBorders(int *x, int *y)
 	
 }
 
+extern int emjsButton_CreateButton(void);
+extern void emjsButton_SetTitle(int handle_id, const char* title);
+//extern void emjsButton_SetCallback(int handle_id, Ihandle* ih);
+//extern void emjsButton_SetCallback(int handle_id, intptr_t ih);
+extern void emjsButton_SetCallback(int handle_id);
+
 static int emscriptenButtonMapMethod(Ihandle* ih)
 {
-#if 0
-    JNIEnv* jni_env;
-	jclass java_class;
-    jmethodID method_id;
-	jobject java_widget;
+#if 1
+	int button_id = 0;
+	InativeHandle* new_handle = NULL;
 	char* attribute_value;
-   
-	jni_env = iupEmscripten_GetEnvThreadSafe();
-
-
-
-
-	// TODO: Button and ImageButton are two different classes and we'll have to handle them separately.
+	// TODO: Image button
 	// emscripten.widget.Button
 	// emscripten.widget.ImageButton
 	attribute_value = iupAttribGet(ih, "IMAGE");
@@ -63,21 +84,13 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 	else
 	{
 
-		java_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupButtonHelper");
-		method_id = (*jni_env)->GetStaticMethodID(jni_env, java_class, "createButton", "(J)Lemscripten/widget/Button;");
-		java_widget = (*jni_env)->CallStaticObjectMethod(jni_env, java_class, method_id, (jlong)(intptr_t)ih);
-
-		ih->handle = (jobject)((*jni_env)->NewGlobalRef(jni_env, java_widget));
-			__emscripten_log_print(ANDROID_LOG_INFO, "emscriptenButtonMapMethod", "got button: %x", ih->handle); 
-
-		(*jni_env)->DeleteLocalRef(jni_env, java_widget);
-		(*jni_env)->DeleteLocalRef(jni_env, java_class);
-
+		button_id = emjsButton_CreateButton();
+		new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
+		new_handle->handleID = button_id;
+		ih->handle = new_handle;
 	}
 
-	// NOTE: ImageButton doesn't directly support text
-	// NOTE: I set the Java properties (for TITLE) in createButton because it was easier to do there.
-	// However, setting these flags is easier to do here in C.
+	// Does ImageButton support title text?
 	attribute_value = iupAttribGet(ih, "TITLE");
 	if(attribute_value && *attribute_value!=0)
 	{
@@ -91,36 +104,29 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 		}
 		*/
 
+		emjsButton_SetTitle(button_id, attribute_value);
 	}
+	
+	//emjsButton_SetCallback(button_id, (intptr_t)ih);
+	emjsButton_SetCallback(button_id);
+	iupTableSet(s_integerIdToIhandleMap, (const char*)((intptr_t)button_id), ih, IUPTABLE_POINTER);
 
-	iupEmscripten_AddWidgetToParent(jni_env, ih);
+
+	//iupEmscripten_AddWidgetToParent(jni_env, ih);
 #endif
 	return IUP_NOERROR;	
 }
 
+extern void emjsButton_DestroyButton(int handle_id);
 static void emscriptenButtonUnMapMethod(Ihandle* ih)
 {
-
-#if 0
-
-
 	if(ih && ih->handle)
 	{
-    	JNIEnv* jni_env;
-		jclass java_class;
-		jmethodID method_id;
-    	jni_env = iupEmscripten_GetEnvThreadSafe();
-
-		java_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupCommon");
-    	method_id = (*jni_env)->GetStaticMethodID(jni_env, java_class, "removeWidgetFromParent", "(J)V");
-    	(*jni_env)->CallStaticVoidMethod(jni_env, java_class, method_id, (jlong)(intptr_t)ih);
-    	(*jni_env)->DeleteLocalRef(jni_env, java_class);
-
-
-		(*jni_env)->DeleteGlobalRef(jni_env, ih->handle);
+		iupTableRemove(s_integerIdToIhandleMap, (const char*)((intptr_t)ih->handle->handleID));
+		emjsButton_DestroyButton(ih->handle->handleID);
+		free(ih->handle);
 		ih->handle = NULL;
 	}
-#endif
 }
 
 void iupdrvButtonInitClass(Iclass* ic)
@@ -129,6 +135,11 @@ void iupdrvButtonInitClass(Iclass* ic)
 	ic->Map = emscriptenButtonMapMethod;
 	ic->UnMap = emscriptenButtonUnMapMethod;
 	
+	if(!s_integerIdToIhandleMap)
+	{
+		// FIXME: Is there a place to free the memory?
+		s_integerIdToIhandleMap = iupTableCreate(IUPTABLE_POINTERINDEXED);
+	}
 #if 0
 
 	ic->LayoutUpdate = gtkButtonLayoutUpdateMethod;

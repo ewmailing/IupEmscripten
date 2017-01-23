@@ -34,6 +34,7 @@
 #include "iup_assert.h"
 
 #include "iupemscripten_drv.h"
+#include <emscripten.h>
 
 
 /****************************************************************
@@ -180,107 +181,34 @@ static int emscriptenDialogSetTitleAttrib(Ihandle* ih, const char* value)
 	return 1;
 }
 
+extern int emjsDialog_CreateDialog(void);
 static int emscriptenDialogMapMethod(Ihandle* ih)
 {
-#if 0
-    JNIEnv* jni_env;
-	jclass java_class;
-    jmethodID method_id;
-	char* result_string = NULL;
-	jstring new_activity;
 
-	jobject current_activity;
-
-	jobject view_group;
-		__emscripten_log_print(ANDROID_LOG_INFO, "emscriptenDialogMapMethod", "entered"); 
-
+	int dialog_id = emjsDialog_CreateDialog();
+	InativeHandle* new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
+	new_handle->handleID = dialog_id;
+	ih->handle = new_handle;
 	
-	jni_env = iupEmscripten_GetEnvThreadSafe();
-
-	current_activity = iupEmscripten_GetCurrentActivity(jni_env);
-	if(NULL == current_activity)
-	{
-		__emscripten_log_print(ANDROID_LOG_ERROR, "emscriptenDialogMapMethod", "FAILURE: current_activity is NULL. Skipping call. No dialog will be created."); 
-		return IUP_ERROR;
-	}
-		__emscripten_log_print(ANDROID_LOG_INFO, "emscriptenDialogMapMethod", "current_activity: %x", current_activity); 
-
-	java_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupActivity");
-	method_id = (*jni_env)->GetStaticMethodID(jni_env, java_class, "createActivity", "(Lemscripten/app/Activity;J)Lemscripten/view/ViewGroup;");
-	view_group = (*jni_env)->CallStaticObjectMethod(jni_env, java_class, method_id, current_activity, (jlong)(intptr_t)ih);
-		__emscripten_log_print(ANDROID_LOG_INFO, "emscriptenDialogMapMethod", "view_group: %x", view_group); 
-
-	// Unforuntately, Emscripten doesn't give us back the Activity object immediately.
-	// We can only get the object after the onCreate() method is invoked for the Activity.
-	// So we need to set the ih->handle in that callback event.
-	// See Java_br_pucrio_tecgraf_iup_IupActivity_SetIhandle.
-	// But unfortunately, Iup isn't designed to handle this possibility.
-	// If I do not provide something for the handle now, 
-	// Iup will skip the map process for all the widgets that go in the Dialog.
-	// So I have a overly clever workaround.
-	// I create a detached ViewGroup and use it in the Activity's place.
-	// The ViewGroup will still allow me to add widgets to it.
-	// Then when the onCreate() finally gets invoked, I can swap out the pointers.
-	// I will attach the ViewGroup as the contentView for the activity and all will be as expected.
-	// I also get to do something extra slippery here and pass a non-serialable object
-	// from this activity to the new one. 
-	// Normally, you use Intents (which I am using to pass the Ihandle pointer).
-	// But ViewGroup is not serializable.
-	// But using C/JNI allows me to circumvent this restriction and pass the object.
-
-	// Keep a strong reference to the ViewGroup to keep it alive until our Activity is ready.
-	// (Remember to release this reference once we attach it to the new Activity).
-	ih->handle = (jobject)((*jni_env)->NewGlobalRef(jni_env, view_group));
+//	iupAttribSet(ih, "RASTERSIZE", "500x400");
 	
-	// Optional: Free up the temporaries.
-	(*jni_env)->DeleteLocalRef(jni_env, view_group);
-	(*jni_env)->DeleteLocalRef(jni_env, java_class);
-	(*jni_env)->DeleteLocalRef(jni_env, current_activity);
-
-	
-	iupAttribSet(ih, "RASTERSIZE", "500x400");
-	
-
-	// This should be scrutinized:
-	// I don't know if I want GlobalRef the Emscripten Activity here.
-	// The end user controls the life-cycle (e.g. back button).
-	// If I keep a strong reference, this might prevent the activity from being cleaned up?
-	// Maybe the close callback would allow me to free it.
-	// I also don't know what IupDestroy(dialog) means for an Activity.
-	// Update1: onDestroy gets called correctly even with GlobalRef, so I can call DeleteRef safely. This pattern works.
 
 //	ih->currentwidth = 200;
 //	ih->currentheight = 200;
-#endif
+
 	return IUP_NOERROR;
 
 }
 
+extern void emjsDialog_DestroyDialog(int handle_id);
 static void emscriptenDialogUnMapMethod(Ihandle* ih)
 {
-#if 0
-
 	if(ih && ih->handle)
 	{
-		jclass java_class;
-		jmethodID method_id;
-		JNIEnv* jni_env = iupEmscripten_GetEnvThreadSafe();
-
-		// Any extra cleanup I need to do in Java is in unMapActivity.
-		// I'm not sure if I need to explicitly call finish() for the case where 
-		// the user explictly calls IupDestroy() before the Activity is popped.
-		// Also, because of the ViewGroup dance I do in Map, I need to check the type.
-		java_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupActivity");
-		method_id = (*jni_env)->GetStaticMethodID(jni_env, java_class, "unMapActivity", "(Ljava/lang/Object;J)V");
-		(*jni_env)->CallStaticVoidMethod(jni_env, java_class, method_id, ih->handle, (jlong)(intptr_t)ih);
-
-		// Optional: Free up the temporaries.
-		(*jni_env)->DeleteLocalRef(jni_env, java_class);
-
-	
-		iupEmscripten_ReleaseIhandle(jni_env, ih);
+		emjsDialog_DestroyDialog(ih->handle->handleID);
+		free(ih->handle);
+		ih->handle = NULL;
 	}
-#endif	
 }
 
 static void emscriptenDialogLayoutUpdateMethod(Ihandle* ih)
