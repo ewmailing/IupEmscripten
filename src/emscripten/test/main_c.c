@@ -45,7 +45,7 @@ int OnButtonCallback(Ihandle* ih)
 	return IUP_DEFAULT;
 }
 
-void IupEntryPoint()
+int IupEntryPoint(Ihandle* noop)
 {
 //	IupOpen(0, NULL);
 	Ihandle* button = IupButton("Iup Button", "");
@@ -62,12 +62,14 @@ void IupEntryPoint()
 
 
 	IupShow(dialog);
+	return 0;
 }
 
 
 int main(int argc, char* argv[])
 {
 	IupOpen(NULL, NULL);
-	IupEntryPoint();
+	IupSetFunction("ENTRY_POINT", IupEntryPoint);
 	IupMainLoop();
+	return 0;
 }

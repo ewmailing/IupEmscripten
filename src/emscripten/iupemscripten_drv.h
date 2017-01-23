@@ -16,6 +16,11 @@ extern "C" {
 
 void iupEmscripten_AddWidgetToParent(Ihandle* ih);
 
+void iupEmscripten_InitializeInternalGlobals(void);
+void iupEmscripten_DestroyInternalGlobals(void);
+void iupEmscripten_SetIntKeyForIhandleValue(int handle_id, Ihandle* ih);
+void iupEmscripten_RemoveIntKeyFromIhandleMap(int handle_id);
+Ihandle* iupEmscripten_GetIhandleValueForKey(int handle_id);
 
 #if 0
 /* global variables, declared in iupmac_globalattrib.c */

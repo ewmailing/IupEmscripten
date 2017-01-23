@@ -18,7 +18,6 @@ var LibraryIupCommon = {
 		},
 		RegisterNewObject: function(the_object) {
 			var current_id = IupCommonGlobals.idCounter;
-console.log("register " + current_id + " " + the_object);
 			IupCommonGlobals.objectIDMap[current_id] = the_object;
 			the_object.handleID = current_id;
 			IupCommonGlobals.idCounter += 1;
@@ -36,9 +35,6 @@ console.log("register " + current_id + " " + the_object);
 		var parent_dialog = IupCommon.GetObjectForID(parent_id);
 		var parent_body = parent_dialog.document.getElementsByTagName("body")[0];
 		var child_widget = IupCommon.GetObjectForID(child_id);
-console.log("dialog " + parent_id + " " + parent_dialog);
-console.log("child  " + child_id + " " + child_widget);
-
 		parent_body.appendChild(child_widget);
 	},
 

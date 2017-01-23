@@ -28,10 +28,8 @@
 #include "iupemscripten_drv.h"
 
 #include <emscripten.h>
-#include <inttypes.h>
 
 
-static Itable* s_integerIdToIhandleMap = NULL;
 
 //EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, Ihandle* ih)
 //EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, intptr_t ih_ptr)
@@ -39,8 +37,7 @@ static Itable* s_integerIdToIhandleMap = NULL;
 EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id)
 {
 	Icallback callback_function;
-	Ihandle* ih = (Ihandle*)((intptr_t)iupTableGet(s_integerIdToIhandleMap, (const char*)((intptr_t)handle_id)));
-	//Ihandle* ih = (Ihandle*)ih_ptr;
+	Ihandle* ih = iupEmscripten_GetIhandleValueForKey(handle_id);
 	callback_function = IupGetCallback(ih, "ACTION");
 #if 1
 	if(callback_function)
@@ -109,7 +106,7 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 	
 	//emjsButton_SetCallback(button_id, (intptr_t)ih);
 	emjsButton_SetCallback(button_id);
-	iupTableSet(s_integerIdToIhandleMap, (const char*)((intptr_t)button_id), ih, IUPTABLE_POINTER);
+	iupEmscripten_SetIntKeyForIhandleValue(button_id, ih);
 
 
 	iupEmscripten_AddWidgetToParent(ih);
@@ -122,7 +119,7 @@ static void emscriptenButtonUnMapMethod(Ihandle* ih)
 {
 	if(ih && ih->handle)
 	{
-		iupTableRemove(s_integerIdToIhandleMap, (const char*)((intptr_t)ih->handle->handleID));
+		iupEmscripten_RemoveIntKeyFromIhandleMap(ih->handle->handleID);
 		emjsButton_DestroyButton(ih->handle->handleID);
 		free(ih->handle);
 		ih->handle = NULL;
@@ -135,11 +132,7 @@ void iupdrvButtonInitClass(Iclass* ic)
 	ic->Map = emscriptenButtonMapMethod;
 	ic->UnMap = emscriptenButtonUnMapMethod;
 	
-	if(!s_integerIdToIhandleMap)
-	{
-		// FIXME: Is there a place to free the memory?
-		s_integerIdToIhandleMap = iupTableCreate(IUPTABLE_POINTERINDEXED);
-	}
+
 #if 0
 
 	ic->LayoutUpdate = gtkButtonLayoutUpdateMethod;

@@ -59,7 +59,7 @@ int iupdrvOpen(int *argc, char ***argv)
 	// Assuming we're always on the main thread.
 
   // TODO: Use this to reinitialize static/global variables???
-	
+	iupEmscripten_InitializeInternalGlobals();
   
   IupSetGlobal("DRIVER", "Emscripten");
 
@@ -75,5 +75,6 @@ int iupdrvOpen(int *argc, char ***argv)
 void iupdrvClose(void)
 {
 
+	iupEmscripten_DestroyInternalGlobals();
 	
 }

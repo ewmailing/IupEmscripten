@@ -9,6 +9,7 @@
 #include <string.h>             
 #include <limits.h>             
 #include <stdbool.h>
+#include <inttypes.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -27,6 +28,38 @@
 
 #include "iupemscripten_drv.h"
 
+static Itable* s_integerIdToIhandleMap = NULL;
+
+void iupEmscripten_InitializeInternalGlobals()
+{
+	if(!s_integerIdToIhandleMap)
+	{
+		// FIXME: Is there a place to free the memory?
+		s_integerIdToIhandleMap = iupTableCreate(IUPTABLE_POINTERINDEXED);
+	}
+} 
+void iupEmscripten_DestroyInternalGlobals()
+{
+
+	if(s_integerIdToIhandleMap)
+	{
+		iupTableDestroy(s_integerIdToIhandleMap);
+		s_integerIdToIhandleMap = NULL;
+	}
+}
+void iupEmscripten_SetIntKeyForIhandleValue(int handle_id, Ihandle* ih)
+{
+	iupTableSet(s_integerIdToIhandleMap, (const char*)((intptr_t)handle_id), ih, IUPTABLE_POINTER);
+}
+void iupEmscripten_RemoveIntKeyFromIhandleMap(int handle_id)
+{
+	iupTableRemove(s_integerIdToIhandleMap, (const char*)((intptr_t)handle_id));
+}
+Ihandle* iupEmscripten_GetIhandleValueForKey(int handle_id)
+{
+	Ihandle* ih = (Ihandle*)((intptr_t)iupTableGet(s_integerIdToIhandleMap, (const char*)((intptr_t)handle_id)));
+	return ih;
+}
 
 extern void emjsCommon_AddWidgetToDialog(int parent_id, int child_id);
 extern void emjsCommon_AddWidgetToWidget(int parent_id, int child_id);
