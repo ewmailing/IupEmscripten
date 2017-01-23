@@ -7,5 +7,10 @@ Use the build_all.sh script because the build_link.sh doesn't work. (See below)
 
 
 
+ - To build the library (which doesn't work yet), go to the root of the source tree and do:
+emmake make -f Makefile.emscripten
+
+
+- I'm currently trying to have separate .js files for each widget implementation. This is resulting in needing --js-library flags for each. This doesn't seem to be common. This should be investigated to see what I'm really supposed to be doing, or if I'm even using it right.
 
 

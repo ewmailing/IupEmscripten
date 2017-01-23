@@ -112,7 +112,7 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 	iupTableSet(s_integerIdToIhandleMap, (const char*)((intptr_t)button_id), ih, IUPTABLE_POINTER);
 
 
-	//iupEmscripten_AddWidgetToParent(jni_env, ih);
+	iupEmscripten_AddWidgetToParent(ih);
 #endif
 	return IUP_NOERROR;	
 }

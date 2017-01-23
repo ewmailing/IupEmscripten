@@ -1160,7 +1160,7 @@ ifdef USE_MOTIF
 endif
 
 ifdef USE_EMSCRIPTEN
-EMLIBFLAGS += --js-library emscripten/iupemscripten_dialog.js --js-library emscripten/iupemscripten_button.js
+EMLIBFLAGS += --js-library emscripten/iu[emscripten_common.js --js-library emscripten/iupemscripten_dialog.js --js-library emscripten/iupemscripten_button.js
 #EMLIBFLAGS += --js-library src/emscripten/iupemscripten_dialog.js --js-library src/emscripten/iupemscripten_button.js
 endif
 

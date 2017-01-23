@@ -5,33 +5,47 @@ var LibraryIupDialog = {
 //	$Dialog__deps: ['$CommonGlobals'],
 	$Dialog: {
 		hasCreatedFirstDialog: false,
-		idCounter: 0,
-		objectIDMap: {},
 	},
 
 
-	emjsDialog_CreateDialog: function() {
+	emjsDialog_CreateDialog: function(window_name, width, height) {
 
 		var dialog;
 
-		Dialog.counter++;
-		var current_id = Dialog.counter;
+		if(Dialog.hasCreatedFirstDialog)
+		{
+			var new_window_name = null;
+			if(window_name)
+			{
+				new_window_name = Pointer_stringify(window_name);
+			}
+			if(0 === width)
+			{
+				width = window.self.width;
+			}
+			if(0 === height)
+			{
+				height = window.self.height;
+			}
 
-		if(!Dialog.hasCreatedFirstDialog)
+			var attrib_str = "width=" + width + ",height=" + height;
+			dialog = window.open("", new_window_name, attrib_str);
+		}
+		else
 		{
 			//dialog = document.getElementsByTagName("body")[0];
 			dialog = window.self;
 			Dialog.hasCreatedFirstDialog = true;
-		}
-		else
-		{
-			dialog = window.open();
+
+			if(window_name)
+			{
+				dialog.document.title = Pointer_stringify(window_name);
+			}
+
+
 		}
 
-		Dialog.objectIDMap[current_id] = dialog;
-
-		// Save id with object just in case we need it
-		dialog.handleID = current_id;
+		current_id = IupCommon.RegisterNewObject(dialog);
 
 		return current_id;
 
@@ -39,12 +53,13 @@ var LibraryIupDialog = {
 
 
 	emjsDialog_DestroyDialog: function(handle_id) {
-		var dialog = Dialog.objectIDMap[handle_id];
+
+		var dialog = IupCommon.GetObjectForID(handle_id);
 		if(dialog)
 		{
 
 			dialog.close();
-			Dialog.objectIDMap[handle_id] = null;
+			IupCommon.DeleteObjectWithID(handle_id);
 		}
 	}
 

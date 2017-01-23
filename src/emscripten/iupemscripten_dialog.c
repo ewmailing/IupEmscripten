@@ -181,11 +181,17 @@ static int emscriptenDialogSetTitleAttrib(Ihandle* ih, const char* value)
 	return 1;
 }
 
-extern int emjsDialog_CreateDialog(void);
+extern int emjsDialog_CreateDialog(char* window_name, int width, int height);
 static int emscriptenDialogMapMethod(Ihandle* ih)
 {
 
-	int dialog_id = emjsDialog_CreateDialog();
+	char* window_title = NULL;
+	int width = 0;
+	int height = 0;
+	
+	window_title = iupAttribGet(ih, "TITLE");
+
+	int dialog_id = emjsDialog_CreateDialog(window_title, width, height);
 	InativeHandle* new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 	new_handle->handleID = dialog_id;
 	ih->handle = new_handle;

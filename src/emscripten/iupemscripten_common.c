@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>             
 #include <limits.h>             
+#include <stdbool.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -27,173 +28,48 @@
 #include "iupemscripten_drv.h"
 
 
-#if 0
-static int s_isInitialized = 0;
-
-
-// This is intended to be the God Context object you need for a lot of Emscripten APIs (e.g. AssetManager).
-// It uses the Application context because that supposedly will be available for the life of the program.
-static jobject s_applicationContextObject = NULL;
-static pthread_key_t s_attachThreadKey;
-
-
-void iupEmscripten_ThreadDestroyed(void* user_data)
+extern void emjsCommon_AddWidgetToDialog(int parent_id, int child_id);
+extern void emjsCommon_AddWidgetToWidget(int parent_id, int child_id);
+void iupEmscripten_AddWidgetToParent(Ihandle* ih)
 {
-	/* The thread is being destroyed, detach it from the Java VM and set the s_attachThreadKey value to NULL as required */
-	JNIEnv* jni_env = (JNIEnv*)user_data;
-	if(NULL != jni_env)
+	Ihandle* parent_ih = iupChildTreeGetNativeParent(ih);
+	//InativeHandle* parent_native_handle = iupChildTreeGetNativeParentHandle(ih);
+	// No parent? Probably need to assert here.
+	if(!parent_ih)
 	{
-		(*s_javaVM)->DetachCurrentThread(s_javaVM);
-		pthread_setspecific(s_attachThreadKey, NULL);
+		return;
 	}
-}
 
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* java_vm, void* reserved)
-{
-    s_javaVM = java_vm;
-	/* SDL notes:
-	 * Create s_attachThreadKey so we can keep track of the JNIEnv assigned to each thread
-     * Refer to http://developer.emscripten.com/guide/practices/design/jni.html for the rationale behind this
-     */
-    if(pthread_key_create(&s_attachThreadKey, iupEmscripten_ThreadDestroyed) != 0)
+	InativeHandle* parent_native_handle = parent_ih->handle;
+	InativeHandle* child_handle = ih->handle;
+
+	int parent_id = 0;
+	int child_id = 0;
+	_Bool parent_is_dialog = false;
+	if(parent_native_handle)
 	{
-		__emscripten_log_print(ANDROID_LOG_ERROR, "Iup", "Error initializing pthread key");
-    }
-
-    return JNI_VERSION_1_6;
-}
-
-JNIEnv* iupEmscripten_GetEnvThreadSafe()
-{
-	JNIEnv* jni_env;
-	
-	/* ALmixer Notes: */
-	/* Careful: If ALmixer is compiled with threads, make sure any calls back into Java are thread safe. */
-	/* Unfortunately, JNI is making thread handling even more complicated than usual.
-	 * If ALmixer is compiled with threads, it invokes callbacks on a ALmixer private background thread.
-	 * In this case, we are required to call AttachCurrentThread for Java.
-	 * However, there is a case in ALmixer where the callback doesn't happen on the background thread, but the calling thread.
-	 * Calling ALmixer_HaltChannel() will trigger the callback on immediately on the thread you called the function on.
-	 * (In this program, it is the main thread.)
-	 * But JNI will break and crash if you try calling AttachCurrentThread in this case.
-	 * So we need to know what thread we are on. If we are on the background thread, we must call AttachCurrentThread.
-	 * Otherwise, we need to avoid calling it and use the current "env".
-	 */
-
-	/* There is a little JNI dance you can do to deal with this situation which is shown here.
-	*/
-	int get_env_stat = (*s_javaVM)->GetEnv(s_javaVM, (void**)&jni_env, JNI_VERSION_1_6);
-	if(get_env_stat == JNI_EDETACHED)
-	{
-		jint attach_status = (*s_javaVM)->AttachCurrentThread(s_javaVM, &jni_env, NULL);
-		if(0 != attach_status)
+		parent_id = parent_native_handle->handleID;
+		if(parent_ih->iclass->nativetype == IUP_TYPEDIALOG)
 		{
-			__emscripten_log_print(ANDROID_LOG_ERROR, "Iup", "AttachCurrentThread failed"); 
+			parent_is_dialog = true;
 		}
-
-		/* SDL notes: */
-		/* From http://developer.emscripten.com/guide/practices/jni.html
-		 * Threads attached through JNI must call DetachCurrentThread before they exit. If coding this directly is awkward,
-		 * in Emscripten 2.0 (Eclair) and higher you can use pthread_key_create to define a destructor function that will be
-		 * called before the thread exits, and call DetachCurrentThread from there. (Use that key with pthread_setspecific
-		 * to store the JNIEnv in thread-local-storage; that way it'll be passed into your destructor as the argument.)
-		 * Note: The destructor is not called unless the stored value is != NULL
-		 * Note: You can call this function any number of times for the same thread, there's no harm in it
-		 *       (except for some lost CPU cycles)
-		 */
-		pthread_setspecific(s_attachThreadKey, (void*)jni_env);
-
 	}
-	else if(JNI_OK == get_env_stat)
+	if(child_handle)
 	{
-		// don't need to do anything
+		child_id = child_handle->handleID;
 	}
-	else if (get_env_stat == JNI_EVERSION)
-	{
-		__emscripten_log_print(ANDROID_LOG_ERROR, "Iup", "GetEnv version not supported"); 
-	}
-
-
-	return jni_env;
-}
-
-void iupEmscripten_RetainIhandle(JNIEnv* jni_env, jobject native_widget, Ihandle* ih)
-{
-	if(ih)
-	{
-		ih->handle = (jobject)((*jni_env)->NewGlobalRef(jni_env, native_widget));
-		__emscripten_log_print(ANDROID_LOG_INFO, "Iup", "NewGlobalRef on ih->handle: %x", ih->handle); 
-	}
-}
-
-void iupEmscripten_ReleaseIhandle(JNIEnv* jni_env, Ihandle* ih)
-{
-	if(ih && ih->handle)
-	{
-		__emscripten_log_print(ANDROID_LOG_INFO, "Iup", "DeleteGlobalRef on ih->handle: %x", ih->handle); 
-		(*jni_env)->DeleteGlobalRef(jni_env, ih->handle);
-		ih->handle = NULL;
-	}
-}
-
-
-jobject iupEmscripten_GetApplication(JNIEnv* jni_env)
-{
-	jclass java_class;
-    jmethodID method_id;
-	jobject ret_object;
-
-	java_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupApplication");
-	method_id = (*jni_env)->GetStaticMethodID(jni_env, java_class, "getIupApplication", "()Lbr/pucrio/tecgraf/iup/IupApplication;");
-	ret_object = (*jni_env)->CallStaticObjectMethod(jni_env, java_class, method_id);
-
-	(*jni_env)->DeleteLocalRef(jni_env, java_class);
-
-	return ret_object;
-
-}
-
-jobject iupEmscripten_GetCurrentActivity(JNIEnv* jni_env)
-{
-	jclass java_class;
-    jmethodID method_id;
-	jobject ret_object;
-
-	jobject application_object = iupEmscripten_GetApplication(jni_env);
-
-    java_class = (*jni_env)->GetObjectClass(jni_env, application_object);
-	method_id = (*jni_env)->GetMethodID(jni_env, java_class, "getCurrentActivity", "()Lemscripten/app/Activity;");
-	ret_object = (*jni_env)->CallObjectMethod(jni_env, application_object, method_id);
-
-	(*jni_env)->DeleteLocalRef(jni_env, java_class);
-	(*jni_env)->DeleteLocalRef(jni_env, application_object);
-
-	return ret_object;
-}
-
-void iupEmscripten_AddWidgetToParent(JNIEnv* jni_env, Ihandle* ih)
-{
-
-
-	jclass java_class;
-    jmethodID method_id;
-
-	jobject parent_native_handle = iupChildTreeGetNativeParentHandle(ih);
-	jobject child_handle = ih->handle;
 	
-		__emscripten_log_print(ANDROID_LOG_INFO, "iupEmscriptenAddWidgetToParent", "parent_native_handle:%x, ih->handle: %x", parent_native_handle, ih->handle); 
-
-
-	java_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupCommon");
-	method_id = (*jni_env)->GetStaticMethodID(jni_env, java_class, "addWidgetToParent", "(Ljava/lang/Object;Ljava/lang/Object;)V");
-	(*jni_env)->CallStaticVoidMethod(jni_env, java_class, method_id, parent_native_handle, child_handle);
-
-	(*jni_env)->DeleteLocalRef(jni_env, java_class);
-
+	if(parent_is_dialog)
+	{
+		emjsCommon_AddWidgetToDialog(parent_id, child_id);
+	}
+	else
+	{
+		emjsCommon_AddWidgetToWidget(parent_id, child_id);
+	}
 
 }
 
-#endif
 
 
 void iupdrvActivate(Ihandle* ih)
