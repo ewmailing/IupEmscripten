@@ -34,11 +34,18 @@
 //EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, Ihandle* ih)
 //EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, intptr_t ih_ptr)
 //EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, int ih_ptr)
-EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id)
+
+// Generate IupButton ACTION callback to feed to js
+EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, char* type)
 {
 	Icallback callback_function;
 	Ihandle* ih = iupEmscripten_GetIhandleValueForKey(handle_id);
-	callback_function = IupGetCallback(ih, "ACTION");
+  // check type to determine whether ACTION or BUTTON_CB
+  if (!strcmp(type,"action")) callback_function = IupGetCallback(ih, "ACTION");
+  else if (!strcmp(type,"buttoncb")) callback_function = IupGetCallback(ih, "BUTTON_CB");
+  else printf("No callback type - error");
+  // printfs clearly aren't working
+  printf("HELLO");
 #if 1
 	if(callback_function)
 	{
@@ -49,6 +56,7 @@ EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id)
 	}
 #endif
 }
+
 
 void iupdrvButtonAddBorders(int *x, int *y)
 {

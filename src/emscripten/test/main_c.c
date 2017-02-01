@@ -27,8 +27,11 @@ int OnButtonCallback(Ihandle* ih)
 
 	char temp_string[1024];
 	static int button_count = 0;
+  // Stores button text in string with updated count
 	snprintf(temp_string, 1024, "Iup Button %d", button_count);
 	Ihandle* button = IupButton(temp_string, "");
+  // Adding in test button for BUTTON_CB
+  /* Ihandle* button2 = IupButton("callback %d", button_count); */
 
 	IupSetCallback(button, "ACTION", (Icallback)OnButtonCallback);
 	Ihandle* dialog = IupDialog(button);
@@ -37,8 +40,14 @@ int OnButtonCallback(Ihandle* ih)
 	IupSetStrAttribute(dialog, "TITLE", temp_string);
 	
 
+	/* IupSetCallback(button2, "BUTTON_CB", (Icallback)OnButtonCallback); */
+	/* Ihandle* dialog2 = IupDialog(button2); */
+	/* snprintf(temp_string, 1024, "Iup Callback Title %d", button_count); */
+
+	/* IupSetStrAttribute(dialog2, "TITLE", temp_string); */
 
 	IupShow(dialog);
+  /* IupShow(dialog2); */
 
 	button_count++;
 
@@ -49,9 +58,11 @@ int IupEntryPoint(Ihandle* noop)
 {
 //	IupOpen(0, NULL);
 	Ihandle* button = IupButton("Iup Button", "");
+  Ihandle* button2 = IupButton("Callback", "");
 	IupSetCallback(button, "ACTION", (Icallback)OnButtonCallback);
+  IupSetCallback(button2, "BUTTON_CB", (Icallback)OnButtonCallback);
 
-	Ihandle* vb=IupVbox(button, NULL);
+	Ihandle* vb=IupVbox(button, button2, NULL);
 	IupSetAttribute(vb, "GAP", "10");
 	IupSetAttribute(vb, "MARGIN", "10x10");
 	IupSetAttribute(vb, "ALIGNMENT", "ACENTER");
