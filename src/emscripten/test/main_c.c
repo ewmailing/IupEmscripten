@@ -33,7 +33,7 @@ int OnButtonCallback(Ihandle* ih)
   // Adding in test button for BUTTON_CB
   /* Ihandle* button2 = IupButton("callback %d", button_count); */
 
-	IupSetCallback(button, "ACTION", (Icallback)OnButtonCallback);
+	IupSetCallback(button, "BUTTON_CB", (Icallback)OnButtonCallback);
 	Ihandle* dialog = IupDialog(button);
 	snprintf(temp_string, 1024, "Iup Activity Title %d", button_count);
 
