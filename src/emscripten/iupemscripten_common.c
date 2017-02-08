@@ -103,8 +103,6 @@ void iupEmscripten_AddWidgetToParent(Ihandle* ih)
 
 }
 
-
-
 void iupdrvActivate(Ihandle* ih)
 {
 

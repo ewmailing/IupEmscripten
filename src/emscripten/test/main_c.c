@@ -33,7 +33,7 @@ int OnButtonCallback(Ihandle* ih)
   // Adding in test button for BUTTON_CB
   /* Ihandle* button2 = IupButton("callback %d", button_count); */
 
-	IupSetCallback(button, "BUTTON_CB", (Icallback)OnButtonCallback);
+	IupSetCallback(button, "ACTION", (Icallback)OnButtonCallback);
 	Ihandle* dialog = IupDialog(button);
 	snprintf(temp_string, 1024, "Iup Activity Title %d", button_count);
 
@@ -54,13 +54,29 @@ int OnButtonCallback(Ihandle* ih)
 	return IUP_DEFAULT;
 }
 
+int testCallback(Ihandle* ih, int but, int pressed, int x, int y, char* status) {
+	char temp_string[1024];
+	Ihandle* button = IupButton("CB Test", "");
+
+	IupSetCallback(button, "BUTTON_CB", (Icallback)OnButtonCallback);
+	Ihandle* dialog = IupDialog(button);
+	snprintf(temp_string, 1024, "Iup Activity Title");
+
+	IupSetStrAttribute(dialog, "TITLE", temp_string);
+	
+	IupShow(dialog);
+
+	return IUP_DEFAULT;
+}
+
 int IupEntryPoint(Ihandle* noop)
 {
 //	IupOpen(0, NULL);
 	Ihandle* button = IupButton("Iup Button", "");
   Ihandle* button2 = IupButton("Callback", "");
 	IupSetCallback(button, "ACTION", (Icallback)OnButtonCallback);
-  IupSetCallback(button2, "BUTTON_CB", (Icallback)OnButtonCallback);
+  //IupSetCallback(button2, "BUTTON_CB", (Icallback)OnButtonCallback);
+  IupSetCallback(button2, "BUTTON_CB", (Icallback)testCallback);
 
 	Ihandle* vb=IupVbox(button, button2, NULL);
 	IupSetAttribute(vb, "GAP", "10");

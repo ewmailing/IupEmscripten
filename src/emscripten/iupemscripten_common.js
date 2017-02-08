@@ -44,9 +44,13 @@ var LibraryIupCommon = {
 
 		parent_widget.appendChild(child_widget);
 	},
+
+  emjsCommon_Alert: function(message) {
+    alert(Pointer_stringify(message));
+  },
 	
 
-}
+};
 
 autoAddDeps(LibraryIupCommon, '$IupCommonGlobals');
 autoAddDeps(LibraryIupCommon, '$IupCommon');

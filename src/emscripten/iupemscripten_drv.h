@@ -22,6 +22,8 @@ void iupEmscripten_SetIntKeyForIhandleValue(int handle_id, Ihandle* ih);
 void iupEmscripten_RemoveIntKeyFromIhandleMap(int handle_id);
 Ihandle* iupEmscripten_GetIhandleValueForKey(int handle_id);
 
+extern void emjsCommon_Alert(const char* message);
+
 #if 0
 /* global variables, declared in iupmac_globalattrib.c */
 extern int iupmac_utf8autoconvert;         

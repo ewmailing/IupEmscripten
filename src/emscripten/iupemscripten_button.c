@@ -34,22 +34,25 @@
 //EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, Ihandle* ih)
 //EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, intptr_t ih_ptr)
 //EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, int ih_ptr)
-
 // Generate IupButton ACTION callback to feed to js
-EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, char* type)
+EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id)
 {
-	Icallback callback_function;
 	Ihandle* ih = iupEmscripten_GetIhandleValueForKey(handle_id);
   // check type to determine whether ACTION or BUTTON_CB
-  if (!strcmp(type,"action")) callback_function = IupGetCallback(ih, "ACTION");
-  else if (!strcmp(type,"buttoncb")) callback_function = IupGetCallback(ih, "BUTTON_CB");
-  else printf("No callback type - error");
-  // printfs clearly aren't working
-  printf("HELLO");
+  // If user called for ACTION, this will return function pointer. If not, null
+  IFniiiis button_callback = (IFniiiis)IupGetCallback(ih, "BUTTON_CB");
+  if (button_callback) {
+    button_callback(ih, 0, 0, 10, 20, "active");
+  }
+  Icallback action_callback = IupGetCallback(ih, "ACTION");
+  if (action_callback) {
+    action_callback(ih);
+  }
+
 #if 1
-	if(callback_function)
+	if(action_callback)
 	{
-		if(callback_function(ih) == IUP_CLOSE)
+		if(action_callback(ih) == IUP_CLOSE)
 		{
 			IupExitLoop();
 		}
@@ -80,15 +83,13 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 	// emscripten.widget.Button
 	// emscripten.widget.ImageButton
 	attribute_value = iupAttribGet(ih, "IMAGE");
-	if(attribute_value && *attribute_value!=0)
+
+	if (attribute_value && *attribute_value != 0)
 	{
 		ih->data->type |= IUP_BUTTON_IMAGE;
-	
-		
 	}
 	else
 	{
-
 		button_id = emjsButton_CreateButton();
 		new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 		new_handle->handleID = button_id;

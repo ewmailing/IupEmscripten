@@ -28,6 +28,9 @@
 
 #include "iupemscripten_drv.h"
 
+
+extern int emjsButton_CreateLabel(void);
+
 static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 {
 /*
