@@ -38,14 +38,9 @@
 EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id)
 {
 	Ihandle* ih = iupEmscripten_GetIhandleValueForKey(handle_id);
-  // check type to determine whether ACTION or BUTTON_CB
-  // If user called for ACTION, this will return function pointer. If not, null
-  IFniiiis button_callback = (IFniiiis)IupGetCallback(ih, "BUTTON_CB");
-  if (button_callback) {
-    button_callback(ih, 0, 0, 10, 20, "active");
-  }
   Icallback action_callback = IupGetCallback(ih, "ACTION");
-  if (action_callback) {
+  if (action_callback) 
+  {
     action_callback(ih);
   }
 
@@ -60,6 +55,26 @@ EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id)
 #endif
 }
 
+EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline_Cb(int handle_id, int but, int pressed, int x, int y, char* status) 
+{
+	Ihandle* ih = iupEmscripten_GetIhandleValueForKey(handle_id);
+
+  IFniiiis button_callback = (IFniiiis)IupGetCallback(ih, "BUTTON_CB");
+  if (button_callback) 
+  {
+    button_callback(handle_id, but, pressed, x, y, status);
+  }
+
+#if 0
+	if(button_callback)
+	{
+		if(button_callback(handle_id, but, pressed, x, y, status) == IUP_CLOSE)
+		{
+			IupExitLoop();
+		}
+	}
+#endif
+}
 
 void iupdrvButtonAddBorders(int *x, int *y)
 {
