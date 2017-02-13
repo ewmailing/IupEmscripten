@@ -5,6 +5,7 @@
 
 #if __ANDROID__
 #include <android/log.h>
+
 void MyPrintf(const char* fmt, ...)
 {
 	va_list ap;	
