@@ -62,7 +62,7 @@ EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline_Cb(int handle_id, i
   IFniiiis button_callback = (IFniiiis)IupGetCallback(ih, "BUTTON_CB");
   if (button_callback) 
   {
-    button_callback(handle_id, but, pressed, x, y, status);
+    button_callback(ih, but, pressed, x, y, status);
   }
 
 #if 0
