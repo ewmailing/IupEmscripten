@@ -6,7 +6,6 @@ var LibraryIupButton = {
   },
 
   emjsButton_CreateButton: function() {
-
     var widget_object;
     widget_object = document.createElement("button");
     var handle_id = IupCommon.RegisterNewObject(widget_object);
@@ -39,7 +38,7 @@ var LibraryIupButton = {
         c_callback(handle_id);
         //c_callback(handle_id, 0);
         //c_callback(handle_id, button.ihPointer);
-
+        console.log('click - action');
       });
 
       // for BUTTON_CB, need on mousedown and onmouseup
@@ -49,7 +48,9 @@ var LibraryIupButton = {
         var yCoord = e.clientY;
         var c_callback = Module.cwrap('emscriptenButtonCallbackTrampoline_Cb', null, ['number', 'number', 'number', 'number', 'number', 'string']);
         var pressed = 1;
+        console.log(handle_id);
         c_callback(handle_id, clicktype, pressed, xCoord, yCoord, "");
+        console.log('bdown');
       });
 
       button.addEventListener("mouseup", function(e) {
@@ -59,6 +60,8 @@ var LibraryIupButton = {
         var c_callback = Module.cwrap('emscriptenButtonCallbackTrampoline_Cb', null, ['number', 'number', 'number', 'number', 'number', 'string']);
         var pressed = 0;
         c_callback(handle_id, clicktype, pressed, xCoord, yCoord, "");
+        
+        console.log('bup happening');
       });
     }
 

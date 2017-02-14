@@ -1684,7 +1684,6 @@ function copyTempDouble(ptr) {
 
   
   var Button={};function _emjsButton_CreateButton() {
-  
       var widget_object;
       widget_object = document.createElement("button");
       var handle_id = IupCommon.RegisterNewObject(widget_object);
@@ -1894,20 +1893,19 @@ function copyTempDouble(ptr) {
           c_callback(handle_id);
           //c_callback(handle_id, 0);
           //c_callback(handle_id, button.ihPointer);
-  
+          console.log('click - action');
         });
   
         // for BUTTON_CB, need on mousedown and onmouseup
         button.addEventListener("mousedown", function(e) {
           var clicktype = e.button;
-          console.log('click: ' + clicktype);
           var xCoord = e.clientX;
-          console.log('x: ' + xCoord);
           var yCoord = e.clientY;
-          console.log('y: ' + yCoord);
           var c_callback = Module.cwrap('emscriptenButtonCallbackTrampoline_Cb', null, ['number', 'number', 'number', 'number', 'number', 'string']);
           var pressed = 1;
-          c_callback(handle_id, clicktype, pressed, xCoord, yCoord);
+          console.log(handle_id);
+          c_callback(handle_id, clicktype, pressed, xCoord, yCoord, "");
+          console.log('bdown');
         });
   
         button.addEventListener("mouseup", function(e) {
@@ -1916,7 +1914,9 @@ function copyTempDouble(ptr) {
           var yCoord = e.clientY;
           var c_callback = Module.cwrap('emscriptenButtonCallbackTrampoline_Cb', null, ['number', 'number', 'number', 'number', 'number', 'string']);
           var pressed = 0;
-          c_callback(handle_id, clicktype, pressed, xCoord, yCoord);
+          c_callback(handle_id, clicktype, pressed, xCoord, yCoord, "");
+          
+          console.log('bup happening');
         });
       }
   
@@ -55258,13 +55258,13 @@ function _iupdrvButtonInitClass($0) {
  sp = STACKTOP;
  STACKTOP = STACKTOP + 16|0; if ((STACKTOP|0) >= (STACK_MAX|0)) abortStackOverflow(16|0);
  $1 = $0;
- $2 = $1; //@line 156 "../iupemscripten_button.c"
- $3 = ((($2)) + 44|0); //@line 156 "../iupemscripten_button.c"
- HEAP32[$3>>2] = 558; //@line 156 "../iupemscripten_button.c"
- $4 = $1; //@line 157 "../iupemscripten_button.c"
- $5 = ((($4)) + 48|0); //@line 157 "../iupemscripten_button.c"
- HEAP32[$5>>2] = 559; //@line 157 "../iupemscripten_button.c"
- STACKTOP = sp;return; //@line 189 "../iupemscripten_button.c"
+ $2 = $1; //@line 157 "../iupemscripten_button.c"
+ $3 = ((($2)) + 44|0); //@line 157 "../iupemscripten_button.c"
+ HEAP32[$3>>2] = 558; //@line 157 "../iupemscripten_button.c"
+ $4 = $1; //@line 158 "../iupemscripten_button.c"
+ $5 = ((($4)) + 48|0); //@line 158 "../iupemscripten_button.c"
+ HEAP32[$5>>2] = 559; //@line 158 "../iupemscripten_button.c"
+ STACKTOP = sp;return; //@line 190 "../iupemscripten_button.c"
 }
 function _emscriptenButtonMapMethod($0) {
  $0 = $0|0;
@@ -55312,36 +55312,36 @@ function _emscriptenButtonMapMethod($0) {
   $24 = ((($23)) + 16|0); //@line 111 "../iupemscripten_button.c"
   HEAP32[$24>>2] = $22; //@line 111 "../iupemscripten_button.c"
  }
- $25 = $1; //@line 115 "../iupemscripten_button.c"
- $26 = (_iupAttribGet($25,20483)|0); //@line 115 "../iupemscripten_button.c"
- $4 = $26; //@line 115 "../iupemscripten_button.c"
- $27 = $4; //@line 116 "../iupemscripten_button.c"
- $28 = ($27|0)!=(0|0); //@line 116 "../iupemscripten_button.c"
+ $25 = $1; //@line 116 "../iupemscripten_button.c"
+ $26 = (_iupAttribGet($25,20483)|0); //@line 116 "../iupemscripten_button.c"
+ $4 = $26; //@line 116 "../iupemscripten_button.c"
+ $27 = $4; //@line 117 "../iupemscripten_button.c"
+ $28 = ($27|0)!=(0|0); //@line 117 "../iupemscripten_button.c"
  if ($28) {
-  $29 = $4; //@line 116 "../iupemscripten_button.c"
-  $30 = HEAP8[$29>>0]|0; //@line 116 "../iupemscripten_button.c"
-  $31 = $30 << 24 >> 24; //@line 116 "../iupemscripten_button.c"
-  $32 = ($31|0)!=(0); //@line 116 "../iupemscripten_button.c"
+  $29 = $4; //@line 117 "../iupemscripten_button.c"
+  $30 = HEAP8[$29>>0]|0; //@line 117 "../iupemscripten_button.c"
+  $31 = $30 << 24 >> 24; //@line 117 "../iupemscripten_button.c"
+  $32 = ($31|0)!=(0); //@line 117 "../iupemscripten_button.c"
   if ($32) {
-   $33 = $1; //@line 118 "../iupemscripten_button.c"
-   $34 = ((($33)) + 72|0); //@line 118 "../iupemscripten_button.c"
-   $35 = HEAP32[$34>>2]|0; //@line 118 "../iupemscripten_button.c"
-   $36 = HEAP32[$35>>2]|0; //@line 118 "../iupemscripten_button.c"
-   $37 = $36 | 2; //@line 118 "../iupemscripten_button.c"
-   HEAP32[$35>>2] = $37; //@line 118 "../iupemscripten_button.c"
-   $38 = $2; //@line 128 "../iupemscripten_button.c"
-   $39 = $4; //@line 128 "../iupemscripten_button.c"
-   _emjsButton_SetTitle(($38|0),($39|0)); //@line 128 "../iupemscripten_button.c"
+   $33 = $1; //@line 119 "../iupemscripten_button.c"
+   $34 = ((($33)) + 72|0); //@line 119 "../iupemscripten_button.c"
+   $35 = HEAP32[$34>>2]|0; //@line 119 "../iupemscripten_button.c"
+   $36 = HEAP32[$35>>2]|0; //@line 119 "../iupemscripten_button.c"
+   $37 = $36 | 2; //@line 119 "../iupemscripten_button.c"
+   HEAP32[$35>>2] = $37; //@line 119 "../iupemscripten_button.c"
+   $38 = $2; //@line 129 "../iupemscripten_button.c"
+   $39 = $4; //@line 129 "../iupemscripten_button.c"
+   _emjsButton_SetTitle(($38|0),($39|0)); //@line 129 "../iupemscripten_button.c"
   }
  }
- $40 = $2; //@line 132 "../iupemscripten_button.c"
- _emjsButton_SetCallback(($40|0)); //@line 132 "../iupemscripten_button.c"
- $41 = $2; //@line 133 "../iupemscripten_button.c"
- $42 = $1; //@line 133 "../iupemscripten_button.c"
- _iupEmscripten_SetIntKeyForIhandleValue($41,$42); //@line 133 "../iupemscripten_button.c"
- $43 = $1; //@line 136 "../iupemscripten_button.c"
- _iupEmscripten_AddWidgetToParent($43); //@line 136 "../iupemscripten_button.c"
- STACKTOP = sp;return 0; //@line 138 "../iupemscripten_button.c"
+ $40 = $2; //@line 133 "../iupemscripten_button.c"
+ _emjsButton_SetCallback(($40|0)); //@line 133 "../iupemscripten_button.c"
+ $41 = $2; //@line 134 "../iupemscripten_button.c"
+ $42 = $1; //@line 134 "../iupemscripten_button.c"
+ _iupEmscripten_SetIntKeyForIhandleValue($41,$42); //@line 134 "../iupemscripten_button.c"
+ $43 = $1; //@line 137 "../iupemscripten_button.c"
+ _iupEmscripten_AddWidgetToParent($43); //@line 137 "../iupemscripten_button.c"
+ STACKTOP = sp;return 0; //@line 139 "../iupemscripten_button.c"
 }
 function _emscriptenButtonUnMapMethod($0) {
  $0 = $0|0;
@@ -55350,36 +55350,36 @@ function _emscriptenButtonUnMapMethod($0) {
  sp = STACKTOP;
  STACKTOP = STACKTOP + 16|0; if ((STACKTOP|0) >= (STACK_MAX|0)) abortStackOverflow(16|0);
  $1 = $0;
- $2 = $1; //@line 144 "../iupemscripten_button.c"
- $3 = ($2|0)!=(0|0); //@line 144 "../iupemscripten_button.c"
+ $2 = $1; //@line 145 "../iupemscripten_button.c"
+ $3 = ($2|0)!=(0|0); //@line 145 "../iupemscripten_button.c"
  if (!($3)) {
-  STACKTOP = sp;return; //@line 151 "../iupemscripten_button.c"
+  STACKTOP = sp;return; //@line 152 "../iupemscripten_button.c"
  }
- $4 = $1; //@line 144 "../iupemscripten_button.c"
- $5 = ((($4)) + 16|0); //@line 144 "../iupemscripten_button.c"
- $6 = HEAP32[$5>>2]|0; //@line 144 "../iupemscripten_button.c"
- $7 = ($6|0)!=(0|0); //@line 144 "../iupemscripten_button.c"
+ $4 = $1; //@line 145 "../iupemscripten_button.c"
+ $5 = ((($4)) + 16|0); //@line 145 "../iupemscripten_button.c"
+ $6 = HEAP32[$5>>2]|0; //@line 145 "../iupemscripten_button.c"
+ $7 = ($6|0)!=(0|0); //@line 145 "../iupemscripten_button.c"
  if (!($7)) {
-  STACKTOP = sp;return; //@line 151 "../iupemscripten_button.c"
+  STACKTOP = sp;return; //@line 152 "../iupemscripten_button.c"
  }
- $8 = $1; //@line 146 "../iupemscripten_button.c"
- $9 = ((($8)) + 16|0); //@line 146 "../iupemscripten_button.c"
- $10 = HEAP32[$9>>2]|0; //@line 146 "../iupemscripten_button.c"
- $11 = HEAP32[$10>>2]|0; //@line 146 "../iupemscripten_button.c"
- _iupEmscripten_RemoveIntKeyFromIhandleMap($11); //@line 146 "../iupemscripten_button.c"
- $12 = $1; //@line 147 "../iupemscripten_button.c"
- $13 = ((($12)) + 16|0); //@line 147 "../iupemscripten_button.c"
- $14 = HEAP32[$13>>2]|0; //@line 147 "../iupemscripten_button.c"
- $15 = HEAP32[$14>>2]|0; //@line 147 "../iupemscripten_button.c"
- _emjsButton_DestroyButton(($15|0)); //@line 147 "../iupemscripten_button.c"
- $16 = $1; //@line 148 "../iupemscripten_button.c"
- $17 = ((($16)) + 16|0); //@line 148 "../iupemscripten_button.c"
- $18 = HEAP32[$17>>2]|0; //@line 148 "../iupemscripten_button.c"
- _free($18); //@line 148 "../iupemscripten_button.c"
- $19 = $1; //@line 149 "../iupemscripten_button.c"
- $20 = ((($19)) + 16|0); //@line 149 "../iupemscripten_button.c"
- HEAP32[$20>>2] = 0; //@line 149 "../iupemscripten_button.c"
- STACKTOP = sp;return; //@line 151 "../iupemscripten_button.c"
+ $8 = $1; //@line 147 "../iupemscripten_button.c"
+ $9 = ((($8)) + 16|0); //@line 147 "../iupemscripten_button.c"
+ $10 = HEAP32[$9>>2]|0; //@line 147 "../iupemscripten_button.c"
+ $11 = HEAP32[$10>>2]|0; //@line 147 "../iupemscripten_button.c"
+ _iupEmscripten_RemoveIntKeyFromIhandleMap($11); //@line 147 "../iupemscripten_button.c"
+ $12 = $1; //@line 148 "../iupemscripten_button.c"
+ $13 = ((($12)) + 16|0); //@line 148 "../iupemscripten_button.c"
+ $14 = HEAP32[$13>>2]|0; //@line 148 "../iupemscripten_button.c"
+ $15 = HEAP32[$14>>2]|0; //@line 148 "../iupemscripten_button.c"
+ _emjsButton_DestroyButton(($15|0)); //@line 148 "../iupemscripten_button.c"
+ $16 = $1; //@line 149 "../iupemscripten_button.c"
+ $17 = ((($16)) + 16|0); //@line 149 "../iupemscripten_button.c"
+ $18 = HEAP32[$17>>2]|0; //@line 149 "../iupemscripten_button.c"
+ _free($18); //@line 149 "../iupemscripten_button.c"
+ $19 = $1; //@line 150 "../iupemscripten_button.c"
+ $20 = ((($19)) + 16|0); //@line 150 "../iupemscripten_button.c"
+ HEAP32[$20>>2] = 0; //@line 150 "../iupemscripten_button.c"
+ STACKTOP = sp;return; //@line 152 "../iupemscripten_button.c"
 }
 function _iupdrvCanvasInitClass($0) {
  $0 = $0|0;
@@ -57030,12 +57030,12 @@ function _MyPrintf($0,$varargs) {
  $vararg_buffer = sp;
  $2 = sp + 8|0;
  $1 = $0;
- HEAP32[$2>>2] = $varargs; //@line 19 "main_c.c"
- $3 = HEAP32[316]|0; //@line 20 "main_c.c"
- $4 = $1; //@line 20 "main_c.c"
- HEAP32[$vararg_buffer>>2] = $2; //@line 20 "main_c.c"
- (_fprintf($3,$4,$vararg_buffer)|0); //@line 20 "main_c.c"
- STACKTOP = sp;return; //@line 22 "main_c.c"
+ HEAP32[$2>>2] = $varargs; //@line 20 "main_c.c"
+ $3 = HEAP32[316]|0; //@line 21 "main_c.c"
+ $4 = $1; //@line 21 "main_c.c"
+ HEAP32[$vararg_buffer>>2] = $2; //@line 21 "main_c.c"
+ (_fprintf($3,$4,$vararg_buffer)|0); //@line 21 "main_c.c"
+ STACKTOP = sp;return; //@line 23 "main_c.c"
 }
 function _OnButtonCallback($0) {
  $0 = $0|0;
@@ -57047,28 +57047,28 @@ function _OnButtonCallback($0) {
  $vararg_buffer = sp;
  $2 = sp + 32|0;
  $1 = $0;
- _MyPrintf(20420,$vararg_buffer); //@line 26 "main_c.c"
- $5 = HEAP32[6198]|0; //@line 31 "main_c.c"
- HEAP32[$vararg_buffer1>>2] = $5; //@line 31 "main_c.c"
- (_snprintf($2,1024,20440,$vararg_buffer1)|0); //@line 31 "main_c.c"
- $6 = (_IupButton($2,362358)|0); //@line 32 "main_c.c"
- $3 = $6; //@line 32 "main_c.c"
- $7 = $3; //@line 36 "main_c.c"
- (_IupSetCallback($7,20454,572)|0); //@line 36 "main_c.c"
- $8 = $3; //@line 37 "main_c.c"
- $9 = (_IupDialog($8)|0); //@line 37 "main_c.c"
- $4 = $9; //@line 37 "main_c.c"
- $10 = HEAP32[6198]|0; //@line 38 "main_c.c"
- HEAP32[$vararg_buffer3>>2] = $10; //@line 38 "main_c.c"
- (_snprintf($2,1024,20461,$vararg_buffer3)|0); //@line 38 "main_c.c"
- $11 = $4; //@line 40 "main_c.c"
- _IupSetStrAttribute($11,20483,$2); //@line 40 "main_c.c"
- $12 = $4; //@line 49 "main_c.c"
- (_IupShow($12)|0); //@line 49 "main_c.c"
- $13 = HEAP32[6198]|0; //@line 52 "main_c.c"
- $14 = (($13) + 1)|0; //@line 52 "main_c.c"
- HEAP32[6198] = $14; //@line 52 "main_c.c"
- STACKTOP = sp;return -2; //@line 54 "main_c.c"
+ _MyPrintf(20420,$vararg_buffer); //@line 27 "main_c.c"
+ $5 = HEAP32[6198]|0; //@line 32 "main_c.c"
+ HEAP32[$vararg_buffer1>>2] = $5; //@line 32 "main_c.c"
+ (_snprintf($2,1024,20440,$vararg_buffer1)|0); //@line 32 "main_c.c"
+ $6 = (_IupButton($2,362358)|0); //@line 34 "main_c.c"
+ $3 = $6; //@line 34 "main_c.c"
+ $7 = $3; //@line 37 "main_c.c"
+ (_IupSetCallback($7,20454,572)|0); //@line 37 "main_c.c"
+ $8 = $3; //@line 38 "main_c.c"
+ $9 = (_IupDialog($8)|0); //@line 38 "main_c.c"
+ $4 = $9; //@line 38 "main_c.c"
+ $10 = HEAP32[6198]|0; //@line 39 "main_c.c"
+ HEAP32[$vararg_buffer3>>2] = $10; //@line 39 "main_c.c"
+ (_snprintf($2,1024,20461,$vararg_buffer3)|0); //@line 39 "main_c.c"
+ $11 = $4; //@line 41 "main_c.c"
+ _IupSetStrAttribute($11,20483,$2); //@line 41 "main_c.c"
+ $12 = $4; //@line 43 "main_c.c"
+ (_IupShow($12)|0); //@line 43 "main_c.c"
+ $13 = HEAP32[6198]|0; //@line 45 "main_c.c"
+ $14 = (($13) + 1)|0; //@line 45 "main_c.c"
+ HEAP32[6198] = $14; //@line 45 "main_c.c"
+ STACKTOP = sp;return -2; //@line 47 "main_c.c"
 }
 function _testCallback($0,$1,$2,$3,$4,$5) {
  $0 = $0|0;
@@ -57088,19 +57088,19 @@ function _testCallback($0,$1,$2,$3,$4,$5) {
  $9 = $3;
  $10 = $4;
  $11 = $5;
- $15 = (_IupButton(20489,362358)|0); //@line 59 "main_c.c"
- $13 = $15; //@line 59 "main_c.c"
- $16 = $13; //@line 61 "main_c.c"
- (_IupSetCallback($16,20497,572)|0); //@line 61 "main_c.c"
- $17 = $13; //@line 62 "main_c.c"
- $18 = (_IupDialog($17)|0); //@line 62 "main_c.c"
- $14 = $18; //@line 62 "main_c.c"
- (_snprintf($12,1024,20507,$vararg_buffer)|0); //@line 63 "main_c.c"
- $19 = $14; //@line 65 "main_c.c"
- _IupSetStrAttribute($19,20483,$12); //@line 65 "main_c.c"
- $20 = $14; //@line 67 "main_c.c"
- (_IupShow($20)|0); //@line 67 "main_c.c"
- STACKTOP = sp;return -2; //@line 69 "main_c.c"
+ $15 = (_IupButton(20489,362358)|0); //@line 52 "main_c.c"
+ $13 = $15; //@line 52 "main_c.c"
+ $16 = $13; //@line 55 "main_c.c"
+ (_IupSetCallback($16,20497,573)|0); //@line 55 "main_c.c"
+ $17 = $13; //@line 56 "main_c.c"
+ $18 = (_IupDialog($17)|0); //@line 56 "main_c.c"
+ $14 = $18; //@line 56 "main_c.c"
+ (_snprintf($12,1024,20507,$vararg_buffer)|0); //@line 57 "main_c.c"
+ $19 = $14; //@line 59 "main_c.c"
+ _IupSetStrAttribute($19,20483,$12); //@line 59 "main_c.c"
+ $20 = $14; //@line 62 "main_c.c"
+ (_IupShow($20)|0); //@line 62 "main_c.c"
+ STACKTOP = sp;return -2; //@line 64 "main_c.c"
 }
 function _IupEntryPoint($0) {
  $0 = $0|0;
@@ -57110,35 +57110,35 @@ function _IupEntryPoint($0) {
  STACKTOP = STACKTOP + 32|0; if ((STACKTOP|0) >= (STACK_MAX|0)) abortStackOverflow(32|0);
  $vararg_buffer = sp;
  $1 = $0;
- $6 = (_IupButton(20526,362358)|0); //@line 75 "main_c.c"
- $2 = $6; //@line 75 "main_c.c"
- $7 = (_IupButton(20537,362358)|0); //@line 76 "main_c.c"
- $3 = $7; //@line 76 "main_c.c"
- $8 = $2; //@line 77 "main_c.c"
- (_IupSetCallback($8,20454,572)|0); //@line 77 "main_c.c"
- $9 = $3; //@line 79 "main_c.c"
- (_IupSetCallback($9,20497,573)|0); //@line 79 "main_c.c"
- $10 = $2; //@line 81 "main_c.c"
- $11 = $3; //@line 81 "main_c.c"
- HEAP32[$vararg_buffer>>2] = $11; //@line 81 "main_c.c"
- $vararg_ptr1 = ((($vararg_buffer)) + 4|0); //@line 81 "main_c.c"
- HEAP32[$vararg_ptr1>>2] = 0; //@line 81 "main_c.c"
- $12 = (_IupVbox($10,$vararg_buffer)|0); //@line 81 "main_c.c"
- $4 = $12; //@line 81 "main_c.c"
- $13 = $4; //@line 82 "main_c.c"
- _IupSetAttribute($13,20546,20550); //@line 82 "main_c.c"
- $14 = $4; //@line 83 "main_c.c"
- _IupSetAttribute($14,20553,20560); //@line 83 "main_c.c"
- $15 = $4; //@line 84 "main_c.c"
- _IupSetAttribute($15,20566,20576); //@line 84 "main_c.c"
- $16 = $4; //@line 86 "main_c.c"
- $17 = (_IupDialog($16)|0); //@line 86 "main_c.c"
- $5 = $17; //@line 86 "main_c.c"
- $18 = $5; //@line 88 "main_c.c"
- _IupSetAttribute($18,20483,20507); //@line 88 "main_c.c"
- $19 = $5; //@line 91 "main_c.c"
- (_IupShow($19)|0); //@line 91 "main_c.c"
- STACKTOP = sp;return 0; //@line 92 "main_c.c"
+ $6 = (_IupButton(20526,362358)|0); //@line 70 "main_c.c"
+ $2 = $6; //@line 70 "main_c.c"
+ $7 = (_IupButton(20537,362358)|0); //@line 71 "main_c.c"
+ $3 = $7; //@line 71 "main_c.c"
+ $8 = $2; //@line 72 "main_c.c"
+ (_IupSetCallback($8,20454,572)|0); //@line 72 "main_c.c"
+ $9 = $3; //@line 73 "main_c.c"
+ (_IupSetCallback($9,20497,573)|0); //@line 73 "main_c.c"
+ $10 = $2; //@line 75 "main_c.c"
+ $11 = $3; //@line 75 "main_c.c"
+ HEAP32[$vararg_buffer>>2] = $11; //@line 75 "main_c.c"
+ $vararg_ptr1 = ((($vararg_buffer)) + 4|0); //@line 75 "main_c.c"
+ HEAP32[$vararg_ptr1>>2] = 0; //@line 75 "main_c.c"
+ $12 = (_IupVbox($10,$vararg_buffer)|0); //@line 75 "main_c.c"
+ $4 = $12; //@line 75 "main_c.c"
+ $13 = $4; //@line 76 "main_c.c"
+ _IupSetAttribute($13,20546,20550); //@line 76 "main_c.c"
+ $14 = $4; //@line 77 "main_c.c"
+ _IupSetAttribute($14,20553,20560); //@line 77 "main_c.c"
+ $15 = $4; //@line 78 "main_c.c"
+ _IupSetAttribute($15,20566,20576); //@line 78 "main_c.c"
+ $16 = $4; //@line 80 "main_c.c"
+ $17 = (_IupDialog($16)|0); //@line 80 "main_c.c"
+ $5 = $17; //@line 80 "main_c.c"
+ $18 = $5; //@line 82 "main_c.c"
+ _IupSetAttribute($18,20483,20507); //@line 82 "main_c.c"
+ $19 = $5; //@line 84 "main_c.c"
+ (_IupShow($19)|0); //@line 84 "main_c.c"
+ STACKTOP = sp;return 0; //@line 85 "main_c.c"
 }
 function _main($0,$1) {
  $0 = $0|0;
@@ -57149,10 +57149,10 @@ function _main($0,$1) {
  $2 = 0;
  $3 = $0;
  $4 = $1;
- (_IupOpen(0,0)|0); //@line 98 "main_c.c"
- (_IupSetFunction(20584,574)|0); //@line 99 "main_c.c"
- (_IupMainLoop()|0); //@line 100 "main_c.c"
- STACKTOP = sp;return 0; //@line 101 "main_c.c"
+ (_IupOpen(0,0)|0); //@line 91 "main_c.c"
+ (_IupSetFunction(20584,574)|0); //@line 92 "main_c.c"
+ (_IupMainLoop()|0); //@line 93 "main_c.c"
+ STACKTOP = sp;return 0; //@line 94 "main_c.c"
 }
 function ___stdio_close($0) {
  $0 = $0|0;

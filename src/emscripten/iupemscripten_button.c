@@ -109,6 +109,7 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 		new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 		new_handle->handleID = button_id;
 		ih->handle = new_handle;
+    /* emjsCommon_Alert(ih->handle); */
 	}
 
 	// Does ImageButton support title text?
