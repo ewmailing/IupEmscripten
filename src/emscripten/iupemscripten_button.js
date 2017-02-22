@@ -28,17 +28,14 @@ var LibraryIupButton = {
   emjsButton_SetCallback: function(handle_id, ih_pointer) {
 
     var button = IupCommon.GetObjectForID(handle_id);
-//button.ihPointer = ih_pointer;
+    //button.ihPointer = ih_pointer;
     if(button)
     {
+      // ACTION corresponds to onlick in javascript
       button.addEventListener("click", function() { 
-      //  var c_callback = Module.cwrap('emscriptenButtonCallbackTrampoline', null, ['number', 'number']);
         var c_callback = Module.cwrap('emscriptenButtonCallbackTrampoline', null, ['number']);
-        //c_callback(handle_id, ih_pointer);
         c_callback(handle_id);
-        //c_callback(handle_id, 0);
-        //c_callback(handle_id, button.ihPointer);
-        console.log('click - action');
+        console.log('click happening');
       });
 
       // for BUTTON_CB, need on mousedown and onmouseup
@@ -50,7 +47,7 @@ var LibraryIupButton = {
         var pressed = 1;
         console.log(handle_id);
         c_callback(handle_id, clicktype, pressed, xCoord, yCoord, "");
-        console.log('bdown');
+        console.log('bdown happening');
       });
 
       button.addEventListener("mouseup", function(e) {
@@ -60,7 +57,6 @@ var LibraryIupButton = {
         var c_callback = Module.cwrap('emscriptenButtonCallbackTrampoline_Cb', null, ['number', 'number', 'number', 'number', 'number', 'string']);
         var pressed = 0;
         c_callback(handle_id, clicktype, pressed, xCoord, yCoord, "");
-        
         console.log('bup happening');
       });
     }

@@ -69,10 +69,11 @@ int IupEntryPoint(Ihandle* noop)
 //	IupOpen(0, NULL);
 	Ihandle* button = IupButton("Iup Button", "");
   Ihandle* button2 = IupButton("Callback", "");
+  Ihandle* testLabel = IupLabel("TestLabel");
 	IupSetCallback(button, "ACTION", (Icallback)OnButtonCallback);
   IupSetCallback(button2, "BUTTON_CB", (Icallback)testCallback);
 
-	Ihandle* vb=IupVbox(button, button2, NULL);
+	Ihandle* vb=IupVbox(button, button2, testLabel, NULL);
 	IupSetAttribute(vb, "GAP", "10");
 	IupSetAttribute(vb, "MARGIN", "10x10");
 	IupSetAttribute(vb, "ALIGNMENT", "ACENTER");

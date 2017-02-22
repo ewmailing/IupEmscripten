@@ -34,6 +34,7 @@
 //EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, Ihandle* ih)
 //EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, intptr_t ih_ptr)
 //EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id, int ih_ptr)
+
 // Generate IupButton ACTION callback to feed to js
 EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id)
 {
@@ -42,17 +43,13 @@ EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline(int handle_id)
   if (action_callback) 
   {
     action_callback(ih);
+
+		/* if(action_callback(ih) == IUP_CLOSE) */
+		/* { */
+		/* 	IupExitLoop(); */
+		/* } */
   }
 
-#if 1
-	if(action_callback)
-	{
-		if(action_callback(ih) == IUP_CLOSE)
-		{
-			IupExitLoop();
-		}
-	}
-#endif
 }
 
 EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline_Cb(int handle_id, int but, int pressed, int x, int y, char* status) 
@@ -62,7 +59,7 @@ EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline_Cb(int handle_id, i
   IFniiiis button_callback = (IFniiiis)IupGetCallback(ih, "BUTTON_CB");
   if (button_callback) 
   {
-    button_callback(handle_id, but, pressed, x, y, status);
+    button_callback(ih, but, pressed, x, y, status);
   }
 
 #if 0

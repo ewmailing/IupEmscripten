@@ -4,17 +4,15 @@ var LibraryIupLabel = {
 	$Label: {
 	},
 
-
-	emjsButton_CreateButton: function() {
-
+	emjsLabel_CreateLabel: function() {
 		var widget_object;
-		widget_object = document.createElement("button");
+		widget_object = document.createElement("div");
 		var handle_id = IupCommon.RegisterNewObject(widget_object);
+    console.log(handle_id);
 		return handle_id;
 	},
 
-
-	emjsButton_DestroyButton: function(handle_id) {
+	emjsLabel_DestroyLabel: function(handle_id) {
 		// Do I need to removeEventListener?
 		IupCommon.DeleteObject(handle_id);
 	},
@@ -26,6 +24,17 @@ var LibraryIupLabel = {
 			widget_object.innerHTML = Pointer_stringify(button_title);
 		}
 	},
+
+  emjsLabel_CreateSeparator: function(handle_id, type) {
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+    if (type === "horizontal") {
+      var h = document.createElement("hr");
+      widget_object.appendChild(h); 
+    }
+    else if (type === "vertical") {
+      alert("vertical separator");
+    }
+  }
 
 };
 

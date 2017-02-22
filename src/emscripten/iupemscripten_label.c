@@ -29,8 +29,6 @@
 #include "iupemscripten_drv.h"
 
 
-extern int emjsButton_CreateLabel(void);
-
 static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 {
 /*
@@ -44,30 +42,49 @@ static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 
 }
 
+extern int emjsLabel_CreateLabel(void);
+extern void emjsLabel_CreateSeparator(int handle_id, char* type);
+
 static int emscriptenLabelMapMethod(Ihandle* ih)
 {
+  
+	// using id because we may be using different types depending on the case
+	//id the_label = NULL;
+  //
+  int label_id = 0;
+  InativeHandle* new_handle = NULL;
+
+  label_id = emjsLabel_CreateLabel();
+  new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
+
+  new_handle->handleID = label_id;
+  ih->handle = new_handle;
+
+  iupEmscripten_SetIntKeyForIhandleValue(label_id, ih);
+
 #if 0
 	char* value;
-	// using id because we may be using different types depending on the case
-	id the_label = nil;
-	
 	value = iupAttribGet(ih, "SEPARATOR");
+
 	if (value)
 	{
 		if (iupStrEqualNoCase(value, "HORIZONTAL"))
 		{
 			ih->data->type = IUP_LABEL_SEP_HORIZ;
 
-//			NSBox* horizontal_separator= [[NSBox alloc] initWithFrame:NSMakeRect(20.0, 20.0, 250.0, 1.0)];
-			NSBox* horizontal_separator= [[NSBox alloc] initWithFrame:NSMakeRect(0.0, 0.0, 250.0, 1.0)];
-			[horizontal_separator setBoxType:NSBoxSeparator];
-			the_label = horizontal_separator;
-			
+      // create horizontal separater in js
+      emjsLabel_CreateSeparator("horizontal");
 		}
 		else /* "VERTICAL" */
 		{
 			ih->data->type = IUP_LABEL_SEP_VERT;
 
+      ih->data->type = IUP_LABEL_SEP_VERT;
+#if GTK_CHECK_VERSION(3, 0, 0)
+      label = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+#else
+      label = gtk_vseparator_new();
+#endif
 //			NSBox* vertical_separator=[[NSBox alloc] initWithFrame:NSMakeRect(20.0, 20.0, 1.0, 250.0)];
 			NSBox* vertical_separator=[[NSBox alloc] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 250.0)];
 			[vertical_separator setBoxType:NSBoxSeparator];
@@ -77,6 +94,9 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
 	}
 	else
 	{
+    // does this mean the label needs to be created here? need to find where the label should be made
+    label_id = emjsButton_CreateLabel();
+
 		value = iupAttribGet(ih, "IMAGE");
 		if (value)
 		{
@@ -91,12 +111,11 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
 			{
     name = iupAttribGet(ih, "IMINACTIVE");
     if (!name)
-	{
+	  {
 		name = iupAttribGet(ih, "IMAGE");
 		make_inactive = 1;
+	  }
 	}
-			}
-			
 			
 			id the_bitmap;
 			the_bitmap = iupImageGetImage(name, ih, make_inactive);
@@ -118,13 +137,11 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
 			
 			the_label = image_view;
 			
-#if 0
 			if (!the_bitmap)
 					return;
 			
 			/* must use this info, since image can be a driver image loaded from resources */
 			iupdrvImageGetInfo(hBitmap, &width, &height, &bpp);
-
 			
 			NSBitmapImageRep* bitmap_image = [[NSBitmapImageRep alloc]
 									 initWithBitmapDataPlanes:NULL
@@ -137,7 +154,6 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
 									 colorSpaceName: NSCalibratedRGBColorSpace
 									 bytesPerRow: width * 4
 									 bitsPerPixel: 32]
-#endif
 
 		}
 		else
@@ -157,10 +173,10 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
 			NSFont* the_font = [the_label font];
 			NSLog(@"font %@", the_font);
 		
-		
 		}
 	}
 	
+
 	if (!the_label)
 	{
 		return IUP_ERROR;
@@ -169,7 +185,7 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
 	
 	ih->handle = the_label;
 
-	
+#endif
 	
 	/* add to the parent, all GTK controls must call this. */
 //	iupgtkAddToParent(ih);
@@ -178,7 +194,7 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
 //	Ihandle* ih_parent = ih->parent;
 //	id parent_native_handle = ih_parent->handle;
 	
-	iupemscriptenAddToParent(ih);
+	iupEmscripten_AddWidgetToParent(ih);
 	
 	
 	/* configure for DRAG&DROP of files */
@@ -186,7 +202,6 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
 	{
 		iupAttribSet(ih, "DROPFILESTARGET", "YES");
 	}
-#endif	
 	return IUP_NOERROR;
 }
 
@@ -204,7 +219,7 @@ static void emscriptenLabelUnMapMethod(Ihandle* ih)
 void iupdrvLabelInitClass(Iclass* ic)
 {
   /* Driver Dependent Class functions */
-//  ic->Map = emscriptenLabelMapMethod;
+  ic->Map = emscriptenLabelMapMethod;
 //	ic->UnMap = emscriptenLabelUnMapMethod;
 
 #if 0
