@@ -28,6 +28,8 @@
 
 #include "iupemscripten_drv.h"
 
+#include "iup_key.h"
+#include <emscripten.h>
 
 static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 {
@@ -44,6 +46,7 @@ static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 
 extern int emjsLabel_CreateLabel(void);
 extern void emjsLabel_CreateSeparator(int handle_id, char* type);
+extern void emjsLabel_SetTitle(int handle_id, const char* title);
 
 static int emscriptenLabelMapMethod(Ihandle* ih)
 {
@@ -62,6 +65,22 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
 
   iupEmscripten_SetIntKeyForIhandleValue(label_id, ih);
 
+  // Set text inside label (uses title attribute)
+	char* attribute_value = iupAttribGet(ih, "TITLE");
+	if(attribute_value && *attribute_value != 0)
+	{
+		ih->data->type |= IUP_LABEL_TEXT;
+		/*
+		if(ih->data->type & IUP_BUTTON_IMAGE)
+		{
+		}
+		else
+		{
+		}
+		*/
+
+		emjsLabel_SetTitle(label_id, attribute_value);
+	}
 #if 0
 	char* value;
 	value = iupAttribGet(ih, "SEPARATOR");
