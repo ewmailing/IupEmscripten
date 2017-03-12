@@ -1,3 +1,4 @@
+/*global IupCommon Pointer_stringify IupCommon autoAddDeps mergeInto LibraryManager*/
 
 var LibraryIupLabel = {
   //	$Button__deps: ['$CommonGlobals'],
@@ -27,8 +28,16 @@ var LibraryIupLabel = {
   },
 
   emjsLabel_SetFGColor: function(handle_id, color) {
-    //TO DO NEXT
-  }
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+
+    // what format is color? assuming its an rgb separated by spaces
+    console.log(color);
+    if (color) {
+      var rgbVals = color.split(" ");
+      var jsColor = 'rgb(' + rgbVals[0] + ', ' + rgbVals[1] + ', ' + rgbVals[2] + ')'; 
+      widget_object.style.color = jsColor;
+    }
+  },
 
   emjsLabel_SetAlignmentAttrib: function(handle_id, value) {
     // FUT - check to make sure ih->data->type != IUP_LABEL_SETP_HORIZ
@@ -51,7 +60,7 @@ var LibraryIupLabel = {
     // maybe use padding or margin percentage to emulate
     
     return 1;
-  }
+  },
 
   emjsLabel_CreateSeparator: function(handle_id, type) {
     var widget_object = IupCommon.GetObjectForID(handle_id);
