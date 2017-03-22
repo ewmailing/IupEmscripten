@@ -1,5 +1,6 @@
-/** \file
- * \brief Label Control
+/**
+ * IupLabel module, C source
+ * Please see accompanying JS file for external functions
  *
  * See Copyright Notice in "iup.h"
  */
@@ -40,6 +41,8 @@ static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 
 	}
 */
+
+  // Question for Eric - what was this func for?
 	return 1;
 
 }
@@ -52,59 +55,13 @@ extern void emjsLabel_CreateSeparator(int handle_id, char* type);
 extern void emjsLabel_SetFGColor(int handle_id, char* color); /* should it be constant char*? */
 extern int emjsLabel_SetAlignmentAttrib(int handle_id, const char* value);
 
-#if 0
-static int emscriptenLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
-{
-  if (ih->data->type != IUP_LABEL_SEP_HORIZ && ih->data->type != IUP_LABEL_SEP_VERT)
-  {
-    GtkMisc* misc = (GtkMisc*)ih->handle;
-    PangoAlignment alignment;
-    float xalign, yalign;
-    char value1[30], value2[30];
-
-    iupStrToStrStr(value, value1, value2, ':');
-
-    if (iupStrEqualNoCase(value1, "ARIGHT"))
-    {
-      xalign = 1.0f;
-      alignment = PANGO_ALIGN_RIGHT;
-    }
-    else if (iupStrEqualNoCase(value1, "ACENTER"))
-    {
-      xalign = 0.5f;
-      alignment = PANGO_ALIGN_CENTER;
-    }
-    else /* "ALEFT" */
-    {
-      xalign = 0;
-      alignment = PANGO_ALIGN_LEFT;
-    }
-
-    if (iupStrEqualNoCase(value2, "ABOTTOM"))
-      yalign = 1.0f;
-    else if (iupStrEqualNoCase(value2, "ATOP"))
-      yalign = 0;
-    else  /* ACENTER (default) */
-      yalign = 0.5f;
-
-    gtk_misc_set_alignment(misc, xalign, yalign);
-
-    if (ih->data->type == IUP_LABEL_TEXT)
-      pango_layout_set_alignment(gtk_label_get_layout((GtkLabel*)ih->handle), alignment);
-
-    return 1;
-  }
-  else
-    return 0;
-}
-#endif
 
 static int emscriptenLabelMapMethod(Ihandle* ih)
 {
-  
+  // Eric Question: what were the two comments and the line below about?
 	// using id because we may be using different types depending on the case
 	//id the_label = NULL;
-  //
+  
   int label_id = 0;
   InativeHandle* new_handle = NULL;
 
