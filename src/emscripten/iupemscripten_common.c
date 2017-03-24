@@ -103,6 +103,39 @@ void iupEmscripten_AddWidgetToParent(Ihandle* ih)
 
 }
 
+void iupEmscriptenSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b)
+{
+  // matzy: send to JS?
+  
+
+#if 0
+  GdkRGBA rgba;
+
+  iupgdkRGBASet(&rgba, r, g, b);
+
+  gtk_widget_override_color(handle, GTK_STATE_FLAG_NORMAL, &rgba);
+  gtk_widget_override_color(handle, GTK_STATE_ACTIVE, &rgba);
+  gtk_widget_override_color(handle, GTK_STATE_PRELIGHT, &rgba);
+  
+  GtkRcStyle *rc_style;  
+  GdkColor color;
+
+  iupgdkColorSet(&color, r, g, b);
+
+  rc_style = gtk_widget_get_modifier_style(handle);  
+
+  rc_style->fg[GTK_STATE_ACTIVE] = rc_style->fg[GTK_STATE_NORMAL] = rc_style->fg[GTK_STATE_PRELIGHT] = color;
+  rc_style->text[GTK_STATE_ACTIVE] = rc_style->text[GTK_STATE_NORMAL] = rc_style->text[GTK_STATE_PRELIGHT] = color;
+
+  rc_style->color_flags[GTK_STATE_NORMAL] |= GTK_RC_TEXT | GTK_RC_FG;
+  rc_style->color_flags[GTK_STATE_ACTIVE] |= GTK_RC_TEXT | GTK_RC_FG;
+  rc_style->color_flags[GTK_STATE_PRELIGHT] |= GTK_RC_TEXT | GTK_RC_FG;
+
+  /* do not set at CHILD_CONTAINER */
+  gtk_widget_modify_style(handle, rc_style);
+#endif
+}
+
 void iupdrvActivate(Ihandle* ih)
 {
 
@@ -254,6 +287,18 @@ int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value)
 	
 
   /* DO NOT NEED TO UPDATE GTK IMAGES SINCE THEY DO NOT DEPEND ON BGCOLOR */
+
+  return 1;
+}
+
+
+int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value)
+{
+  unsigned char r, g, b;
+  if (!iupStrToRGB(value, &r, &g, &b))
+    return 0;
+
+  iupEmscriptenSetFgColor(ih->handle, r, g, b);
 
   return 1;
 }

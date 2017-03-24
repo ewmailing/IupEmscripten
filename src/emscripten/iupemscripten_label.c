@@ -42,7 +42,6 @@ static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 	}
 */
 
-  // Question for Eric - what was this func for?
 	return 1;
 
 }
@@ -58,10 +57,6 @@ extern int emjsLabel_SetAlignmentAttrib(int handle_id, const char* value);
 
 static int emscriptenLabelMapMethod(Ihandle* ih)
 {
-  // Eric Question: what were the two comments and the line below about?
-	// using id because we may be using different types depending on the case
-	//id the_label = NULL;
-  
   int label_id = 0;
   InativeHandle* new_handle = NULL;
 
@@ -74,8 +69,8 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
   iupEmscripten_SetIntKeyForIhandleValue(label_id, ih);
 
   // Set text inside label (uses title attribute)
-	char* attribute_value = iupAttribGet(ih, "TITLE");
-	if(attribute_value && *attribute_value != 0)
+	char* attrib_title = iupAttribGet(ih, "TITLE");
+	if(attrib_title && *attrib_title != 0)
 	{
 		ih->data->type |= IUP_LABEL_TEXT;
 		/*
@@ -87,8 +82,13 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
 		}
 		*/
 
-		emjsLabel_SetTitle(label_id, attribute_value);
+		emjsLabel_SetTitle(label_id, attrib_title);
 	}
+
+  char* attrib_fgcolor = iupAttribGet(ih, "FGCOLOR");
+  if(attrib_fgcolor && *attrib_fgcolor != 0) {
+    emjsLabel_SetFGColor(label_id, attrib_fgcolor);
+  }
 #if 0
 	char* value;
 	value = iupAttribGet(ih, "SEPARATOR");
@@ -249,7 +249,6 @@ void iupdrvLabelInitClass(Iclass* ic)
   ic->Map = emscriptenLabelMapMethod;
 //	ic->UnMap = emscriptenLabelUnMapMethod;
 
-#if 0
 
   /* Driver Dependent Attribute functions */
 
@@ -257,14 +256,13 @@ void iupdrvLabelInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkLabelSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, gtkLabelSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, emscriptenLabelSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_DEFAULT);
 	
-#endif
 	
-//  iupClassRegisterAttribute(ic, "TITLE", NULL, emscriptenLabelSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, emscriptenLabelSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
 
 #if 0
