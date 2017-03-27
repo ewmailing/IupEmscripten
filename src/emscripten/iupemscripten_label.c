@@ -32,6 +32,15 @@
 #include "iup_key.h"
 #include <emscripten.h>
 
+extern int emjsLabel_CreateLabel(void);
+extern void emjsLabel_SetTitle(int handle_id, const char* title);
+
+extern void emjsLabel_CreateSeparator(int handle_id, char* type);
+
+extern void emjsLabel_SetFGColor(int handle_id, char* color); /* should it be constant char*? */
+extern void emjsLabel_SetBGColor(int handle_id, char* color); 
+extern int emjsLabel_SetAlignmentAttrib(int handle_id, const char* value);
+
 static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 {
 /*
@@ -46,13 +55,25 @@ static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 
 }
 
-extern int emjsLabel_CreateLabel(void);
-extern void emjsLabel_SetTitle(int handle_id, const char* title);
+static int emscriptenLabelSetBgColorAttrib(Ihandle* ih, const char* value)
+{
+  emjsLabel_SetBGColor(7, "red");
+  return 1;
+}
+/* { */
 
-extern void emjsLabel_CreateSeparator(int handle_id, char* type);
+/*   GtkWidget* eventbox = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT"); */
+/*   unsigned char r, g, b; */
 
-extern void emjsLabel_SetFGColor(int handle_id, char* color); /* should it be constant char*? */
-extern int emjsLabel_SetAlignmentAttrib(int handle_id, const char* value);
+/*   /1* ignore given value, must use only from parent for the scrollbars *1/ */
+/*   char* parent_value = iupBaseNativeParentGetBgColor(ih); */
+
+/*   if (iupStrToRGB(parent_value, &r, &g, &b)) */
+/*     iupgtkSetBgColor(eventbox, r, g, b); */
+
+/*   (void)value; */
+/*   return iupdrvBaseSetBgColorAttrib(ih, parent_value); */
+/* } */
 
 
 static int emscriptenLabelMapMethod(Ihandle* ih)
@@ -253,7 +274,7 @@ void iupdrvLabelInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkLabelSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
+  /* iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkLabelSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT); */
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, emscriptenLabelSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);

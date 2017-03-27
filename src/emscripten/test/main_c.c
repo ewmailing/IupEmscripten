@@ -70,6 +70,7 @@ int IupEntryPoint(Ihandle* noop)
 	Ihandle* button = IupButton("Iup Button", "");
   Ihandle* button2 = IupButton("Callback", "");
   Ihandle* testLabel = IupLabel("TestLabel");
+  IupSetAttribute(testLabel, "BGCOLOR", "0 128 0");
 	IupSetCallback(button, "ACTION", (Icallback)OnButtonCallback);
   IupSetCallback(button2, "BUTTON_CB", (Icallback)testCallback);
 
