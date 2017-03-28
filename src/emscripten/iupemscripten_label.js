@@ -31,17 +31,18 @@ var LibraryIupLabel = {
     var widget_object = IupCommon.GetObjectForID(handle_id);
 
     // what format is color? assuming its an rgb separated by spaces
-    console.log(color);
-    if (color) {
-      var rgbVals = color.split(" ");
-      var jsColor = 'rgb(' + rgbVals[0] + ', ' + rgbVals[1] + ', ' + rgbVals[2] + ')'; 
-      widget_object.style.color = jsColor;
-    }
+    console.log('handle id: ' + handle_id);
+    console.log('fg color: ' + color);
+    // if (color) {
+    //   var rgbVals = color.split(" ");
+    //   var jsColor = 'rgb(' + rgbVals[0] + ', ' + rgbVals[1] + ', ' + rgbVals[2] + ')'; 
+    //   widget_object.style.color = jsColor;
+    // }
   },
 
   emjsLabel_SetBGColor: function(obj, val) {
-    console.log("bgcolor first arg: " + obj);
-    console.log("bgcolor sec arg: " + val);
+    // console.log("bgcolor first arg: " + obj);
+    // console.log("bgcolor sec arg: " + val);
   },
 
   emjsLabel_SetAlignmentAttrib: function(handle_id, value) {

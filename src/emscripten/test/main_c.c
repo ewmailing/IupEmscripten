@@ -67,10 +67,17 @@ int testCallback(Ihandle* ih, int but, int pressed, int x, int y, char* status) 
 int IupEntryPoint(Ihandle* noop)
 {
 //	IupOpen(0, NULL);
+  // create test buttons
 	Ihandle* button = IupButton("Iup Button", "");
   Ihandle* button2 = IupButton("Callback", "");
+  // create test label
   Ihandle* testLabel = IupLabel("TestLabel");
-  IupSetAttribute(testLabel, "BGCOLOR", "0 128 0");
+
+  // test bg and fg color
+  IupSetAttribute(testLabel, "FGCOLOR", "255 128 128");
+  //IupSetAttribute(testLabel, "BGCOLOR", "20 129 115");
+
+  // attach callbacks to test buttons
 	IupSetCallback(button, "ACTION", (Icallback)OnButtonCallback);
   IupSetCallback(button2, "BUTTON_CB", (Icallback)testCallback);
 
