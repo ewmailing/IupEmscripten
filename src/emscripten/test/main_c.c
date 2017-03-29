@@ -70,10 +70,12 @@ int IupEntryPoint(Ihandle* noop)
   // create test buttons
 	Ihandle* button = IupButton("Iup Button", "");
   Ihandle* button2 = IupButton("Callback", "");
-  // create test label
+  // create test labels
   Ihandle* testLabel = IupLabel("TestLabel");
+  Ihandle* testLabel2 = IupLabel("TestLabel---2");
+  Ihandle* testLabel3 = IupLabel("TestLabel----3");
 
-  // test bg and fg color
+  // test bg and fg color with labels
   IupSetAttribute(testLabel, "FGCOLOR", "255 128 128");
   //IupSetAttribute(testLabel, "BGCOLOR", "20 129 115");
 
@@ -81,7 +83,12 @@ int IupEntryPoint(Ihandle* noop)
 	IupSetCallback(button, "ACTION", (Icallback)OnButtonCallback);
   IupSetCallback(button2, "BUTTON_CB", (Icallback)testCallback);
 
-	Ihandle* vb=IupVbox(button, button2, testLabel, NULL);
+  // more label-attrib setting, testing in different places (i know its dumb, c is synchronous..)
+  IupSetAttribute(testLabel2, "FGCOLOR", "0 255 0");
+  IupSetAttribute(testLabel3, "FGCOLOR", "70 70 0");
+
+
+	Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, testLabel3, NULL);
 	IupSetAttribute(vb, "GAP", "10");
 	IupSetAttribute(vb, "MARGIN", "10x10");
 	IupSetAttribute(vb, "ALIGNMENT", "ACENTER");

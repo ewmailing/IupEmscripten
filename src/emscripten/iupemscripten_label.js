@@ -1,4 +1,4 @@
-/*global IupCommon Pointer_stringify IupCommon autoAddDeps mergeInto LibraryManager*/
+/*global document alert IupCommon Pointer_stringify IupCommon autoAddDeps mergeInto LibraryManager*/
 
 var LibraryIupLabel = {
   //	$Button__deps: ['$CommonGlobals'],

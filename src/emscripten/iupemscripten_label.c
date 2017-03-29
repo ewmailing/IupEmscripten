@@ -37,7 +37,7 @@ extern void emjsLabel_SetTitle(int handle_id, const char* title);
 
 extern void emjsLabel_CreateSeparator(int handle_id, char* type);
 
-extern void emjsLabel_SetFGColor(int handle_id, int color); /* should it be constant char*? */
+extern void emjsLabel_SetFGColor(int handle_id, const char* color); /* should it be constant char*? */
 extern void emjsLabel_SetBGColor(int handle_id, char* color); 
 extern int emjsLabel_SetAlignmentAttrib(int handle_id, const char* value);
 
@@ -57,7 +57,8 @@ static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 
 static int emscriptenLabelSetFgColorAttrib(Ihandle* ih, const char* value)
 {
-  emjsLabel_SetFGColor(19, 0);
+  emjsLabel_SetFGColor(ih->handle->handleID, value);
+  return 1;
 }
 
 static int emscriptenLabelSetBgColorAttrib(Ihandle* ih, const char* value)
