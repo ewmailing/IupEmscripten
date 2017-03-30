@@ -46,12 +46,15 @@ var LibraryIupCommon = {
 	},
 
   emjsCommon_Alert: function(message) {
+    console.log("alert message: ");
+    console.log(message);
     alert(Pointer_stringify(message));
   },
 
   emjsCommon_SetFgColor: function(handle_id, r, g, b)
   {
-    
+    var current_widget = IupCommon.GetObjectForID(handle_id);
+    current_widget.style.color = "red";
   },
 
   iupEmscriptenSetFgColor: function(handle_id, r, g, b) {
