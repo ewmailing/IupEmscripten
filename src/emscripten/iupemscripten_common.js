@@ -48,11 +48,19 @@ var LibraryIupCommon = {
   emjsCommon_Alert: function(message) {
     alert(Pointer_stringify(message));
   },
-	
+
+  emjsCommon_SetFgColor: function(handle_id, r, g, b)
+  {
+    
+  },
+
+  iupEmscriptenSetFgColor: function(handle_id, r, g, b) {
+	  var sel_object = IupCommon.GetObjectForID(handle_id);
+    sel_object.style.color = "rgb(" + r + "," + g + "," + b + ")";
+  }
 
 };
 
 autoAddDeps(LibraryIupCommon, '$IupCommonGlobals');
 autoAddDeps(LibraryIupCommon, '$IupCommon');
 mergeInto(LibraryManager.library, LibraryIupCommon);
-

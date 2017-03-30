@@ -57,7 +57,10 @@ static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 
 static int emscriptenLabelSetFgColorAttrib(Ihandle* ih, const char* value)
 {
-  emjsLabel_SetFGColor(ih->handle->handleID, value);
+  iupdrvBaseSetFgColorAttrib(ih, value);
+  char* damnColor = IupGetAttribute(ih, "FGCOLOR");
+    
+  emjsLabel_SetFGColor(ih->handle->handleID, damnColor);
   return 1;
 }
 
