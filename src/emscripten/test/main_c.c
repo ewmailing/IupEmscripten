@@ -76,7 +76,7 @@ int IupEntryPoint(Ihandle* noop)
   Ihandle* testLabel3 = IupLabel("TestLabel----3");
 
   // test bg and fg color with labels
-  IupSetAttribute(testLabel, "FGCOLOR", "255 128 128");
+  IupSetAttribute(testLabel, "FGCOLOR", "20 200 111");
   //IupSetAttribute(testLabel, "BGCOLOR", "20 129 115");
 
   // attach callbacks to test buttons
@@ -84,7 +84,7 @@ int IupEntryPoint(Ihandle* noop)
   IupSetCallback(button2, "BUTTON_CB", (Icallback)testCallback);
 
   // more label-attrib setting, testing in different places (i know its dumb, c is synchronous..)
-  IupSetAttribute(testLabel2, "FGCOLOR", "0 255 0");
+  IupSetAttribute(testLabel2, "FGCOLOR", "100 255 100");
   IupSetAttribute(testLabel3, "FGCOLOR", "70 70 0");
 
 

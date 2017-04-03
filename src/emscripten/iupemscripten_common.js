@@ -54,7 +54,8 @@ var LibraryIupCommon = {
   emjsCommon_SetFgColor: function(handle_id, r, g, b)
   {
     var current_widget = IupCommon.GetObjectForID(handle_id);
-    current_widget.style.color = "red";
+    console.log(current_widget);
+    current_widget.style.color = "rgb(" + r + "," + g + "," + b + ")";
   },
 
   iupEmscriptenSetFgColor: function(handle_id, r, g, b) {

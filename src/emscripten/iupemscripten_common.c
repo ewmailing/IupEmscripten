@@ -103,7 +103,7 @@ void iupEmscripten_AddWidgetToParent(Ihandle* ih)
 
 }
 
-extern void emjsCommon_SetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b);
+extern void emjsCommon_SetFgColor(int handle_id, unsigned char r, unsigned char g, unsigned char b);
   // matzy: send to JS?
   
 
@@ -296,7 +296,7 @@ int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value)
   unsigned char r, g, b;
   if (!iupStrToRGB(value, &r, &g, &b))
     return 0;
-  emjsCommon_SetFgColor(ih->handle, r, g, b);
+  emjsCommon_SetFgColor(ih->handle->handleID, r, g, b);
 
   return 1;
 }
@@ -309,7 +309,8 @@ int* iupdrvBaseSetAndPassFgColorAttrib(Ihandle* ih, const char* value)
   if(!iupStrToRGB(value, &r, &g, &b))
     return 0;
 
-  emjsCommon_SetFgColor(ih->handle, r, g, b);
+  emjsCommon_SetFgColor(ih->handle->handleID, r, g, b);
+  return 1;
 }
 
 int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
