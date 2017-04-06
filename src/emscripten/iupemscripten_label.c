@@ -57,10 +57,14 @@ static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 
 static int emscriptenLabelSetFgColorAttrib(Ihandle* ih, const char* value)
 {
+  // call helper func from common; func will parse string and apply color to widget
+  // can this be refactored into some other function? doesn't do much..
   iupdrvBaseSetFgColorAttrib(ih, value);
-  char* damnColor = IupGetAttribute(ih, "FGCOLOR");
+
+  // These next two lines should be able to be removed; function above parsed and applied color to widget
+  /* char* damnColor = IupGetAttribute(ih, "FGCOLOR"); */
     
-  emjsLabel_SetFGColor(ih->handle->handleID, damnColor);
+  /* emjsLabel_SetFGColor(ih->handle->handleID, damnColor); */
   return 1;
 }
 
