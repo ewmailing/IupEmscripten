@@ -118,11 +118,6 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
 
 		emjsLabel_SetTitle(label_id, attrib_title);
 	}
-
-  char* attrib_fgcolor = iupAttribGet(ih, "FGCOLOR");
-  if(attrib_fgcolor && *attrib_fgcolor != 0) {
-    emjsLabel_SetFGColor(label_id, attrib_fgcolor);
-  }
 #if 0
 	char* value;
 	value = iupAttribGet(ih, "SEPARATOR");

@@ -111,9 +111,10 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 
 	// Does ImageButton support title text?
 	attribute_value = iupAttribGet(ih, "TITLE");
-	if(attribute_value && *attribute_value!=0)
+	if(attribute_value && *attribute_value!=0)  //Is the derefrenced value going to be 0 if null? 
 	{
-		ih->data->type |= IUP_BUTTON_TEXT;
+		//TODO ask eric
+    ih->data->type |= IUP_BUTTON_TEXT;
 		/*
 		if(ih->data->type & IUP_BUTTON_IMAGE)
 		{
