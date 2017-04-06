@@ -300,18 +300,6 @@ int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value)
 
   return 1;
 }
-// need to get back rgb value to be passed to js and set there.  Making new func below to create such behavior. Is func above necessary for emscripten at all?
-int* iupdrvBaseSetAndPassFgColorAttrib(Ihandle* ih, const char* value)
-{
-  unsigned char r, g, b;
-  static int webColor[4];
-
-  if(!iupStrToRGB(value, &r, &g, &b))
-    return 0;
-
-  emjsCommon_SetFgColor(ih->handle->handleID, r, g, b);
-  return 1;
-}
 
 int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
 {

@@ -43,13 +43,10 @@ extern int emjsLabel_SetAlignmentAttrib(int handle_id, const char* value);
 
 static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 {
-/*
-	id the_label = ih->handle;
-	if(the_label)
-	{
-
-	}
-*/
+  // do we need this check? (it was in gtk)
+  if (ih->data->type == IUP_LABEL_TEXT) {
+    emjsLabel_SetTitle(ih->handle->handleID, value); 
+  }
 
 	return 1;
 
@@ -61,10 +58,6 @@ static int emscriptenLabelSetFgColorAttrib(Ihandle* ih, const char* value)
   // can this be refactored into some other function? doesn't do much..
   iupdrvBaseSetFgColorAttrib(ih, value);
 
-  // These next two lines should be able to be removed; function above parsed and applied color to widget
-  /* char* damnColor = IupGetAttribute(ih, "FGCOLOR"); */
-    
-  /* emjsLabel_SetFGColor(ih->handle->handleID, damnColor); */
   return 1;
 }
 
