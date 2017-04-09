@@ -791,6 +791,8 @@ endfunction()
 
 
 BUILD_IUP_TEST(button "${CMAKE_SOURCE_DIR}/test/button.c")
+# MATZ-TODO add rest of tests here
+# "make testsiup" to start
 
 
 function(BUILD_DEV_TEST exe_name source_list)

@@ -48,6 +48,7 @@ typedef int (*Icallback)(Ihandle*);
 /** @endcond DOXYGEN_SHOULD_IGNORE_THIS */
 #endif /* DOXYGEN_SHOULD_IGNORE_THIS */
 
+// MATZY-TODO: add IUP_EXPORT in front of all functions in section below
 /************************************************************************/
 /*                        Main API                                      */
 /************************************************************************/

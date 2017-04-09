@@ -86,7 +86,7 @@ int IupEntryPoint(Ihandle* noop)
   // more label-attrib setting, testing in different places (i know its dumb, c is synchronous..)
   IupSetAttribute(testLabel2, "FGCOLOR", "100 255 100");
   IupSetAttribute(testLabel3, "FGCOLOR", "70 70 0");
-
+  IupSetAttribute(testLabel, "TITLE", "OVERWRITE");
 
 	Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, testLabel3, NULL);
 	IupSetAttribute(vb, "GAP", "10");
