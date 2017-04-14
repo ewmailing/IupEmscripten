@@ -121,7 +121,16 @@ int iupdrvListSetImageHandle(Ihandle* ih, int id, void* hImage)
 
 static int emscriptenListMapMethod(Ihandle* ih)
 {
+  int label_id = 0;
+  InativeHandle* new_handle = NULL;
 
+  label_id = emjsCreateList();
+  new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
+
+  new_handle->handleID = label_id;
+  ih->handle = new_handle;
+
+  iupEmscripten_SetIntKeyForIhandleValue(label_id, ih);
 #if 0
 	NSView* the_view;
 	NSPopUpButton* popup_button = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(30, 30, 190, 40)];
