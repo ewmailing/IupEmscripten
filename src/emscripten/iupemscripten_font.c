@@ -87,3 +87,8 @@ void iupdrvFontInit(void)
 void iupdrvFontFinish(void)
 {
 }
+
+int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
+{
+  return 1;
+}
