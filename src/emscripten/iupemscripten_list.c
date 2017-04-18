@@ -302,6 +302,9 @@ static int emscriptenListMapMethod(Ihandle* ih)
 //	iupgtkUpdateMnemonic(ih);
 	
 #endif
+
+  iupEmscripten_AddWidgetToParent(ih);
+
 	return IUP_NOERROR;
 }
 
