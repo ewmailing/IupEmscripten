@@ -28,7 +28,7 @@
 #include "iupemscripten_drv.h"
 
 
-
+extern int emjsList_CreateList(void);
 
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
 {
@@ -121,16 +121,16 @@ int iupdrvListSetImageHandle(Ihandle* ih, int id, void* hImage)
 
 static int emscriptenListMapMethod(Ihandle* ih)
 {
-  int label_id = 0;
+  int list_id = 0;
   InativeHandle* new_handle = NULL;
 
-  label_id = emjsCreateList();
+  list_id = emjsList_CreateList(); 
   new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 
-  new_handle->handleID = label_id;
+  new_handle->handleID = list_id;
   ih->handle = new_handle;
 
-  iupEmscripten_SetIntKeyForIhandleValue(label_id, ih);
+  iupEmscripten_SetIntKeyForIhandleValue(list_id, ih);
 #if 0
 	NSView* the_view;
 	NSPopUpButton* popup_button = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(30, 30, 190, 40)];
@@ -140,7 +140,6 @@ static int emscriptenListMapMethod(Ihandle* ih)
 	{
 		if (ih->data->has_editbox)
 		{
-
 			
 		}
 		else
@@ -149,9 +148,6 @@ static int emscriptenListMapMethod(Ihandle* ih)
 		}
 		
 
-
-		
-		
 		if(ih->data->show_image)
 		{
 
@@ -160,22 +156,16 @@ static int emscriptenListMapMethod(Ihandle* ih)
 		
 		if (ih->data->has_editbox)
 		{
-
 			
 			if (!iupAttribGetBoolean(ih, "CANFOCUS"))
 			{
 //				iupgtkSetCanFocus(ih->handle, 0);
 			}
 			
-
-			
 		}
 		else
 		{
 
-			
-
-			
 			
 			if (!iupAttribGetBoolean(ih, "CANFOCUS"))
 			{
@@ -193,8 +183,6 @@ static int emscriptenListMapMethod(Ihandle* ih)
 	else
 	{
 
-		
-		
 		if (ih->data->has_editbox)
 		{
 
