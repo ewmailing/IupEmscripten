@@ -8,7 +8,7 @@
 
 void MyPrintf(const char* fmt, ...)
 {
-	va_list ap;	
+	va_list ap;
 	va_start(ap, fmt);
 	__android_log_vprint(ANDROID_LOG_INFO, "IupTest", fmt, ap);
 	va_end(ap);
@@ -16,7 +16,7 @@ void MyPrintf(const char* fmt, ...)
 #else
 void MyPrintf(const char* fmt, ...)
 {
-	va_list ap;	
+	va_list ap;
 	va_start(ap, fmt);
 	fprintf(stderr, fmt, ap);
 	va_end(ap);
@@ -39,7 +39,7 @@ int OnButtonCallback(Ihandle* ih)
 	snprintf(temp_string, 1024, "Iup Activity Title %d", button_count);
 
 	IupSetStrAttribute(dialog, "TITLE", temp_string);
-	
+
 	IupShow(dialog);
 
 	button_count++;
@@ -57,8 +57,8 @@ int testCallback(Ihandle* ih, int but, int pressed, int x, int y, char* status) 
 	snprintf(temp_string, 1024, "Iup Activity Title");
 
 	IupSetStrAttribute(dialog, "TITLE", temp_string);
-	
-  // ?? why does this not open a new window like OnButtonCallback? ?? 
+
+  // ?? why does this not open a new window like OnButtonCallback? ??
 	IupShow(dialog);
 
 	return IUP_DEFAULT;
@@ -75,10 +75,19 @@ int IupEntryPoint(Ihandle* noop)
   Ihandle* testLabel2 = IupLabel("TestLabel---2333");
   Ihandle* testLabel3 = IupLabel("TestLabel----3");
   // create test list
-  Ihandle* testList = IupList("uhhh");
+  Ihandle* testList = IupList(NULL);
+ IupSetAttributes(testList, "1=Gold, 2=Silver, 3=Bronze, 4=Latão, 5=None,"
+                          "SHOWIMAGE=YES, DRAGDROPLIST=YES, XXX_SPACING=4, VALUE=4");
   Ihandle* workingLabel = IupLabel("this is working");
+  Ihandle* testFrame = IupFrame(testList);
   //Ihandle* testList2 = IupList();
-  
+
+  /* IupSetAttribute(testList, "DRAGSOURCE", "YES"); */
+  /* IupSetAttribute(testList, "DRAGTYPES", "ITEMLIST"); */
+
+
+  /* Ihandle* frm_medal1 = IupFrame(testList); */
+  /* IupSetAttribute(frm_medal1, "TITLE", "List 1"); */
 
   // test bg and fg color with labels
   IupSetAttribute(testLabel, "FGCOLOR", "20 200 111");
@@ -93,7 +102,7 @@ int IupEntryPoint(Ihandle* noop)
   IupSetAttribute(testLabel3, "FGCOLOR", "70 70 0");
   IupSetAttribute(testLabel, "TITLE", "OVERWRITE");
 
-	Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, testLabel3, testList, workingLabel, NULL);
+	Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, testLabel3, testList, testFrame, workingLabel, NULL);
 	IupSetAttribute(vb, "GAP", "10");
 	IupSetAttribute(vb, "MARGIN", "10x10");
 	IupSetAttribute(vb, "ALIGNMENT", "ACENTER");

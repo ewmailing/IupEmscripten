@@ -1,4 +1,3 @@
-
 /*global document alert IupCommon Pointer_stringify IupCommon autoAddDeps mergeInto LibraryManager*/
 
 var LibraryIupList = {

@@ -463,6 +463,7 @@ IF(IUP_USE_EMSCRIPTEN)
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_common.js
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_dialog.js
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_label.js
+		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_list.js
 	)
 
 	LIST(APPEND IUP_SOURCE_FILES

@@ -12,6 +12,7 @@
 #include <stdarg.h>
 
 #include "iup.h"
+#include "iupcbs.h"
 
 #include "iup_object.h"
 #include "iup_layout.h"
@@ -23,39 +24,39 @@
 #include "iup_stdcontrols.h"
 #include "iup_frame.h"
 
+#include "iup_mask.h"
+#include "iup_key.h"
+#include "iup_image.h"
+#include "iup_list.h"
+
 #include "iupemscripten_drv.h"
 
-
+extern int emjsFrame_CreateFrame(void);
 
 static int emscriptenFrameMapMethod(Ihandle* ih)
 {
+  int frame_id = 0;
+  InativeHandle* new_handle = NULL;
 
-#if 0
-//	NSBox* the_frame = [[NSBox alloc] initWithFrame:NSZeroRect];
-	NSBox* the_frame = [[NSBox alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
+  frame_id = emjsFrame_CreateFrame();
+  new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 
-	{
-		char* title;
-		title = iupAttribGet(ih, "TITLE");
-		if(title && *title!=0)
-		{
-			NSString* ns_string = [NSString stringWithUTF8String:title];
-			[the_frame setTitle:ns_string];
-		}
-	}
-	
-	
-	
-	
-	ih->handle = the_frame;
-	
-	
-	
-	iupemscriptenAddToParent(ih);
-	
-#endif
+  new_handle->handleID = frame_id;
+  ih->handle = new_handle;
 
-	
+  iupEmscripten_SetIntKeyForIhandleValue(frame_id, ih);
+
+  // If title is set, add to frame
+  char* attribute_title = iupAttribGet(ih, "TITLE");
+  if (attribute_title && *attribute_title != 0)
+  {
+    // why do we always have this in there?
+    /* ih->data->type != IUP_LABEL_TEXT; */
+    /* emjsFrame_SetTitle(frame_id, attribute_title); */
+  }
+
+	iupEmscripten_AddWidgetToParent(ih);
+
 	return IUP_NOERROR;
 }
 
@@ -67,7 +68,7 @@ static void emscriptenFrameUnMapMethod(Ihandle* ih)
 	[the_frame release];
 	ih->handle = nil;
 #endif
-	
+
 }
 
 
@@ -92,16 +93,16 @@ void iupdrvFrameInitClass(Iclass* ic)
 	ic->UnMap = emscriptenFrameUnMapMethod;
 #if 0
 	ic->GetInnerNativeContainerHandle = gtkFrameGetInnerNativeContainerHandleMethod;
-	
+
 	/* Driver Dependent Attribute functions */
-	
+
 	/* Overwrite Common */
 	iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkFrameSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
-	
+
 	/* Visual */
 	iupClassRegisterAttribute(ic, "BGCOLOR", iupFrameGetBgColorAttrib, gtkFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
 	iupClassRegisterAttribute(ic, "SUNKEN", NULL, gtkFrameSetSunkenAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-	
+
 	/* Special */
 	iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkFrameSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_DEFAULT);
 	iupClassRegisterAttribute(ic, "TITLE", NULL, gtkFrameSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);

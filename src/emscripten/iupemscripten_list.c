@@ -316,8 +316,8 @@ static void emscriptenListUnMapMethod(Ihandle* ih)
 void iupdrvListInitClass(Iclass* ic)
 {
   /* Driver Dependent Class functions */
-//	ic->Map = emscriptenListMapMethod;
-//	ic->UnMap = emscriptenListUnMapMethod;
+	ic->Map = emscriptenListMapMethod;
+	ic->UnMap = emscriptenListUnMapMethod;
 #if 0
 
   /* Driver Dependent Attribute functions */
