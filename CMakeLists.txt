@@ -458,12 +458,13 @@ IF(IUP_USE_EMSCRIPTEN)
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_val.c
 	)
 
-	SET(IUP_EMSCRIPTEN_FOREIGN_SOURCE_FILES 
+	SET(IUP_EMSCRIPTEN_FOREIGN_SOURCE_FILES
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_button.js
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_common.js
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_dialog.js
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_label.js
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_list.js
+		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_frame.js
 	)
 
 	LIST(APPEND IUP_SOURCE_FILES

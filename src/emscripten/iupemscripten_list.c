@@ -4,6 +4,9 @@
  * See Copyright Notice in "iup.h"
  */
 
+// First implement iupdrvListGetCount()
+// Next is iupdrvListAppendItem()
+// Also insert, remove, and removeall, getvalueattribute and setvalueattribute
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -27,8 +30,18 @@
 
 #include "iupemscripten_drv.h"
 
+typedef enum
+{
+  IUPEMSCRIPTENLISTSUBTYPE_UNKNOWN,
+  IUPEMSCRIPTENLISTSUBTYPE_DROPDOWN,
+  IUPEMSCRIPTENLISTSUBTYPE_EDITBOXDROPDOWN,
+  IUPEMSCRIPTENLISTSUBTYPE_EDITBOX,
+  IUPEMSCRIPTENLISTSUBTYPE_MULTIPLELIST,
+  IUPEMSCRIPTENLISTSUBTYPE_SINGLELIST // Not official, but could be useful for mobile
+} IupEmscriptenListSubType;
 
 extern int emjsList_CreateList(void);
+extern int emjsList_GetCount(int handleID, IupEmscriptenListSubType subType);
 
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
 {
@@ -41,6 +54,51 @@ void iupdrvListAddItemSpace(Ihandle* ih, int *h)
   */
   *h += 2;
 }
+
+static IupEmscriptenListSubType emscriptenListGetSubType(Ihandle* ih)
+{
+	if(ih->data->is_dropdown)
+  {
+      if(ih->data->has_editbox)
+      {
+          return IUPEMSCRIPTENLISTSUBTYPE_EDITBOXDROPDOWN;
+      }
+      else
+      {
+          return IUPEMSCRIPTENLISTSUBTYPE_DROPDOWN;
+      }
+  }
+	else
+  {
+      if(ih->data->has_editbox)
+      {
+          return IUPEMSCRIPTENLISTSUBTYPE_EDITBOX;
+      }
+      else if(ih->data->is_multiple)
+      {
+          return IUPEMSCRIPTENLISTSUBTYPE_MULTIPLELIST;
+
+      }
+      else
+      {
+          return IUPEMSCRIPTENLISTSUBTYPE_SINGLELIST;
+      }
+    }
+	return IUPEMSCRIPTENLISTSUBTYPE_UNKNOWN;
+}
+
+int iupdrvListGetCount(Ihandle* ih)
+{
+  IupEmscriptenListSubType sub_type = emscriptenListGetSubType(ih);
+  int count = emjsList_GetCount(ih->handle->handleID, sub_type);
+  return count;
+}
+
+/*void iupdrvListAppendItem(Ihandle* ih, const char* value)
+{
+  IupEmscriptenListSubType sub_type = emscriptenListGetSubType(ih);
+  // need to call to js function to add item; should pass sub_type so it knows how to process 
+  }*/
 
 void iupdrvListAddBorders(Ihandle* ih, int *x, int *y)
 {
@@ -69,12 +127,6 @@ void iupdrvListAddBorders(Ihandle* ih, int *x, int *y)
     if (ih->data->has_editbox)
       (*y) += 2*3; /* internal border between editbox and list */
   }
-}
-
-int iupdrvListGetCount(Ihandle* ih)
-{
-	return 0;
-	
 }
 
 void iupdrvListAppendItem(Ihandle* ih, const char* value)
@@ -124,13 +176,14 @@ static int emscriptenListMapMethod(Ihandle* ih)
   int list_id = 0;
   InativeHandle* new_handle = NULL;
 
-  list_id = emjsList_CreateList(); 
+  list_id = emjsList_CreateList();
   new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 
   new_handle->handleID = list_id;
   ih->handle = new_handle;
 
   iupEmscripten_SetIntKeyForIhandleValue(list_id, ih);
+
 #if 0
 	NSView* the_view;
 	NSPopUpButton* popup_button = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(30, 30, 190, 40)];

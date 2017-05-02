@@ -42,7 +42,7 @@ var LibraryIupLabel = {
 
   emjsLabel_SetBGColor: function(obj, val) {
     // console.log("bgcolor first arg: " + obj);
-    // console.log("bgcolor sec arg: " + val);
+    console.log("bgcolor sec arg: " + val);
   },
 
   emjsLabel_SetAlignmentAttrib: function(handle_id, value) {

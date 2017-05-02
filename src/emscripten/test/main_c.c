@@ -76,10 +76,11 @@ int IupEntryPoint(Ihandle* noop)
   Ihandle* testLabel3 = IupLabel("TestLabel----3");
   // create test list
   Ihandle* testList = IupList(NULL);
- IupSetAttributes(testList, "1=Gold, 2=Silver, 3=Bronze, 4=Latão, 5=None,"
-                          "SHOWIMAGE=YES, DRAGDROPLIST=YES, XXX_SPACING=4, VALUE=4");
-  Ihandle* workingLabel = IupLabel("this is working");
-  Ihandle* testFrame = IupFrame(testList);
+  IupSetAttributes(testList, "1=Gold, 2=Silver, 3=Bronze, 4=Latão, 5=None,"
+                          "DROPDOWN=YES");
+  //Ihandle* workingLabel = IupLabel("this is working");
+  //Ihandle* testFrame = IupFrame(testList);
+
   //Ihandle* testList2 = IupList();
 
   /* IupSetAttribute(testList, "DRAGSOURCE", "YES"); */
@@ -102,7 +103,11 @@ int IupEntryPoint(Ihandle* noop)
   IupSetAttribute(testLabel3, "FGCOLOR", "70 70 0");
   IupSetAttribute(testLabel, "TITLE", "OVERWRITE");
 
-	Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, testLabel3, testList, testFrame, workingLabel, NULL);
+	//Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, testLabel3, testList, testFrame, workingLabel, NULL);
+
+	Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, testLabel3, testList, NULL);
+
+	//Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, NULL);
 	IupSetAttribute(vb, "GAP", "10");
 	IupSetAttribute(vb, "MARGIN", "10x10");
 	IupSetAttribute(vb, "ALIGNMENT", "ACENTER");
