@@ -190,6 +190,32 @@ char *iupdrvGetUserName(void)
 	
 }
 
+int iupdrvGetPreferencePath(char *filename, int str_len, const char *app_name)
+{
+  /*
+  Everything is supposed to be sandboxed.
+  getenv is virtualized and getenv("HOME") isn't guaranteed to be defined.
+  But we should be able to write anywhere in our sandbox.
+  */
+  /* TODO: Emscripten virtualizes everything which means this data is not persistent.
+  A browser reload will lose all data.
+  There is a thing called IDBFS which writes to a persistent IndexedDB,
+  however, the integration is not obvious and will require research.
+  I suspect we will need to look at the configuratin file's actual 
+  initial load and final write to disk and rewrite those sections.
+  */
+
+  /* Why not the root directory? */
+  size_t num = strlcpy(filename, "/", str_len);
+  if (num >= str_len)
+  {
+    filename[0] = '\0';
+    return 0;
+  }
+  return 1;
+}
+
+
 char* iupdrvLocaleInfo(void)
 {
 	//return iupStrReturnStr(nl_langinfo(CODESET));

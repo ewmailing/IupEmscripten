@@ -1,4 +1,5 @@
 #include "iup.h"
+#include "iup_config.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -123,7 +124,34 @@ int IupEntryPoint(Ihandle* noop)
 
 int main(int argc, char* argv[])
 {
+	int ret_val;
 	IupOpen(NULL, NULL);
+
+	Ihandle* config_file = IupConfig();
+	IupSetStrAttribute(config_file, "APP_NAME", "TestApp");
+	ret_val = IupConfigLoad(config_file);
+
+	const char* config_value;
+	if(ret_val == 0)
+	{
+		const char* config_value = IupConfigGetVariableStrDef(config_file, "Group1", "Key1", "");
+		printf("config value is %s\n", config_value);
+	}
+	else
+	{
+		printf("config file not found\n");
+	}
+	IupConfigSetVariableStr(config_file, "Group1", "Key1", "Value1");
+	IupConfigSave(config_file);
+	config_value = IupConfigGetVariableStrDef(config_file, "Group1", "Key1", "");
+	printf("retrieved saved config value is %s\n", config_value);
+
+
+
+	IupDestroy(config_file);
+	config_file = NULL;
+
+
 	IupSetFunction("ENTRY_POINT", IupEntryPoint);
 	IupMainLoop();
 	return 0;
