@@ -19,7 +19,7 @@ var LibraryIupLabel = {
   },
 
   emjsLabel_SetTitle: function(handle_id, label_title) {
-    console.log("label title " + label_title);
+    // console.log("label title " + label_title);
     var widget_object = IupCommon.GetObjectForID(handle_id);
     if(widget_object)
     {
@@ -31,8 +31,8 @@ var LibraryIupLabel = {
     var widget_object = IupCommon.GetObjectForID(handle_id);
 
     // what format is color? assuming its an rgb separated by spaces
-    console.log('handle id: ' + handle_id);
-    console.log('fg color: ' + color);
+    // console.log('handle id: ' + handle_id);
+    // console.log('fg color: ' + color);
     // if (color) {
     //   var rgbVals = color.split(" ");
     //   var jsColor = 'rgb(' + rgbVals[0] + ', ' + rgbVals[1] + ', ' + rgbVals[2] + ')'; 
@@ -42,12 +42,12 @@ var LibraryIupLabel = {
 
   emjsLabel_SetBGColor: function(obj, val) {
     // console.log("bgcolor first arg: " + obj);
-    console.log("bgcolor sec arg: " + val);
+    // console.log("bgcolor sec arg: " + val);
   },
 
   emjsLabel_SetAlignmentAttrib: function(handle_id, value) {
     // FUT - check to make sure ih->data->type != IUP_LABEL_SETP_HORIZ
-    
+
     // get object to apply alignment to
     var widget_object = IupCommon.GetObjectForID(handle_id);
 

@@ -32,7 +32,7 @@
 
 typedef enum
 {
-  IUPEMSCRIPTENLISTSUBTYPE_UNKNOWN,
+  IUPEMSCRIPTENLISTSUBTYPE_UNKNOWN = -1,
   IUPEMSCRIPTENLISTSUBTYPE_DROPDOWN,
   IUPEMSCRIPTENLISTSUBTYPE_EDITBOXDROPDOWN,
   IUPEMSCRIPTENLISTSUBTYPE_EDITBOX,
@@ -42,6 +42,7 @@ typedef enum
 
 extern int emjsList_CreateList(void);
 extern int emjsList_GetCount(int handleID, IupEmscriptenListSubType subType);
+extern void emjsList_AppendItem(int handleID, IupEmscriptenListSubType subType, const char* value);
 
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
 {
@@ -57,33 +58,26 @@ void iupdrvListAddItemSpace(Ihandle* ih, int *h)
 
 static IupEmscriptenListSubType emscriptenListGetSubType(Ihandle* ih)
 {
-	if(ih->data->is_dropdown)
-  {
-      if(ih->data->has_editbox)
-      {
+	if(ih->data->is_dropdown) {
+      if(ih->data->has_editbox) {
           return IUPEMSCRIPTENLISTSUBTYPE_EDITBOXDROPDOWN;
       }
-      else
-      {
+      else {
           return IUPEMSCRIPTENLISTSUBTYPE_DROPDOWN;
       }
   }
-	else
-  {
-      if(ih->data->has_editbox)
-      {
+	else {
+      if(ih->data->has_editbox) {
           return IUPEMSCRIPTENLISTSUBTYPE_EDITBOX;
       }
-      else if(ih->data->is_multiple)
-      {
+      else if(ih->data->is_multiple) {
           return IUPEMSCRIPTENLISTSUBTYPE_MULTIPLELIST;
 
       }
-      else
-      {
+      else {
           return IUPEMSCRIPTENLISTSUBTYPE_SINGLELIST;
       }
-    }
+  }
 	return IUPEMSCRIPTENLISTSUBTYPE_UNKNOWN;
 }
 
@@ -94,36 +88,27 @@ int iupdrvListGetCount(Ihandle* ih)
   return count;
 }
 
-/*void iupdrvListAppendItem(Ihandle* ih, const char* value)
-{
-  IupEmscriptenListSubType sub_type = emscriptenListGetSubType(ih);
-  // need to call to js function to add item; should pass sub_type so it knows how to process 
-  }*/
-
 void iupdrvListAddBorders(Ihandle* ih, int *x, int *y)
 {
   int border_size = 2*5;
   (*x) += border_size;
   (*y) += border_size;
 
-  if (ih->data->is_dropdown)
-  {
+  if (ih->data->is_dropdown) {
 #ifdef HILDON
     (*x) += 9; /* extra space for the dropdown button */
 #else
-    (*x) += 5; /* extra space for the dropdown button */
+    (*x) += 5; /*  space for the dropdown button */
 #endif
 
     if (ih->data->has_editbox)
       (*x) += 5; /* another extra space for the dropdown button */
-    else
-    {
+    else {
       (*y) += 4; /* extra padding space */
       (*x) += 4; /* extra padding space */
     }
   }
-  else
-  {
+  else {
     if (ih->data->has_editbox)
       (*y) += 2*3; /* internal border between editbox and list */
   }
@@ -131,14 +116,14 @@ void iupdrvListAddBorders(Ihandle* ih, int *x, int *y)
 
 void iupdrvListAppendItem(Ihandle* ih, const char* value)
 {
-
-	
+    IupEmscriptenListSubType sub_type = emscriptenListGetSubType(ih);
+    // need to call to js function to add item; should pass sub_type so it knows how to process
+    emjsList_AppendItem(ih->handle->handleID, sub_type, value);
 }
 
 void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
 {
 
-	
 }
 
 void iupdrvListRemoveItem(Ihandle* ih, int pos)
@@ -149,25 +134,19 @@ void iupdrvListRemoveItem(Ihandle* ih, int pos)
 void iupdrvListRemoveAllItems(Ihandle* ih)
 {
 
-	
 }
-
 
 void* iupdrvListGetImageHandle(Ihandle* ih, int id)
 {
 
-	
     return NULL;
-
 }
 
 int iupdrvListSetImageHandle(Ihandle* ih, int id, void* hImage)
 {
 
-	
   return 0;
 }
-
 
 
 
@@ -187,126 +166,99 @@ static int emscriptenListMapMethod(Ihandle* ih)
 #if 0
 	NSView* the_view;
 	NSPopUpButton* popup_button = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(30, 30, 190, 40)];
-	the_view = popup_button;
-	
-	if (ih->data->is_dropdown)
-	{
-		if (ih->data->has_editbox)
-		{
-			
-		}
-		else
-		{
+
+
+	if (ih->data->is_dropdown) {
+
+    if (ih->data->has_editbox) {
+
+    }
+		else {
 //			ih->handle = gtk_combo_box_new_with_model(GTK_TREE_MODEL(store));
 		}
-		
 
-		if(ih->data->show_image)
-		{
+		if(ih->data->show_image) {
 
-			
 		}
-		
-		if (ih->data->has_editbox)
-		{
-			
-			if (!iupAttribGetBoolean(ih, "CANFOCUS"))
-			{
+
+    if (ih->data->has_editbox) {
+
+      if (!iupAttribGetBoolean(ih, "CANFOCUS")) {
 //				iupgtkSetCanFocus(ih->handle, 0);
 			}
-			
+
 		}
 		else
 		{
 
-			
-			if (!iupAttribGetBoolean(ih, "CANFOCUS"))
-			{
+			if (!iupAttribGetBoolean(ih, "CANFOCUS")) {
 
-				
 			}
-			else
-			{
+			else {
 
-				
 			}
 		}
-	
+
 	}
-	else
-	{
+	else {
 
-		if (ih->data->has_editbox)
-		{
+		if (ih->data->has_editbox) {
 
-			
 //			iupgtkSetCanFocus(ih->handle, 0);  /* focus goes only to the edit box */
-			if (!iupAttribGetBoolean(ih, "CANFOCUS"))
-			{
+			if (!iupAttribGetBoolean(ih, "CANFOCUS")) {
 //				iupgtkSetCanFocus(entry, 0);
 			}
 
 		}
-		else
-		{
-			
-			if (!iupAttribGetBoolean(ih, "CANFOCUS"))
-			{
+		else {
+
+			if (!iupAttribGetBoolean(ih, "CANFOCUS")) {
 //				iupgtkSetCanFocus(ih->handle, 0);
 			}
 		}
-		
-		if (ih->data->show_image)
-		{
+
+		if (ih->data->show_image) {
 
 		}
-		
-		
-		if (ih->data->sb)
-		{
-			if (iupAttribGetBoolean(ih, "AUTOHIDE"))
-			{
+
+
+		if (ih->data->sb) {
+			if (iupAttribGetBoolean(ih, "AUTOHIDE")) {
 //				scrollbar_policy = GTK_POLICY_AUTOMATIC;
 			}
-			else
-			{
+			else {
 //				scrollbar_policy = GTK_POLICY_ALWAYS;
 			}
 		}
-		else
-		{
+		else {
 //			scrollbar_policy = GTK_POLICY_NEVER;
 		}
 
-		
-		
-		if (!ih->data->has_editbox && ih->data->is_multiple)
-		{
 
-			
+		if (!ih->data->has_editbox && ih->data->is_multiple) {
+
 		}
-		else
-		{
+		else {
 		}
 
 	}
-	
+
 	/* Enable internal drag and drop support */
 	if(ih->data->show_dragdrop && !ih->data->is_dropdown && !ih->data->is_multiple)
 	{
 
 	}
-	
+
 	if (iupAttribGetBoolean(ih, "SORT"))
 	{
 //		gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), IUPGTK_LIST_TEXT, GTK_SORT_ASCENDING);
 	}
 	/* add to the parent, all GTK controls must call this. */
 //	iupgtkAddToParent(ih);
-	
-	
+
+
 	ih->handle = the_view;
-	
+
 #if 0
 	// I'm using objc_setAssociatedObject/objc_getAssociatedObject because it allows me to avoid making subclasses just to hold ivars.
 	objc_setAssociatedObject(the_toggle, IHANDLE_ASSOCIATED_OBJ_KEY, (id)ih, OBJC_ASSOCIATION_ASSIGN);
@@ -322,28 +274,28 @@ static int emscriptenListMapMethod(Ihandle* ih)
 	// However, the fact that this is tricky and I had to look up the rules (not to mention worrying about retain cycles)
 	// makes me think I should just explicitly manage the memory so everybody is aware of what's going on.
 	objc_setAssociatedObject(the_toggle, IUP_emscripten_TOGGLE_RECEIVER_OBJ_KEY, (id)toggle_receiver, OBJC_ASSOCIATION_ASSIGN);
-	
+
 #endif
 	// All emscripten views shoud call this to add the new view to the parent view.
 	iupemscriptenAddToParent(ih);
 
-	
+
 
 	/* configure for DRAG&DROP */
 	if (IupGetCallback(ih, "DROPFILES_CB"))
 	{
 //		iupAttribSet(ih, "DROPFILESTARGET", "YES");
 	}
-	
+
 //	IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)gtkListConvertXYToPos);
-	
-//	iupListSetInitialItems(ih);
-	
+
+
 	/* update a mnemonic in a label if necessary */
 //	iupgtkUpdateMnemonic(ih);
-	
+
 #endif
 
+  iupListSetInitialItems(ih);
   iupEmscripten_AddWidgetToParent(ih);
 
 	return IUP_NOERROR;
@@ -362,7 +314,7 @@ static void emscriptenListUnMapMethod(Ihandle* ih)
 	[the_view release];
 	ih->handle = NULL;
 #endif
-	
+
 }
 
 

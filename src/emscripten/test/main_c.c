@@ -77,7 +77,9 @@ int IupEntryPoint(Ihandle* noop)
   // create test list
   Ihandle* testList = IupList(NULL);
   IupSetAttributes(testList, "1=Gold, 2=Silver, 3=Bronze, 4=Latão, 5=None,"
-                          "DROPDOWN=YES");
+                          "DROPDOWN=YES, NAME=testList");
+  /* IupSetAttributes(list1, "1=\"US$ 1000\", 2=\"US$ 2000\", 3=\"US$ 300.000.000\", 4=\"Strawberry Shortcake vs. B. Pudding\"," */
+  /*                  "EDITBOX=YES, DROPDOWN=YES, TIP=Edit+Drop, VALUE=\"Edit Here\", NAME=list1"); */
   //Ihandle* workingLabel = IupLabel("this is working");
   //Ihandle* testFrame = IupFrame(testList);
 
