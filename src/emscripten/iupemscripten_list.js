@@ -2,7 +2,8 @@
 
 var LibraryIupList = {
   //	$Button__deps: ['$CommonGlobals'],
-  $List: {},
+  $List: {
+  },
 
 
   emjsList_CreateList: function(sub_type, data, arr_size) {
@@ -19,7 +20,7 @@ var LibraryIupList = {
       var input_box = document.createElement("input");
       var input_id = IupCommon.RegisterNewObject(input_box);
       num_widgets++;
-      {{{ makeSetValue('data', ‘1’, ‘input_id’, 'i32') }}};
+      {{{ makeSetValue('data', '1', 'input_id', 'i32') }}};
       var widget_object = document.createElement("datalist");
       break;
     case 2:
@@ -35,7 +36,7 @@ var LibraryIupList = {
     // var widget_object = document.createElement("datalist");
     var handle_id = IupCommon.RegisterNewObject(widget_object);
     num_widgets++;
-    {{{ makeSetValue('data', ‘0’, ‘handle_id’, 'i32') }}};
+    {{{ makeSetValue('data', '0', 'handle_id', 'i32') }}};
 
     // set id(s) of created elems; for input, attach to list id
     if (sub_type == 1) input_box.setAttribute("list", "list_" + handle_id);
