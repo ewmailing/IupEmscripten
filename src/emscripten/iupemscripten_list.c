@@ -13,6 +13,8 @@
 #include <string.h>
 #include <memory.h>
 #include <stdarg.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -40,7 +42,7 @@ typedef enum
   IUPEMSCRIPTENLISTSUBTYPE_SINGLELIST // Not official, but could be useful for mobile
 } IupEmscriptenListSubType;
 
-extern int emjsList_CreateList(void);
+extern int emjsList_CreateList(IupEmscriptenListSubType subtype, int32_t arr[], size_t arr_size);
 extern int emjsList_GetCount(int handleID, IupEmscriptenListSubType subType);
 extern void emjsList_AppendItem(int handleID, IupEmscriptenListSubType subType, const char* value);
 
@@ -113,7 +115,6 @@ void iupdrvListAddBorders(Ihandle* ih, int *x, int *y)
       (*y) += 2*3; /* internal border between editbox and list */
   }
 }
-
 void iupdrvListAppendItem(Ihandle* ih, const char* value)
 {
     IupEmscriptenListSubType sub_type = emscriptenListGetSubType(ih);
@@ -152,16 +153,29 @@ int iupdrvListSetImageHandle(Ihandle* ih, int id, void* hImage)
 
 static int emscriptenListMapMethod(Ihandle* ih)
 {
-  int list_id = 0;
+  int elem_count = 0;
+  int32_t list_id_array[2]; // only support two elems at this time
   InativeHandle* new_handle = NULL;
 
-  list_id = emjsList_CreateList();
+  IupEmscriptenListSubType sub_type = emscriptenListGetSubType(ih);
+  elem_count = emjsList_CreateList(sub_type, list_id_array, 2);
   new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 
-  new_handle->handleID = list_id;
+  if (elem_count > 1) {
+    new_handle->isCompound = true;
+    for (int i = 0; i < elem_count; i++) {
+      new_handle->compoundHandleIDArray[i] = list_id_array[i];
+    }
+    new_handle->numElemsIfCompound = elem_count;
+    new_handle->handleID = list_id_array[1];
+  }
+  else {
+    new_handle->handleID = list_id_array[0];
+  }
+
   ih->handle = new_handle;
 
-  iupEmscripten_SetIntKeyForIhandleValue(list_id, ih);
+  iupEmscripten_SetIntKeyForIhandleValue(new_handle->handleID, ih);
 
 #if 0
 	NSView* the_view;
@@ -220,7 +234,6 @@ static int emscriptenListMapMethod(Ihandle* ih)
 		if (ih->data->show_image) {
 
 		}
-
 
 		if (ih->data->sb) {
 			if (iupAttribGetBoolean(ih, "AUTOHIDE")) {

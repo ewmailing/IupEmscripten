@@ -32,13 +32,43 @@ var LibraryIupCommon = {
 	},
 
 	emjsCommon_AddWidgetToDialog: function(parent_id, child_id) {
+    console.log("AddWidgetToDialog");
 		var parent_dialog = IupCommon.GetObjectForID(parent_id);
 		var parent_body = parent_dialog.document.getElementsByTagName("body")[0];
 		var child_widget = IupCommon.GetObjectForID(child_id);
 		parent_body.appendChild(child_widget);
 	},
 
+  // <div> -- inject code -- </div>
+  emjsCommon_AddCompoundToDialog: function(parent_id, elem_array) {
+    console.log("AddCompoundToDialog");
+    var parent_dialog = IupCommon.GetObjectForID(parent_id);
+    var parent_body = parent_dialog.document.getElementsByTagName("body")[0];
+    var child_widget;
+    for (var i = 0; i < elem_array.length; i++) {
+      console.log("element array: ");
+      console.log(elem_array);
+      child_widget = IupCommon.GetObjectForID(elem_array[i]);
+      parent_body.appendChild(child_widget);
+    }
+  },
+
+  emjsCommon_AddCompoundToWidget: function(parent_id, elem_array, num_elems) {
+    console.log("AddCompoundToWidget");
+		var parent_widget = IupCommon.GetObjectForID(parent_id);
+    var child_widget;
+
+    console.log("element array: ");
+    console.log(elem_array);
+    for (var i = 0; i < num_elems; i++) {
+      console.log(elem_array);
+      child_widget = IupCommon.GetObjectForID(elem_array[i]);
+      parent_body.appendChild(child_widget);
+    }
+  },
+
 	emjsCommon_AddWidgetToWidget: function(parent_id, child_id) {
+    console.log("AddWidgetToWidget");
 		var parent_widget = IupCommon.GetObjectForID(parent_id);
 		var child_widget = IupCommon.GetObjectForID(child_id);
 

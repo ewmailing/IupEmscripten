@@ -70,9 +70,13 @@ typedef struct _WidgetRec InativeHandle;
 #elif defined(WINVER)
 typedef struct HWND__ InativeHandle;
 #elif defined(__EMSCRIPTEN__)
+#define IUP_EMSCRIPTEN_MAX_COMPOUND_ELEMENTS 2
 struct InativeHandleEmscripten
 {
 	int handleID;
+  _Bool isCompound;
+  int numElemsIfCompound; // only set if compound; otherwise 0
+  int compoundHandleIDArray[IUP_EMSCRIPTEN_MAX_COMPOUND_ELEMENTS];
 };
 typedef struct InativeHandleEmscripten InativeHandle;
 #else

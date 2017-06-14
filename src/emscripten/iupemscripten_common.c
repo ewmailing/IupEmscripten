@@ -62,7 +62,9 @@ Ihandle* iupEmscripten_GetIhandleValueForKey(int handle_id)
 }
 
 extern void emjsCommon_AddWidgetToDialog(int parent_id, int child_id);
+extern void emjsCommon_AddCompoundToDialog(int parent_id, int elem_array[], size_t num_elems);
 extern void emjsCommon_AddWidgetToWidget(int parent_id, int child_id);
+extern void emjsCommon_AddCompoundToWidget(int parent_id, int elem_array[], size_t num_elems);
 void iupEmscripten_AddWidgetToParent(Ihandle* ih)
 {
 	Ihandle* parent_ih = iupChildTreeGetNativeParent(ih);
@@ -91,14 +93,23 @@ void iupEmscripten_AddWidgetToParent(Ihandle* ih)
 	{
 		child_id = child_handle->handleID;
 	}
-	
 	if(parent_is_dialog)
 	{
-		emjsCommon_AddWidgetToDialog(parent_id, child_id);
+		if (child_handle->isCompound) {
+      emjsCommon_AddCompoundToDialog(parent_id, child_handle->compoundHandleIDArray, child_handle->numElemsIfCompound);
+    }
+    else {
+      emjsCommon_AddWidgetToDialog(parent_id, child_id);
+    }
 	}
 	else
 	{
-		emjsCommon_AddWidgetToWidget(parent_id, child_id);
+		if (child_handle->isCompound) {
+      emjsCommon_AddCompoundToWidget(parent_id, child_handle->compoundHandleIDArray, child_handle->numElemsIfCompound);
+    }
+    else {
+      emjsCommon_AddWidgetToWidget(parent_id, child_id);
+    }
 	}
 
 }

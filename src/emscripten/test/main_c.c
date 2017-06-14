@@ -1,4 +1,5 @@
 #include "iup.h"
+#include "iup_config.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -78,16 +79,14 @@ int IupEntryPoint(Ihandle* noop)
   Ihandle* testList = IupList(NULL);
   IupSetAttributes(testList, "1=Gold, 2=Silver, 3=Bronze, 4=Latão, 5=None,"
                           "DROPDOWN=YES, NAME=testList");
-  /* IupSetAttributes(list1, "1=\"US$ 1000\", 2=\"US$ 2000\", 3=\"US$ 300.000.000\", 4=\"Strawberry Shortcake vs. B. Pudding\"," */
-  /*                  "EDITBOX=YES, DROPDOWN=YES, TIP=Edit+Drop, VALUE=\"Edit Here\", NAME=list1"); */
-  //Ihandle* workingLabel = IupLabel("this is working");
-  //Ihandle* testFrame = IupFrame(testList);
-
-  //Ihandle* testList2 = IupList();
+  Ihandle* testList2 = IupList(NULL);
+  /* IupSetAttributes(testList2, "1=Gold, 2=Silver, 3=Bronze, 4=Latão, 5=None," */
+  /*                  "DROPDOWN=YES, EDITBOX=YES, NAME=testList2"); */
+  IupSetAttributes(testList2, "1=\"US$ 1000\", 2=\"US$ 2000\", 3=\"US$ 300.000.000\", 4=\"Strawberry Shortcake vs. B. Pudding\","
+                   "EDITBOX=YES, DROPDOWN=YES, TIP=Edit+Drop, VALUE=\"Edit Here\", NAME=list1");
 
   /* IupSetAttribute(testList, "DRAGSOURCE", "YES"); */
   /* IupSetAttribute(testList, "DRAGTYPES", "ITEMLIST"); */
-
 
   /* Ihandle* frm_medal1 = IupFrame(testList); */
   /* IupSetAttribute(frm_medal1, "TITLE", "List 1"); */
@@ -107,7 +106,7 @@ int IupEntryPoint(Ihandle* noop)
 
 	//Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, testLabel3, testList, testFrame, workingLabel, NULL);
 
-	Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, testLabel3, testList, NULL);
+	Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, testLabel3, testList, testList2, NULL);
 
 	//Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, NULL);
 	IupSetAttribute(vb, "GAP", "10");
@@ -125,7 +124,34 @@ int IupEntryPoint(Ihandle* noop)
 
 int main(int argc, char* argv[])
 {
+	int ret_val;
 	IupOpen(NULL, NULL);
+
+	Ihandle* config_file = IupConfig();
+	IupSetStrAttribute(config_file, "APP_NAME", "TestApp");
+	ret_val = IupConfigLoad(config_file);
+
+	const char* config_value;
+	if(ret_val == 0)
+	{
+		const char* config_value = IupConfigGetVariableStrDef(config_file, "Group1", "Key1", "");
+		printf("config value is %s\n", config_value);
+	}
+	else
+	{
+		printf("config file not found\n");
+	}
+	IupConfigSetVariableStr(config_file, "Group1", "Key1", "Value1");
+	IupConfigSave(config_file);
+	config_value = IupConfigGetVariableStrDef(config_file, "Group1", "Key1", "");
+	printf("retrieved saved config value is %s\n", config_value);
+
+
+
+	IupDestroy(config_file);
+	config_file = NULL;
+
+
 	IupSetFunction("ENTRY_POINT", IupEntryPoint);
 	IupMainLoop();
 	return 0;
