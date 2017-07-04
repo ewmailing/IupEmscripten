@@ -157,28 +157,19 @@ int iupdrvListSetImageHandle(Ihandle* ih, int id, void* hImage)
 static int emscriptenListMapMethod(Ihandle* ih)
 {
   int elem_count = 0;
-  int32_t list_id_array[IUP_EMSCRIPTEN_MAX_COMPOUND_ELEMENTS];
   InativeHandle* new_handle = NULL;
 
-  memset(list_id_array, 0, sizeof(list_id_array));
   IupEmscriptenListSubType sub_type = emscriptenListGetSubType(ih);
-  elem_count = emjsList_CreateList(sub_type, &list_id_array[0], IUP_EMSCRIPTEN_MAX_COMPOUND_ELEMENTS);
   new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
-
-
+  elem_count = emjsList_CreateList(sub_type, new_handle->compoundHandleIDArray, IUP_EMSCRIPTEN_MAX_COMPOUND_ELEMENTS);
 
   if (elem_count > 1) {
     new_handle->isCompound = true;
-    for (int i = 0; i < elem_count; i++) {
-      new_handle->compoundHandleIDArray[i] = list_id_array[i];
-      //iupEmscripten_Log("For compound obj part %d, list_id is %d", i, list_id_array[i]);
-      iupEmscripten_Log("For compound obj part %d, list_id is %" PRId32 ".", i, list_id_array[i]);
-    }
     new_handle->numElemsIfCompound = elem_count;
-    new_handle->handleID = list_id_array[1]; // NOTE: We currently only expect 2 elements in this case
+    new_handle->handleID = new_handle->compoundHandleIDArray[1]; // NOTE: We currently only expect 2 elements in this case
   }
   else {
-    new_handle->handleID = list_id_array[0];
+    new_handle->handleID = new_handle->compoundHandleIDArray[0];
   }
 
   ih->handle = new_handle;
@@ -341,8 +332,6 @@ static void emscriptenListUnMapMethod(Ihandle* ih)
 
 void iupdrvListInitClass(Iclass* ic)
 {
-
-  printf(stderr, "PRINTF WORKING");
   /* Driver Dependent Class functions */
 	ic->Map = emscriptenListMapMethod;
 	ic->UnMap = emscriptenListUnMapMethod;
