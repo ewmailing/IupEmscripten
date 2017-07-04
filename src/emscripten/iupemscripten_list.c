@@ -15,6 +15,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <inttypes.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -119,6 +120,8 @@ void iupdrvListAppendItem(Ihandle* ih, const char* value)
 {
     IupEmscriptenListSubType sub_type = emscriptenListGetSubType(ih);
     // need to call to js function to add item; should pass sub_type so it knows how to process
+
+    iupEmscripten_Log("HandleID: %p", ih->handle->handleID);
     emjsList_AppendItem(ih->handle->handleID, sub_type, value);
 }
 
@@ -157,14 +160,19 @@ static int emscriptenListMapMethod(Ihandle* ih)
   int32_t list_id_array[2]; // only support two elems at this time
   InativeHandle* new_handle = NULL;
 
+  memset(list_id_array, 0, sizeof(list_id_array));
   IupEmscriptenListSubType sub_type = emscriptenListGetSubType(ih);
-  elem_count = emjsList_CreateList(sub_type, list_id_array, 2);
+  elem_count = emjsList_CreateList(sub_type, &list_id_array[0], 2);
   new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
+
+
 
   if (elem_count > 1) {
     new_handle->isCompound = true;
     for (int i = 0; i < elem_count; i++) {
       new_handle->compoundHandleIDArray[i] = list_id_array[i];
+      //iupEmscripten_Log("For compound obj part %d, list_id is %d", i, list_id_array[i]);
+      iupEmscripten_Log("For compound obj part %d, list_id is %" PRId32 ".", i, list_id_array[i]);
     }
     new_handle->numElemsIfCompound = elem_count;
     new_handle->handleID = list_id_array[1];
@@ -174,8 +182,8 @@ static int emscriptenListMapMethod(Ihandle* ih)
   }
 
   ih->handle = new_handle;
-
   iupEmscripten_SetIntKeyForIhandleValue(new_handle->handleID, ih);
+  iupEmscripten_Log("Handle ID is %d for ih_pointer %p", new_handle->handleID, ih);
 
 #if 0
 	NSView* the_view;
@@ -333,6 +341,8 @@ static void emscriptenListUnMapMethod(Ihandle* ih)
 
 void iupdrvListInitClass(Iclass* ic)
 {
+
+  printf(stderr, "PRINTF WORKING");
   /* Driver Dependent Class functions */
 	ic->Map = emscriptenListMapMethod;
 	ic->UnMap = emscriptenListUnMapMethod;

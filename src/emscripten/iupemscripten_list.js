@@ -17,11 +17,12 @@ var LibraryIupList = {
       break;
     case 1:
       // need to create <input> element to bind to <datalist>
-      var input_box = document.createElement("input");
+      var input_box = document.createElement("datalist");
       var input_id = IupCommon.RegisterNewObject(input_box);
+      console.log("datalist id = " + input_id);
       num_widgets++;
-      {{{ makeSetValue('data', '1', 'input_id', 'i32') }}};
-      var widget_object = document.createElement("datalist");
+      {{{ makeSetValue('data', '4', 'input_id', 'i32') }}};
+      var widget_object = document.createElement("input");
       break;
     case 2:
     case 3:
@@ -35,12 +36,17 @@ var LibraryIupList = {
 
     // var widget_object = document.createElement("datalist");
     var handle_id = IupCommon.RegisterNewObject(widget_object);
+    console.log("input id = " + handle_id);
     num_widgets++;
     {{{ makeSetValue('data', '0', 'handle_id', 'i32') }}};
 
     // set id(s) of created elems; for input, attach to list id
-    if (sub_type == 1) input_box.setAttribute("list", "list_" + handle_id);
-    widget_object.id = 'list_' + handle_id;
+    if (sub_type == 1) {
+      widget_object.setAttribute("list", "list_" + input_id);
+      input_box.id = 'list_' + input_id;
+    }
+    else widget_object.id = 'list_' + handle_id;
+    console.log("NUM WIDGETS: " + num_widgets);
     return num_widgets;
   },
 
@@ -80,6 +86,8 @@ var LibraryIupList = {
 
   emjsList_AppendItem: function(handle_id, sub_type, value) {
     var widget_object = IupCommon.GetObjectForID(handle_id);
+    console.log("widget object check: ");
+    console.log(widget_object);
 
     switch (sub_type) {
       case 0:
@@ -91,9 +99,9 @@ var LibraryIupList = {
         return "";
       case 1:
         console.log("editboxdropdown2");
-      var item = document.createElement('option');
-      item.innerHTML = Pointer_stringify(value);
-      widget_object.appendChild(item);
+        var item = document.createElement('option');
+        item.innerHTML = Pointer_stringify(value);
+        widget_object.appendChild(item);
         return "";
       case 2:
       case 3:

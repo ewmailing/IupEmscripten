@@ -6,10 +6,11 @@
 
 #include <stdio.h>              
 #include <stdlib.h>
-#include <string.h>             
-#include <limits.h>             
+#include <string.h>
+#include <limits.h>
 #include <stdbool.h>
 #include <inttypes.h>
+#include <stdarg.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -27,6 +28,7 @@
 #include "iup_drv.h"
 
 #include "iupemscripten_drv.h"
+
 
 static Itable* s_integerIdToIhandleMap = NULL;
 
@@ -61,10 +63,25 @@ Ihandle* iupEmscripten_GetIhandleValueForKey(int handle_id)
 	return ih;
 }
 
+
+extern void emjsCommon_Log(char* message);
+void iupEmscripten_Log(const char* restrict format, ...) {
+  va_list argList;
+
+  va_start(argList, format);
+  char *my_string;
+
+  vasprintf (&my_string, format, argList); // this mallocs under the hood - need to free later
+  emjsCommon_Log(my_string);
+  /* printf(format, argList); */
+  va_end(argList);
+  free(my_string);
+}
+
 extern void emjsCommon_AddWidgetToDialog(int parent_id, int child_id);
-extern void emjsCommon_AddCompoundToDialog(int parent_id, int elem_array[], size_t num_elems);
+extern void emjsCommon_AddCompoundToDialog(int parent_id, int32_t elem_array[], size_t num_elems);
 extern void emjsCommon_AddWidgetToWidget(int parent_id, int child_id);
-extern void emjsCommon_AddCompoundToWidget(int parent_id, int elem_array[], size_t num_elems);
+extern void emjsCommon_AddCompoundToWidget(int parent_id, int32_t elem_array[], size_t num_elems);
 void iupEmscripten_AddWidgetToParent(Ihandle* ih)
 {
 	Ihandle* parent_ih = iupChildTreeGetNativeParent(ih);
@@ -78,8 +95,8 @@ void iupEmscripten_AddWidgetToParent(Ihandle* ih)
 	InativeHandle* parent_native_handle = parent_ih->handle;
 	InativeHandle* child_handle = ih->handle;
 
-	int parent_id = 0;
-	int child_id = 0;
+	int32_t parent_id = 0;
+	int32_t child_id = 0;
 	_Bool parent_is_dialog = false;
 	if(parent_native_handle)
 	{
@@ -95,19 +112,26 @@ void iupEmscripten_AddWidgetToParent(Ihandle* ih)
 	}
 	if(parent_is_dialog)
 	{
+
+    /* emjsCommon_Alert("is compound"); */
+    /* emjsCommon_Alert(child_handle->isCompound); */
 		if (child_handle->isCompound) {
+      /* emjsCommon_Alert("compound dialog"); */
       emjsCommon_AddCompoundToDialog(parent_id, child_handle->compoundHandleIDArray, child_handle->numElemsIfCompound);
     }
     else {
+      /* emjsCommon_Alert("single dialog"); */
       emjsCommon_AddWidgetToDialog(parent_id, child_id);
     }
 	}
 	else
 	{
 		if (child_handle->isCompound) {
+      /* emjsCommon_Alert("compound widget"); */
       emjsCommon_AddCompoundToWidget(parent_id, child_handle->compoundHandleIDArray, child_handle->numElemsIfCompound);
     }
     else {
+      /* emjsCommon_Alert("single widget"); */
       emjsCommon_AddWidgetToWidget(parent_id, child_id);
     }
 	}

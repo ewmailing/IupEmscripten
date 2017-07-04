@@ -23,6 +23,7 @@ void iupEmscripten_RemoveIntKeyFromIhandleMap(int handle_id);
 Ihandle* iupEmscripten_GetIhandleValueForKey(int handle_id);
 
 extern void emjsCommon_Alert(const char* message);
+void iupEmscripten_Log(const char* restrict format, ...);
 
 #if 0
 /* global variables, declared in iupmac_globalattrib.c */

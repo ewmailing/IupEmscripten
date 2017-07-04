@@ -84,6 +84,7 @@ int IupEntryPoint(Ihandle* noop)
   /*                  "DROPDOWN=YES, EDITBOX=YES, NAME=testList2"); */
   IupSetAttributes(testList2, "1=\"US$ 1000\", 2=\"US$ 2000\", 3=\"US$ 300.000.000\", 4=\"Strawberry Shortcake vs. B. Pudding\","
                    "EDITBOX=YES, DROPDOWN=YES, TIP=Edit+Drop, VALUE=\"Edit Here\", NAME=list1");
+                   /* "DROPDOWN=YES, NAME=testList2"); */
 
   /* IupSetAttribute(testList, "DRAGSOURCE", "YES"); */
   /* IupSetAttribute(testList, "DRAGTYPES", "ITEMLIST"); */
