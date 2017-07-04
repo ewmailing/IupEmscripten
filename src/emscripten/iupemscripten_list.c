@@ -157,12 +157,12 @@ int iupdrvListSetImageHandle(Ihandle* ih, int id, void* hImage)
 static int emscriptenListMapMethod(Ihandle* ih)
 {
   int elem_count = 0;
-  int32_t list_id_array[2]; // only support two elems at this time
+  int32_t list_id_array[IUP_EMSCRIPTEN_MAX_COMPOUND_ELEMENTS];
   InativeHandle* new_handle = NULL;
 
   memset(list_id_array, 0, sizeof(list_id_array));
   IupEmscriptenListSubType sub_type = emscriptenListGetSubType(ih);
-  elem_count = emjsList_CreateList(sub_type, &list_id_array[0], 2);
+  elem_count = emjsList_CreateList(sub_type, &list_id_array[0], IUP_EMSCRIPTEN_MAX_COMPOUND_ELEMENTS);
   new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 
 
@@ -175,7 +175,7 @@ static int emscriptenListMapMethod(Ihandle* ih)
       iupEmscripten_Log("For compound obj part %d, list_id is %" PRId32 ".", i, list_id_array[i]);
     }
     new_handle->numElemsIfCompound = elem_count;
-    new_handle->handleID = list_id_array[1];
+    new_handle->handleID = list_id_array[1]; // NOTE: We currently only expect 2 elements in this case
   }
   else {
     new_handle->handleID = list_id_array[0];
