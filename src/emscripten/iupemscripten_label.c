@@ -41,6 +41,14 @@ extern void emjsLabel_SetFGColor(int handle_id, const char* color); /* should it
 extern void emjsLabel_SetBGColor(int handle_id, char* color); 
 extern int emjsLabel_SetAlignmentAttrib(int handle_id, const char* value);
 
+
+void iupdrvLabelAddBorders(Ihandle* ih, int *x, int *y)
+{
+  (void)ih;
+  (void)x;
+  (void)y;
+}
+
 static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 {
   // do we need this check? (it was in gtk)
