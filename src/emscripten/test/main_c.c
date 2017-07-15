@@ -1,5 +1,6 @@
 #include "iup.h"
 #include "iup_config.h"
+#include "iupcbs.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -65,7 +66,7 @@ int testCallback(Ihandle* ih, int but, int pressed, int x, int y, char* status) 
 	return IUP_DEFAULT;
 }
 
-int IupEntryPoint(Ihandle* noop)
+int IupEntryPoint()
 {
 //	IupOpen(0, NULL);
   // create test buttons
@@ -153,7 +154,7 @@ int main(int argc, char* argv[])
 	config_file = NULL;
 
 
-	IupSetFunction("ENTRY_POINT", IupEntryPoint);
+	IupSetFunction("ENTRY_POINT", (Icallback)IupEntryPoint);
 	IupMainLoop();
 	return 0;
 }

@@ -34,11 +34,11 @@ int IupMainLoopLevel(void)
 */
 int IupMainLoop(void)
 {
-	Icallback entry_callback = (Icallback)IupGetFunction("ENTRY_POINT");
+	IFidle entry_callback = (IFidle)IupGetFunction("ENTRY_POINT");
 
 	if(entry_callback)
 	{
-		entry_callback(NULL);
+		entry_callback();
 	}
 
 	return IUP_NOERROR;
