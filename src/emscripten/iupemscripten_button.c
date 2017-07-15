@@ -73,7 +73,7 @@ EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline_Cb(int handle_id, i
 #endif
 }
 
-void iupdrvButtonAddBorders(int *x, int *y)
+void iupdrvButtonAddBorders(Ihandle* ih, int *x, int *y)
 {
 
 	
