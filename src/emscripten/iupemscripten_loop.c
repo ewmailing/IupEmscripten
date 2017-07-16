@@ -9,6 +9,7 @@
 
 #include "iup.h"
 #include "iupcbs.h"
+#include "iup_loop.h"
 
 
 static IFidle emscripten_idle_cb = NULL;
@@ -34,14 +35,16 @@ int IupMainLoopLevel(void)
 */
 int IupMainLoop(void)
 {
-	IFentry entry_callback = (IFentry)IupGetFunction("ENTRY_POINT");
+  static int has_done_entry = 0;
 
-	if(entry_callback)
-	{
-		entry_callback();
-	}
+  if (0 == has_done_entry)
+  {
+    iupLoopCallEntryCb();
+    has_done_entry = 1;
+  }
 
-	return IUP_NOERROR;
+  
+  return IUP_NOERROR;
 
 }
 
