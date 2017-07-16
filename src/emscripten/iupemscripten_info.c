@@ -197,16 +197,14 @@ int iupdrvGetPreferencePath(char *filename, int str_len, const char *app_name)
   getenv is virtualized and getenv("HOME") isn't guaranteed to be defined.
   But we should be able to write anywhere in our sandbox.
   */
-  /* TODO: Emscripten virtualizes everything which means this data is not persistent.
+  /* Emscripten virtualizes everything which means this data is not persistent.
   A browser reload will lose all data.
-  There is a thing called IDBFS which writes to a persistent IndexedDB,
-  however, the integration is not obvious and will require research.
-  I suspect we will need to look at the configuratin file's actual 
-  initial load and final write to disk and rewrite those sections.
+  There is a thing called IDBFS which writes to a persistent IndexedDB.
+  We mount an IDBFS in iupdrvOpen(). Make sure the /IupIDBFS directory is consistent in both parts (if you change the path).
   */
 
-  /* Why not the root directory? */
-  size_t num = strlcpy(filename, "/", str_len);
+  /* We put this in a unique Iup directory to try to not conflict with anything the end user might want to setup for their own program. */
+  size_t num = strlcpy(filename, "/IupIDBFS/", str_len);
   if (num >= str_len)
   {
     filename[0] = '\0';

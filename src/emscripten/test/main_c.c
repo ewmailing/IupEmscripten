@@ -66,9 +66,44 @@ int testCallback(Ihandle* ih, int but, int pressed, int x, int y, char* status) 
 	return IUP_DEFAULT;
 }
 
-int IupEntryPoint()
+void testConfigFile()
 {
-//	IupOpen(0, NULL);
+		int ret_val = 0;	
+		Ihandle* config_file = IupConfig();
+		IupSetStrAttribute(config_file, "APP_NAME", "TestApp");
+		ret_val = IupConfigLoad(config_file);
+
+		const char* config_value;
+		if(ret_val == 0)
+		{
+			const char* config_value = IupConfigGetVariableStrDef(config_file, "Group1", "Key1", "");
+			printf("IDBFS worked: found existing config file: config value is %s\n", config_value);
+		}
+		else
+		{
+			printf("config file not found\n");
+		}
+		IupConfigSetVariableStr(config_file, "Group1", "Key1", "Value1");
+		IupConfigSave(config_file);
+		config_value = IupConfigGetVariableStrDef(config_file, "Group1", "Key1", "");
+		printf("retrieved saved config value is %s\n", config_value);
+
+
+
+		IupDestroy(config_file);
+		config_file = NULL;
+
+}
+
+void IupEntryPoint()
+{
+
+	{
+		testConfigFile();
+
+	}
+
+
   // create test buttons
 	Ihandle* button = IupButton("Iup Button", "");
   Ihandle* button2 = IupButton("Callback", "");
@@ -120,41 +155,14 @@ int IupEntryPoint()
 	IupSetAttribute(dialog, "TITLE", "Iup Activity Title");
 
 	IupShow(dialog);
-	return 0;
 }
 
 
 int main(int argc, char* argv[])
 {
-	int ret_val;
-	IupOpen(NULL, NULL);
-
-	Ihandle* config_file = IupConfig();
-	IupSetStrAttribute(config_file, "APP_NAME", "TestApp");
-	ret_val = IupConfigLoad(config_file);
-
-	const char* config_value;
-	if(ret_val == 0)
-	{
-		const char* config_value = IupConfigGetVariableStrDef(config_file, "Group1", "Key1", "");
-		printf("config value is %s\n", config_value);
-	}
-	else
-	{
-		printf("config file not found\n");
-	}
-	IupConfigSetVariableStr(config_file, "Group1", "Key1", "Value1");
-	IupConfigSave(config_file);
-	config_value = IupConfigGetVariableStrDef(config_file, "Group1", "Key1", "");
-	printf("retrieved saved config value is %s\n", config_value);
-
-
-
-	IupDestroy(config_file);
-	config_file = NULL;
-
-
+	IupOpen(&argc, &argv);
 	IupSetFunction("ENTRY_POINT", (Icallback)IupEntryPoint);
 	IupMainLoop();
 	return 0;
 }
+

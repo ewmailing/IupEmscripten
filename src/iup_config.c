@@ -74,6 +74,9 @@ static char* iConfigSetFilename(Ihandle* ih)
 #elif defined(__APPLE__)
     strlcat(filename, app_name, 10240);
     strlcat(filename, ".cfg", 10240);
+#elif defined(__EMSCRIPTEN__)
+    strlcat(filename, app_name, 10240);
+    strlcat(filename, ".cfg", 10240);
 #elif defined(WIN32)
     strcat(filename, app_name);
     strcat(filename, ".cfg");
@@ -89,14 +92,14 @@ static char* iConfigSetFilename(Ihandle* ih)
       return NULL;
 
       strcat(filename, app_path);
-#if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32)
+#if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32) || defined(__EMSCRIPTEN__)
       /* these platforms shouldn't use a .dot file */
 #else
       /* Unix generic hidden dot prefix */
       strcat(filename, ".");
 #endif
       strcat(filename, app_name);
-#if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32)
+#if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32) || defined(__EMSCRIPTEN__)
       strcat(filename, ".cfg");
 #endif
   }
@@ -215,6 +218,15 @@ int IupConfigSave(Ihandle* ih)
   }
 
   fclose(file);
+
+#if defined(__EMSCRIPTEN__)
+  EM_ASM(
+	FS.syncfs(function(err) {
+        if(err) console.log('Error: FS.syncfs failed', err);
+	  }
+	);
+  );
+#endif
   return 0;
 }
 
