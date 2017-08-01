@@ -58,6 +58,8 @@ int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
+// three functions below are used to compute string size:
+
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
 	   return;

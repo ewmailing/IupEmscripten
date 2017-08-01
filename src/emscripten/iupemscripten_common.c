@@ -185,8 +185,8 @@ void iupdrvReparent(Ihandle* ih)
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
 
-#if 0
 	id parent_native_handle = iupChildTreeGetNativeParentHandle(ih);
+#if 0
 	NSView* parent_view = nil;
 	if([parent_native_handle isKindOfClass:[NSWindow class]])
 	{
@@ -202,9 +202,9 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 		NSCAssert(1, @"Unexpected type for parent widget");
 		@throw @"Unexpected type for parent widget";
 	}
-	
-	
-	
+
+
+
 	id child_handle = ih->handle;
 	NSView* the_view = nil;
 	if([child_handle isKindOfClass:[NSView class]])

@@ -37,6 +37,17 @@
 #include <emscripten.h>
 
 
+/*
+1. compute size of various elements
+2. section that tells javascript to draw elements given a size
+(iupdrvBaseLayoutUpdateMethod - where everything for this should start)
+3. padding and sizing stuff - one func that computes the size of string for things like labels and buttons, and need to fill in iup functs that compute padding
+
+1. get size of widget
+2. get size of string
+3. draw widget precisely based on given params
+*/
+
 /****************************************************************
  Utilities
  ****************************************************************/
@@ -50,7 +61,9 @@ int iupdrvDialogIsVisible(Ihandle* ih)
 
 void iupdrvDialogGetSize(Ihandle* ih, InativeHandle* handle, int *w, int *h)
 {
-	
+  // first grab dialog element
+  // then find width and height
+  // then set appropriately below
 	if (w) *w = 1280;
 	if (h) *h = 720;
 }
@@ -70,7 +83,7 @@ void iupdrvDialogSetVisible(Ihandle* ih, int visible)
 
 void iupdrvDialogGetPosition(Ihandle *ih, InativeHandle* handle, int *x, int *y)
 {
-	
+
 	if (x) *x = 0;
 	//if (y) *y = iupEmscriptenComputeIupScreenHeightFromCartesian(the_rect.origin.y);
 	if (y) *y = 0;

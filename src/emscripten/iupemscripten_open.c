@@ -4,9 +4,9 @@
  * See Copyright Notice in "iup.h"
  */
 
-#include <stdio.h>          
+#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>          
+#include <string.h>
 
 #include "iup.h"
 
@@ -52,7 +52,7 @@ void iupEmscriptenUpdateGlobalColors(void)
 }
 
 int iupdrvOpen(int *argc, char ***argv)
-{                        
+{
   (void)argc; /* unused in the Emscripten driver */
   (void)argv;
 
@@ -60,7 +60,7 @@ int iupdrvOpen(int *argc, char ***argv)
   // We must create a mount point directory, mount the file system there, and call syncfs (with two params).
   // Subsequent writes need to call syncfs (with one param).
   // Make sure to write to the correct mount location.
-  // IMPORTANT: If you change the path (/IupIDBFS), make sure to change it also in iupdrvGetPreferencePath(). 
+  // IMPORTANT: If you change the path (/IupIDBFS), make sure to change it also in iupdrvGetPreferencePath().
   // WARNING: I'm seeing race conditions in the web browser (Chrome). I think we're using this correctly, but sometimes my read tests fail. Break points seem to give the system time to catch up. I'm leaving console.log() messages to try to help.
   EM_ASM(
     FS.mkdir('/IupIDBFS');
@@ -77,7 +77,7 @@ int iupdrvOpen(int *argc, char ***argv)
 
   // TODO: Use this to reinitialize static/global variables???
 	iupEmscripten_InitializeInternalGlobals();
-  
+
   IupSetGlobal("DRIVER", "Emscripten");
 
 //  IupSetGlobal("SYSTEMLANGUAGE", iupEmscriptenGetSystemLanguage());
@@ -95,7 +95,7 @@ void iupdrvClose(void)
 {
 
   iupEmscripten_DestroyInternalGlobals();
-  
+
   EM_ASM(
 	FS.syncfs(function(err) {
         if(err) console.log('Error: FS.syncfs failed', err);

@@ -41,7 +41,7 @@ extern void emjsLabel_SetFGColor(int handle_id, const char* color); /* should it
 extern void emjsLabel_SetBGColor(int handle_id, char* color); 
 extern int emjsLabel_SetAlignmentAttrib(int handle_id, const char* value);
 
-
+// adds padding to element
 void iupdrvLabelAddBorders(Ihandle* ih, int *x, int *y)
 {
   (void)ih;
