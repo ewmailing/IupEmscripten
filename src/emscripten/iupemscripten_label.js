@@ -9,7 +9,8 @@ var LibraryIupLabel = {
     var widget_object;
     widget_object = document.createElement("div");
     var handle_id = IupCommon.RegisterNewObject(widget_object);
-    widget_object.id = 'label_' + handle_id;
+    widget_object.id = handle_id;
+    widget_object.style.position = 'absolute';
     return handle_id;
   },
 

@@ -31,6 +31,21 @@ var LibraryIupCommon = {
 		},
 	},
 
+  emjsCommon_SetPosition: function(handle_id, x, y)
+  {
+    
+    // var real_elem = document.getElementById(handle_id);
+
+		var elem = IupCommon.GetObjectForID(handle_id);
+
+    window.alert('or it is ' + elem.innerHTML);
+    console.log(elem);
+
+    elem.style.color = 'white';
+    elem.style.left = x + ' px';
+    elem.style.top = y + ' px';
+ 
+  },
 	emjsCommon_AddWidgetToDialog: function(parent_id, child_id) {
     console.log("AddWidgetToDialog");
 		var parent_dialog = IupCommon.GetObjectForID(parent_id);

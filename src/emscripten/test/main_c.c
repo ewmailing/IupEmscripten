@@ -130,6 +130,12 @@ void IupEntryPoint()
 
   // test bg and fg color with labels
   IupSetAttribute(testLabel, "FGCOLOR", "20 200 111");
+
+  IupSetAttribute(testLabel, "POSITION", "10x10");
+  
+  IupSetAttribute(testLabel3, "POSITION", "100x100");
+  IupSetAttribute(testLabel2, "POSITION", "50x50");
+
   //IupSetAttribute(testLabel, "BGCOLOR", "20 129 115");
 
   // attach callbacks to test buttons
