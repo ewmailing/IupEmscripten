@@ -100,7 +100,6 @@ void IupEntryPoint()
 
 	{
 		testConfigFile();
-
 	}
 
 
@@ -129,12 +128,15 @@ void IupEntryPoint()
   /* IupSetAttribute(frm_medal1, "TITLE", "List 1"); */
 
   // test bg and fg color with labels
-  IupSetAttribute(testLabel, "FGCOLOR", "20 200 111");
 
-  IupSetAttribute(testLabel, "POSITION", "10x10");
-  
-  IupSetAttribute(testLabel3, "POSITION", "100x100");
-  IupSetAttribute(testLabel2, "POSITION", "50x50");
+  /* IupSetAttribute(testLabel, "POSITION", "400x400"); */
+  /* IupSetAttribute(testLabel2, "POSITION", "50x50"); */
+  /* IupSetAttribute(testLabel3, "POSITION", "100x100"); */
+
+  IupSetAttribute(button, "WIDTH", "50px");
+  IupSetAttribute(button, "HEIGHT", "50px");
+  IupSetAttribute(button2, "WIDTH", "50px");
+  IupSetAttribute(button2, "HEIGHT", "50px");
 
   //IupSetAttribute(testLabel, "BGCOLOR", "20 129 115");
 
@@ -147,16 +149,20 @@ void IupEntryPoint()
   IupSetAttribute(testLabel3, "FGCOLOR", "70 70 0");
   IupSetAttribute(testLabel, "TITLE", "OVERWRITE");
 
-	//Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, testLabel3, testList, testFrame, workingLabel, NULL);
+  IupSetAttribute(testLabel2, "TITLE", "CONGRATS");
 
-	Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, testLabel3, testList, testList2, NULL);
+	Ihandle* vb=IupHbox(button, button2, testLabel, testLabel2, testLabel3, testList, testList2, NULL);
 
 	//Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, NULL);
 	IupSetAttribute(vb, "GAP", "10");
 	IupSetAttribute(vb, "MARGIN", "10x10");
 	IupSetAttribute(vb, "ALIGNMENT", "ACENTER");
 
+	/* Ihandle* hb=IupHbox(testLabel, testLabel2, NULL); */
+
 	Ihandle* dialog = IupDialog(vb);
+
+  // got it.  cool!   Michael Mallice - noko expert
 	//	IupMap(dialog);
 	IupSetAttribute(dialog, "TITLE", "Iup Activity Title");
 

@@ -53,7 +53,7 @@ static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 {
   // do we need this check? (it was in gtk)
   if (ih->data->type == IUP_LABEL_TEXT) {
-    emjsLabel_SetTitle(ih->handle->handleID, value); 
+    emjsLabel_SetTitle(ih->handle->handleID, value);
   }
 
 	return 1;

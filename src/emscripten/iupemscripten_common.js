@@ -23,6 +23,10 @@ var LibraryIupCommon = {
 			IupCommonGlobals.idCounter += 1;
 			return current_id;
 		},
+    InitializeObject: function(the_object) {
+      // any other useful properties for all objects should go here
+      the_object.style.position = 'absolute';
+    },
 		DeleteObject: function(handle_id) {
 			var the_object = IupCommonGlobals.objectIDMap[handle_id] = null;
 			the_object.handleID = null;
@@ -31,21 +35,29 @@ var LibraryIupCommon = {
 		},
 	},
 
-  emjsCommon_SetPosition: function(handle_id, x, y)
+  emjsCommon_SetPosition: function(handle_id, x, y, width, height)
   {
-    
+
     // var real_elem = document.getElementById(handle_id);
 
 		var elem = IupCommon.GetObjectForID(handle_id);
 
-    window.alert('or it is ' + elem.innerHTML);
-    console.log(elem);
+    // elem.style.color = 'white';
+    elem.style.left = x + 'px';
+    console.log("left: " + elem.style.left);
+    elem.style.top = y + 'px';
+    console.log("top: " + elem.style.top);
 
-    elem.style.color = 'white';
-    elem.style.left = x + ' px';
-    elem.style.top = y + ' px';
- 
+    // elem.style.width =
+    console.log("width: " + width);
+    console.log("height: " + height);
+    if (width != 0 && height != 0) {
+      elem.style.width = width;
+      elem.style.height = height;
+    }
+
   },
+
 	emjsCommon_AddWidgetToDialog: function(parent_id, child_id) {
     console.log("AddWidgetToDialog");
 		var parent_dialog = IupCommon.GetObjectForID(parent_id);

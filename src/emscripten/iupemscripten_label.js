@@ -9,8 +9,8 @@ var LibraryIupLabel = {
     var widget_object;
     widget_object = document.createElement("div");
     var handle_id = IupCommon.RegisterNewObject(widget_object);
-    widget_object.id = handle_id;
-    widget_object.style.position = 'absolute';
+    IupCommon.InitializeObject(widget_object);
+    // widget_object.id = handle_id;
     return handle_id;
   },
 
@@ -65,7 +65,7 @@ var LibraryIupLabel = {
     // cant really align vertically in CSS like it does in gtk...
     // will need to further understand how the containers work and
     // maybe use padding or margin percentage to emulate
-    
+
     return 1;
   },
 

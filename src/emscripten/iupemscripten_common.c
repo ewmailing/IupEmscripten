@@ -82,7 +82,7 @@ extern void emjsCommon_AddWidgetToDialog(int parent_id, int child_id);
 extern void emjsCommon_AddCompoundToDialog(int parent_id, int32_t elem_array[], size_t num_elems);
 extern void emjsCommon_AddWidgetToWidget(int parent_id, int child_id);
 extern void emjsCommon_AddCompoundToWidget(int parent_id, int32_t elem_array[], size_t num_elems);
-extern void emjsCommon_SetPosition(int handle_id, int x, int y);
+extern void emjsCommon_SetPosition(int handle_id, int x, int y, int height, int width);
 void iupEmscripten_AddWidgetToParent(Ihandle* ih)
 {
 	Ihandle* parent_ih = iupChildTreeGetNativeParent(ih);
@@ -187,7 +187,8 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
   
   // Set element's position on screen
-  emjsCommon_SetPosition(ih->handle->handleID,ih->x,ih->y);
+  iupEmscripten_Log("x:%d, y:%d, w:%d, h:%d, id: %d", ih->x,ih->y,ih->currentwidth,ih->currentheight,ih->handle->handleID);
+  emjsCommon_SetPosition(ih->handle->handleID,ih->x,ih->y,ih->currentwidth,ih->currentheight);
 
   //TODO Calculate size and return to ih
   

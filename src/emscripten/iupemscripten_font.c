@@ -19,9 +19,13 @@
 #include "iup_drvfont.h"
 #include "iup_assert.h"
 
+#include "iupemscripten_drv.h"
+
 //#include "iupmac_info.h"
 
-
+extern int emjsFont_GetStringWidth(int handleID, const char* str);
+extern void emjsFont_GetMultiLineStringSize(int handleID, const char* str, int32_t* out_ptr_width, int32_t* out_ptr_height);
+extern void emjsFont_GetCharSize(int handleID, int32_t* out_ptr_width, int32_t* out_ptr_height);
 
 char* iupdrvGetSystemFont(void)
 {
@@ -62,24 +66,20 @@ int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
 
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
-	   return;
-
-//  if (w) *w = max_w;
-//	if (h) *h = max_h;
+  emjsFont_GetMultiLineStringSize(ih->handle->handleID, str, w, h);
+  iupEmscripten_Log("iupdrvFontGetMultiLineStringSize being called.  Here's an arg: %s", str);
+  return;
 }
 
 int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 {
-	
-	return 40;
-	
+  return emjsFont_GetStringWidth(ih->handle->handleID, str);
 }
 
 void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
 {
-
-//  if (charwidth)  *charwidth = macfont->charwidth; 
-//  if (charheight) *charheight = macfont->charheight;
+  emjsFont_GetCharSize(ih->handle->handleID, charwidth, charheight);
+  return;
 }
 
 void iupdrvFontInit(void)
