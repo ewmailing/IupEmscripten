@@ -14,19 +14,6 @@ var LibraryIupButton = {
     return handle_id;
   },
 
-  // emjsButton_CreateWrapper: function(button_id) {
-  //   var wrapper_object = document.createElement("div");
-  //   var handle_id = IupCommon.RegisterNewObject(wrapper_object);
-  //   document.body.appendChild(wrapper_object);
-
-  //   var button = IupCommon.GetObjectForID(button_id);
-  //   wrapper_object.appendChild(button);
-
-  //   IupCommon.InitializeObject(wrapper_object);
-
-  //   return handle_id;
-  // },
-
   emjsButton_DestroyButton: function(handle_id) {
     // Do I need to removeEventListener?
     IupCommon.DeleteObject(handle_id);

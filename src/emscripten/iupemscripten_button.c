@@ -80,7 +80,6 @@ void iupdrvButtonAddBorders(Ihandle* ih, int *x, int *y)
 }
 
 extern int emjsButton_CreateButton(void);
-/* extern int emjsButton_CreateWrapper(int button_id); */
 extern void emjsButton_SetTitle(int handle_id, const char* title);
 //extern void emjsButton_SetCallback(int handle_id, Ihandle* ih);
 //extern void emjsButton_SetCallback(int handle_id, intptr_t ih);
@@ -90,7 +89,6 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 {
 #if 1
 	int button_id = 0;
-	/* int wrapper_id = 0; */
 	InativeHandle* new_handle = NULL;
 	char* attribute_value;
 	// TODO: Image button
@@ -105,7 +103,6 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 	else
 	{
 		button_id = emjsButton_CreateButton();
-    /* wrapper_id = emjsButton_CreateWrapper(button_id); */
 		new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 		new_handle->handleID = button_id;
 		ih->handle = new_handle;
@@ -129,7 +126,7 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 
 		emjsButton_SetTitle(button_id, attribute_value);
 	}
-	
+
 	//emjsButton_SetCallback(button_id, (intptr_t)ih);
 	emjsButton_SetCallback(button_id);
 	iupEmscripten_SetIntKeyForIhandleValue(button_id, ih);
@@ -137,7 +134,7 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 
 	iupEmscripten_AddWidgetToParent(ih);
 #endif
-	return IUP_NOERROR;	
+	return IUP_NOERROR;
 }
 
 extern void emjsButton_DestroyButton(int handle_id);
@@ -157,35 +154,34 @@ void iupdrvButtonInitClass(Iclass* ic)
 	/* Driver Dependent Class functions */
 	ic->Map = emscriptenButtonMapMethod;
 	ic->UnMap = emscriptenButtonUnMapMethod;
-	
 
 #if 0
 
 	ic->LayoutUpdate = gtkButtonLayoutUpdateMethod;
-	
+
 	/* Driver Dependent Attribute functions */
-	
+
 	/* Overwrite Common */
 	iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkButtonSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
-	
+
 	/* Overwrite Visual */
 	iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkButtonSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
-	
+
 	/* Visual */
 	iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkButtonSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
-	
+
 	/* Special */
 	iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkButtonSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_DEFAULT);
 	iupClassRegisterAttribute(ic, "TITLE", NULL, gtkButtonSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-	
+
 	/* IupButton only */
 	iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, gtkButtonSetAlignmentAttrib, "ACENTER:ACENTER", NULL, IUPAF_NO_INHERIT);  /* force new default value */
 	iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkButtonSetImageAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 	iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, gtkButtonSetImInactiveAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 	iupClassRegisterAttribute(ic, "IMPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-	
+
 	iupClassRegisterAttribute(ic, "PADDING", iupButtonGetPaddingAttrib, gtkButtonSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
 	iupClassRegisterAttribute(ic, "MARKUP", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);
 #endif
-	
+
 }

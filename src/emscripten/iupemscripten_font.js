@@ -41,7 +41,6 @@ var LibraryIupFont = {
       temp_object.style.fontSize = widget_object.style.fontSize;
     }
     if (widget_object.nodeName == 'button') {
-      // ok so we have the button, we just need to wrap the div around it and query for the size, right?  is the text already set on widget_object correctly? ahh thats right.  so apply that string to a new button
       var tmp_button = document.createElement("button");
       tmp_button.style.position = 'absolute';
       tmp_button.innerHTML = user_str;
@@ -62,6 +61,7 @@ var LibraryIupFont = {
     Module.setValue(out_ptr_width,w,'i32');
     Module.setValue(out_ptr_height,h,'i32');
 
+    console.log("WIDGET STATS: w-" + w +" h:" + h);
     document.body.removeChild(temp_object);
   },
 
