@@ -80,6 +80,7 @@ void iupdrvButtonAddBorders(Ihandle* ih, int *x, int *y)
 }
 
 extern int emjsButton_CreateButton(void);
+/* extern int emjsButton_CreateWrapper(int button_id); */
 extern void emjsButton_SetTitle(int handle_id, const char* title);
 //extern void emjsButton_SetCallback(int handle_id, Ihandle* ih);
 //extern void emjsButton_SetCallback(int handle_id, intptr_t ih);
@@ -89,6 +90,7 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 {
 #if 1
 	int button_id = 0;
+	/* int wrapper_id = 0; */
 	InativeHandle* new_handle = NULL;
 	char* attribute_value;
 	// TODO: Image button
@@ -103,6 +105,7 @@ static int emscriptenButtonMapMethod(Ihandle* ih)
 	else
 	{
 		button_id = emjsButton_CreateButton();
+    /* wrapper_id = emjsButton_CreateWrapper(button_id); */
 		new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 		new_handle->handleID = button_id;
 		ih->handle = new_handle;
