@@ -44,6 +44,7 @@ var LibraryIupCommon = {
 
     // elem.style.color = 'white';
     elem.style.left = x + 'px';
+    console.log(elem.nodeName);
     console.log("left: " + elem.style.left);
     elem.style.top = y + 'px';
     console.log("top: " + elem.style.top);
@@ -51,10 +52,14 @@ var LibraryIupCommon = {
     // elem.style.width =
     console.log("width: " + width);
     console.log("height: " + height);
-    if (width != 0 && height != 0) {
-      elem.style.width = width;
-      elem.style.height = height;
-    }
+    console.log("actual width: " + elem.style.width);
+    console.log("actual height: " + elem.style.height);
+    // if (width != 0 && height != 0) {
+      elem.style.width = width + 'px';
+      elem.style.height = height + 'px';
+    // }
+    console.log("actual width after: " + elem.style.width);
+    console.log("actual height after: " + elem.style.height);
 
   },
 

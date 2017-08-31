@@ -40,12 +40,13 @@ var LibraryIupFont = {
       temp_object.style.fontFamily = widget_object.style.fontFamily;
       temp_object.style.fontSize = widget_object.style.fontSize;
     }
-    if (widget_object.nodeName == 'button') {
+    // cannot change button's position within div - messes up calculation
+    if (widget_object.nodeName == 'BUTTON') {
       var tmp_button = document.createElement("button");
-      tmp_button.style.position = 'absolute';
       tmp_button.innerHTML = user_str;
       temp_object.appendChild(tmp_button);
     }
+    // need to add new widgets in here to compute size correctly
     else {
       temp_object.innerHTML = user_str;
     }
@@ -56,8 +57,8 @@ var LibraryIupFont = {
 
     temp_object.style.position = 'absolute';
 
-    var w = Math.ceil(temp_object.clientWidth);
-    var h = Math.ceil(temp_object.clientHeight);
+    var w = Math.ceil(temp_object.offsetWidth);
+    var h = Math.ceil(temp_object.offsetHeight);
     Module.setValue(out_ptr_width,w,'i32');
     Module.setValue(out_ptr_height,h,'i32');
 

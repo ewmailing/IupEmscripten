@@ -107,8 +107,8 @@ void IupEntryPoint()
 	Ihandle* button = IupButton("Iup Button", "");
   Ihandle* button2 = IupButton("Callback", "");
   // create test labels
-  Ihandle* testLabel = IupLabel("TestLabel");
-  Ihandle* testLabel2 = IupLabel("TestLabel---2333");
+  Ihandle* testLabel = IupLabel("Iup Button");
+  Ihandle* testLabel2 = IupLabel("Callback");
   Ihandle* testLabel3 = IupLabel("TestLabel----3");
   // create test list
   Ihandle* testList = IupList(NULL);
@@ -147,12 +147,13 @@ void IupEntryPoint()
   // more label-attrib setting, testing in different places (i know its dumb, c is synchronous..)
   IupSetAttribute(testLabel2, "FGCOLOR", "100 255 100");
   IupSetAttribute(testLabel3, "FGCOLOR", "70 70 0");
-  IupSetAttribute(testLabel, "TITLE", "OVERWRITE");
+  /* IupSetAttribute(testLabel, "TITLE", "OVERWRITE"); */
 
-  IupSetAttribute(testLabel2, "TITLE", "CONGRATS");
+  /* IupSetAttribute(testLabel2, "TITLE", "CONGRATS"); */
 
 	Ihandle* vb=IupHbox(button, button2, testLabel, testLabel2, testLabel3, testList, testList2, NULL);
 
+	/* Ihandle* vb=IupHbox(testLabel, button, NULL); */
 	//Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, NULL);
 	IupSetAttribute(vb, "GAP", "10");
 	IupSetAttribute(vb, "MARGIN", "10x10");

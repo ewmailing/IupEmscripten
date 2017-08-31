@@ -57,7 +57,7 @@ EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline_Cb(int handle_id, i
 	Ihandle* ih = iupEmscripten_GetIhandleValueForKey(handle_id);
 
   IFniiiis button_callback = (IFniiiis)IupGetCallback(ih, "BUTTON_CB");
-  if (button_callback) 
+  if (button_callback)
   {
     button_callback(ih, but, pressed, x, y, status);
   }
@@ -75,8 +75,8 @@ EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline_Cb(int handle_id, i
 
 void iupdrvButtonAddBorders(Ihandle* ih, int *x, int *y)
 {
-
-	
+  /* *x += 20; */
+  /* *y += 0; */
 }
 
 extern int emjsButton_CreateButton(void);
