@@ -1250,6 +1250,36 @@ endfunction()
 # Hack: Used to build simple test programs as we bootstrap each new implementation
 if(IUP_USE_EMSCRIPTEN)
 	BUILD_DEV_TEST(dev_test "${CMAKE_SOURCE_DIR}/src/emscripten/test/main_c.c")
+
+	LIST(APPEND IUPBORK_SOURCE
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/SpeechSynth.h
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/SpeechSynthEmscripten.c
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/main_lua.c
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/one.c
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/lpcap.c
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/lpcode.c
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/lpprint.c
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/lptree.c
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/lpvm.c
+#		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/main.lua
+#		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/re.lua
+	)
+
+#SET(IUPBORK_FLAGS "${IUPEXE_C_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup@/main.lua --preload-file ${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup@/re.lua")
+	SET(IUPBORK_FLAGS "${IUPEXE_C_FLAGS}")
+#	SET(IUPBORK_FLAGS "${IUPEXE_C_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/asset_dir")
+	SET(IUPBORK_LINK_FLAGS "${IUPEXE_LINK_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/asset_dir@")
+	# SET(IUPBORK_LINK_FLAGS "${IUPEXE_LINK_FLAGS} -s SAFE_HEAP=1 --preload-file ${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/asset_dir@")
+	HELPER_CREATE_EXECUTABLE(IupBork
+		"${IUPBORK_SOURCE}"
+		"${WANTS_BUILD_SHARED_LIBRARY}"
+		"iup"
+		"${IUP_LINK_LIBRARIES}"
+		"${IUPBORK_FLAGS}"
+		"${IUPBORK_LINK_FLAGS}"
+		""
+	)
+
 elseif(IUP_USE_COCOATOUCH)
 	BUILD_DEV_TEST(dev_test "${CMAKE_SOURCE_DIR}/XcodeiOS/iup/TestApp/main.c")
 elseif(IUP_USE_COCOA)
