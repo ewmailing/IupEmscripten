@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 
 #include "iup.h"
@@ -66,20 +67,60 @@ int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
 
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
-  emjsFont_GetMultiLineStringSize(ih->handle->handleID, str, w, h);
-  iupEmscripten_Log("iupdrvFontGetMultiLineStringSize being called.  Here's an arg: %s", str);
-  return;
+	int32_t tmp_width = 0;
+	int32_t tmp_height = 0;
+	int handle_id = 0;
+
+	if(ih && ih->handle)
+	{
+		handle_id = ih->handle->handleID;
+	}
+
+
+	emjsFont_GetMultiLineStringSize(handle_id, str, &tmp_width, &tmp_height);
+	if(w)
+	{
+		*w = (int)tmp_width;
+	}
+	if(h)
+	{ 
+		*h = (int)tmp_height;
+	}
+
+	iupEmscripten_Log("iupdrvFontGetMultiLineStringSize being called.  Here's an arg: %s", str);
+	return;
 }
 
 int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 {
-  return emjsFont_GetStringWidth(ih->handle->handleID, str);
+	int handle_id = 0;
+	if(ih && ih->handle)
+	{
+		handle_id = ih->handle->handleID;
+	}
+	return emjsFont_GetStringWidth(handle_id, str);
 }
 
 void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
 {
-  emjsFont_GetCharSize(ih->handle->handleID, charwidth, charheight);
-  return;
+	int32_t tmp_width = 0;
+	int32_t tmp_height = 0;
+	int handle_id = 0;
+	if(ih && ih->handle)
+	{
+		handle_id = ih->handle->handleID;
+	}
+
+	emjsFont_GetCharSize(handle_id, &tmp_width, &tmp_height);
+
+	if(charwidth)
+	{
+		*charwidth = (int)tmp_width;
+	}
+	if(charheight)
+	{ 
+		*charheight = (int)tmp_height;
+	}
 }
 
 void iupdrvFontInit(void)
