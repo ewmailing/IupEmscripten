@@ -3,11 +3,6 @@ The purpose of this file is to start up the program and get into Lua.
 Most of the time, you will not need to touch this file.
 */
 
-#if defined(__EMSCRIPTEN__)
-#define BYPASS_DEPENDENCIES 1
-#endif
-
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,133 +32,14 @@ int main(int argc, char* argv[])
 }
 
 
-#if BYPASS_DEPENDENCIES
-extern int luaopen_lpeg(lua_State *L);
-
-#include <stdbool.h>
-	#define BlurrrStdlib_strlcat strlcat
-
-#include <stdarg.h>
-void BlurrrLog_SysLog(const char* fmt, ...)
-{
-	va_list argp;
-	va_start(argp, fmt);
-	vprintf(fmt, argp);
-	puts("\n");
-	va_end(argp);
-}
-
-bool BlurrrCore_Init()
-{
-	return true;
-}
-
-void BlurrrCore_Quit()
-{
-}
-
-void BlurrrLua_Init(lua_State* lua_state)
-{
-}
-
-struct BlurrrFileHandle
-{
-	FILE* fileHandle;
-};
-
-// Not handling errors
-struct BlurrrFileHandle* BlurrrFile_Open(const char* file_name, const char* mode)
-{
-	struct BlurrrFileHandle* blurrr_file_handle = NULL;
-	FILE* fh = fopen(file_name, mode);
-	if(NULL != fh)
-	{
-		blurrr_file_handle = (struct BlurrrFileHandle*)calloc(1, sizeof(struct BlurrrFileHandle));
-		blurrr_file_handle->fileHandle = fh;
-		return blurrr_file_handle;
-	}
-	else
-	{
-		printf("failed to open file\n");
-		return NULL;
-	}
-}
-
-size_t BlurrrFile_Read(struct BlurrrFileHandle* file_handle, char* data_buffer, size_t size, size_t nitems)
-{
-	size_t bytes_read = 0;
-	if(NULL == file_handle)
-	{
-		return -1;
-	}
-	bytes_read = fread(data_buffer, size, nitems, file_handle->fileHandle);
-    if(ferror(file_handle->fileHandle))
-	{
-		printf("Error reading from file.\n");
-	}
-	return bytes_read;
-}
-int BlurrrFile_Close(struct BlurrrFileHandle* file_handle)
-{
-	int ret_val;
-	if(NULL == file_handle)
-	{
-		return 0;
-	}
-
-	ret_val = fclose(file_handle->fileHandle);
-	if(0 != ret_val)
-	{
-		printf("Failed to close\n");
-	}
-	free(file_handle);
-	return ret_val;
-}
-
-
-#include <sys/stat.h>
-size_t BlurrrFile_Size(struct BlurrrFileHandle* file_handle)
-{
-	off_t file_size;
-	char *buffer;
-	struct stat st_buf;
-	int fd;
-	size_t ret_val;
-	fd = fileno(file_handle->fileHandle); 
-	if((fstat(fd, &st_buf) != 0) || (!S_ISREG(st_buf.st_mode)))
-	{
-		printf("Failed to get size\n");
-	}
-
-	ret_val = st_buf.st_size; 
-	return ret_val;
-}
-void BlurrrPath_GetResourceDirectoryString(char* out_buffer, size_t max_buf_len)
-{
-//	out_buffer[0] = '/';
-//	out_buffer[1] = '\0';
-	//strlcpy(out_buffer, "asset_dir/", max_buf_len);
-	strlcpy(out_buffer, "", max_buf_len);
-}
-
- 
-
-
-#else
 #include "BlurrrCore.h"
 #include "BlurrrLua.h"
-#endif
-
 
 #include "SpeechSynth.h"
 
 
 #define MAX_FILE_STRING_LENGTH 2048
 #define MAX_PHRASE_STRING_LENGTH 10000
-
-#if !defined(LUA_VERSION_NUM) || LUA_VERSION_NUM < 502
-# define lua_absindex(L,i) ((i)>0 || (i) <= LUA_REGISTRYINDEX ? (i) : lua_gettop(L) + (i) + 1)
-#endif
 
 
 /* These functions are provided by the various libraries, but don't provide header files.
@@ -252,10 +128,6 @@ void LoadLuaScript()
 	luaopen_ALmixer(lua_state);
 */
 //	luaopen_lpeg(lua_state);
-
-    luaL_requiref(lua_state, "lpeg", luaopen_lpeg, 1);
-    lua_pop(lua_state, 1);  /* remove lib */
-
 	BlurrrLog_SysLog("BlurrrPath_GetResourceDirectoryString");
 
 

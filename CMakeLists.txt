@@ -1262,6 +1262,10 @@ if(IUP_USE_EMSCRIPTEN)
 		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/lpprint.c
 		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/lptree.c
 		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/lpvm.c
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/BlurrrCoreEmscriptenCompat.c
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/BlurrrLuaEmscriptenCompat.c
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/BlurrrCore.h
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/BlurrrLua.h
 #		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/main.lua
 #		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/re.lua
 	)
