@@ -240,6 +240,38 @@ function(HELPER_CREATE_EXECUTABLE exe_name source_file_list is_using_shared_libs
 
 endfunction()
 
+# indirect_link_libs is for static libraries, where all dependencies must be explicitly linked 
+function(HELPER_CREATE_EXECUTABLE_WITH_JS exe_name source_file_list foreign_source_files is_using_shared_libs direct_link_libs indirect_link_libs c_flags link_flags exclude_from_all_target)
+	if(NOT ANDROID)
+	
+		if(exclude_from_all_target)
+			ADD_EXECUTABLE(${exe_name} WIN32 MACOSX_BUNDLE EXCLUDE_FROM_ALL
+				${source_file_list}
+			)
+		else()
+			ADD_EXECUTABLE(${exe_name} WIN32 MACOSX_BUNDLE
+				${source_file_list}
+			)
+		endif()
+
+		IF(EMSCRIPTEN)
+			em_link_js_library(${exe_name} ${foreign_source_files})
+		ENDIF()
+
+		if(is_using_shared_libs)
+			TARGET_LINK_LIBRARIES(${exe_name} ${direct_link_libs})
+		else()
+			TARGET_LINK_LIBRARIES(${exe_name} ${direct_link_libs} ${indirect_link_libs})
+		endif()
+
+		SET_TARGET_PROPERTIES(${exe_name} PROPERTIES
+			COMPILE_FLAGS "${c_flags}"
+			LINK_FLAGS "${link_flags}"
+		)
+
+	endif()
+
+endfunction()
 
 function(HELPER_SETUP_UNINSTALL_TARGET)
 	CONFIGURE_FILE(

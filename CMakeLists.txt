@@ -1269,14 +1269,19 @@ if(IUP_USE_EMSCRIPTEN)
 #		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/main.lua
 #		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/re.lua
 	)
+	LIST(APPEND IUPBORK_FOREIGN_SOURCE
+		${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/SpeechSynthEmscripten.js
+	)
+
 
 #SET(IUPBORK_FLAGS "${IUPEXE_C_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup@/main.lua --preload-file ${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup@/re.lua")
 	SET(IUPBORK_FLAGS "${IUPEXE_C_FLAGS}")
 #	SET(IUPBORK_FLAGS "${IUPEXE_C_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/asset_dir")
 	SET(IUPBORK_LINK_FLAGS "${IUPEXE_LINK_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/asset_dir@")
 	# SET(IUPBORK_LINK_FLAGS "${IUPEXE_LINK_FLAGS} -s SAFE_HEAP=1 --preload-file ${CMAKE_SOURCE_DIR}/src/emscripten/test/BorkIup/asset_dir@")
-	HELPER_CREATE_EXECUTABLE(IupBork
+	HELPER_CREATE_EXECUTABLE_WITH_JS(IupBork
 		"${IUPBORK_SOURCE}"
+		"${IUPBORK_FOREIGN_SOURCE}"
 		"${WANTS_BUILD_SHARED_LIBRARY}"
 		"iup"
 		"${IUP_LINK_LIBRARIES}"
