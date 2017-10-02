@@ -188,7 +188,17 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
   
   // Set element's position on screen
   iupEmscripten_Log("x:%d, y:%d, w:%d, h:%d, id: %d", ih->x,ih->y,ih->currentwidth,ih->currentheight,ih->handle->handleID);
-  emjsCommon_SetPosition(ih->handle->handleID,ih->x,ih->y,ih->currentwidth,ih->currentheight);
+
+  if (ih->handle->isCompound) {
+    for (int i = 0; i < ih->handle->numElemsIfCompound; i++) {
+      emjsCommon_SetPosition(ih->handle->compoundHandleIDArray[i],ih->x,ih->y,ih->currentwidth,ih->currentheight);
+    }
+  }
+  else {
+    emjsCommon_SetPosition(ih->handle->handleID,ih->x,ih->y,ih->currentwidth,ih->currentheight);
+  }
+
+  /* emjsCommon_SetPosition(ih->handle->handleID,ih->x,ih->y,ih->currentwidth,ih->currentheight); */
 
   //TODO Calculate size and return to ih
   

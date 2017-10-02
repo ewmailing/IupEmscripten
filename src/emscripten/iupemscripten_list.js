@@ -19,6 +19,7 @@ var LibraryIupList = {
       // need to create <input> element to bind to <datalist>
       var input_box = document.createElement("datalist");
       var input_id = IupCommon.RegisterNewObject(input_box);
+      IupCommon.InitializeObject(input_box);
       console.log("datalist id = " + input_id);
       num_widgets++;
       {{{ makeSetValue('data', '4', 'input_id', 'i32') }}};
@@ -27,6 +28,8 @@ var LibraryIupList = {
     case 2:
     case 3:
       console.log("multiple or single list");
+      var widget_object = document.createElement("select");
+      widget_object.setAttribute('multiple', 'multiple');
       break;
     case 4:
       break;
@@ -36,6 +39,7 @@ var LibraryIupList = {
 
     // var widget_object = document.createElement("datalist");
     var handle_id = IupCommon.RegisterNewObject(widget_object);
+    IupCommon.InitializeObject(widget_object);
     console.log("input id = " + handle_id);
     num_widgets++;
     {{{ makeSetValue('data', '0', 'handle_id', 'i32') }}};
@@ -72,7 +76,7 @@ var LibraryIupList = {
         return widget_object.length;
       case 1:
         console.log("editboxdropdown");
-        return widget_object.length;
+        return widget_object.options.length;
       case 2:
       case 3:
         console.log("multiple or single list");
@@ -106,12 +110,23 @@ var LibraryIupList = {
       case 2:
       case 3:
         console.log("multiple or single list2");
-        return widget_object.length;
+        var item = document.createElement('option');
+        item.innerHTML = Pointer_stringify(value);
+        widget_object.appendChild(item);
+        return "";
       case 4:
         return "";
       default:
         return 0;
     }
+  },
+
+  emjsListCreateIdValueAttrib: function(handle_id, pos) {
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+    console.log("new thing: " + widget_object.options[pos].text);
+    var ret_str = widget_object.options[pos].text;
+    var c_str = allocate(intArrayFromString(ret_str), 'i8', ALLOC_NORMAL);
+    return c_str;
   }
 };
 

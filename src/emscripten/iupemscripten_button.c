@@ -75,7 +75,8 @@ EMSCRIPTEN_KEEPALIVE void emscriptenButtonCallbackTrampoline_Cb(int handle_id, i
 
 void iupdrvButtonAddBorders(Ihandle* ih, int *x, int *y)
 {
-  /* *x += 20; */
+  // have to add beause system is making button too small in some select cases; look into why? TODO
+  *x += 1;
   /* *y += 0; */
 }
 

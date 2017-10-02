@@ -46,6 +46,7 @@ typedef enum
 extern int emjsList_CreateList(IupEmscriptenListSubType subtype, int32_t arr[], size_t arr_size);
 extern int emjsList_GetCount(int handleID, IupEmscriptenListSubType subType);
 extern void emjsList_AppendItem(int handleID, IupEmscriptenListSubType subType, const char* value);
+extern char* emjsListCreateIdValueAttrib(int handleID, int pos);
 
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
 {
@@ -59,7 +60,7 @@ void iupdrvListAddItemSpace(Ihandle* ih, int *h)
   *h += 2;
 }
 
-static IupEmscriptenListSubType emscriptenListGetSubType(Ihandle* ih)
+EMSCRIPTEN_KEEPALIVE IupEmscriptenListSubType emscriptenListGetSubType(Ihandle* ih)
 {
 	if(ih->data->is_dropdown) {
       if(ih->data->has_editbox) {
@@ -93,28 +94,28 @@ int iupdrvListGetCount(Ihandle* ih)
 
 void iupdrvListAddBorders(Ihandle* ih, int *x, int *y)
 {
-  int border_size = 2*5;
-  (*x) += border_size;
-  (*y) += border_size;
+/*   int border_size = 2*5; */
+/*   (*x) += border_size; */
+/*   (*y) += border_size; */
 
-  if (ih->data->is_dropdown) {
-#ifdef HILDON
-    (*x) += 9; /* extra space for the dropdown button */
-#else
-    (*x) += 5; /*  space for the dropdown button */
-#endif
+/*   if (ih->data->is_dropdown) { */
+/* #ifdef HILDON */
+/*     (*x) += 9; /\* extra space for the dropdown button *\/ */
+/* #else */
+/*     (*x) += 5; /\*  space for the dropdown button *\/ */
+/* #endif */
 
-    if (ih->data->has_editbox)
-      (*x) += 5; /* another extra space for the dropdown button */
-    else {
-      (*y) += 4; /* extra padding space */
-      (*x) += 4; /* extra padding space */
-    }
-  }
-  else {
-    if (ih->data->has_editbox)
-      (*y) += 2*3; /* internal border between editbox and list */
-  }
+/*     if (ih->data->has_editbox) */
+/*       (*x) += 5; /\* another extra space for the dropdown button *\/ */
+/*     else { */
+/*       (*y) += 4; /\* extra padding space *\/ */
+/*       (*x) += 4; /\* extra padding space *\/ */
+/*     } */
+/*   } */
+/*   else { */
+/*     if (ih->data->has_editbox) */
+/*       (*y) += 2*3; /\* internal border between editbox and list *\/ */
+/*   } */
 }
 void iupdrvListAppendItem(Ihandle* ih, const char* value)
 {
@@ -150,6 +151,19 @@ int iupdrvListSetImageHandle(Ihandle* ih, int id, void* hImage)
 {
 
   return 0;
+}
+
+static char* emscriptenListGetIdValueAttrib(Ihandle* ih, int id_value)
+{
+	int pos = iupListGetPosAttrib(ih, id_value);
+	if(pos >= 0)
+	{
+    char* c_str = emjsListCreateIdValueAttrib(ih->handle->handleID, pos);
+    char* iup_str = iupStrReturnStr(c_str);
+    free(c_str);
+    return iup_str;
+	}
+	return NULL;
 }
 
 
@@ -335,6 +349,12 @@ void iupdrvListInitClass(Iclass* ic)
   /* Driver Dependent Class functions */
 	ic->Map = emscriptenListMapMethod;
 	ic->UnMap = emscriptenListUnMapMethod;
+
+
+  iupClassRegisterAttributeId(ic, "IDVALUE", emscriptenListGetIdValueAttrib, iupListSetIdValueAttrib, IUPAF_NO_INHERIT);
+  /* iupClassRegisterAttribute(ic, "VALUE", gtkListGetValueAttrib, gtkListSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT); */
+  /* iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, gtkListSetShowDropdownAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT); */
+
 #if 0
 
   /* Driver Dependent Attribute functions */

@@ -25,9 +25,11 @@ Ihandle* iupEmscripten_GetIhandleValueForKey(int handle_id);
 extern void emjsCommon_Alert(const char* message);
 void iupEmscripten_Log(const char* restrict format, ...);
 
+/* extern void emjsCommon_SetPosition(int handle_id, int x, int y, int height, int width); */
+
 #if 0
 /* global variables, declared in iupmac_globalattrib.c */
-extern int iupmac_utf8autoconvert;         
+extern int iupmac_utf8autoconvert;
 
 
 /* common */

@@ -29,86 +29,159 @@
 
 #include "iupemscripten_drv.h"
 
+typedef enum
+  {
+    IUPEMSCRIPTENTEXTSUBTYPE_UNKNOWN = -1,
+    IUPEMSCRIPTENTEXTSUBTYPE_FIELD,
+    IUPEMSCRIPTENTEXTSUBTYPE_TEXTAREA,
+    IUPEMSCRIPTENTEXTSUBTYPE_STEPPER,
+  } IupEmscriptenTextSubType;
 
 
+static IupEmscriptenTextSubType emscriptenTextGetSubType(Ihandle* ih)
+{
+  if(ih->data->is_multiline)
+    {
+      return IUPCOCOATEXTSUBTYPE_VIEW;
+    }
+	else if(iupAttribGetBoolean(ih, "SPIN"))
+    {
+      return IUPCOCOATEXTSUBTYPE_STEPPER;
+    }
+	else
+    {
+      return IUPCOCOATEXTSUBTYPE_FIELD;
+    }
+	return IupCocoaTextSubType_UNKNOWN;
+}
 
 void iupdrvTextAddSpin(Ihandle* ih, int *w, int h)
 {
 
-	
 }
 
 void iupdrvTextAddBorders(Ihandle* ih, int *x, int *y)
 {
 
-	
 }
 
 
 void iupdrvTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
 {
- 
+
 }
 
 void iupdrvTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
 {
 
-	
 }
 
 
 
 void* iupdrvTextAddFormatTagStartBulk(Ihandle* ih)
 {
-	
-	
   return NULL;
 }
 
 void iupdrvTextAddFormatTagStopBulk(Ihandle* ih, void* state)
 {
 
-	
 }
 
 void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag, int bulk)
 {
 
-	
+}
+
+static char* emscriptenTextGetValueAttrib(Ihandle* ih)
+{
+	char* value;
+
+	IupEmscriptenTextSubType sub_type = emscriptenTextGetSubType(ih);
+	switch(sub_type)
+    {
+		case IUPEMSCRIPTENTEXTSUBTYPE_TEXTAREA:
+      {
+        // multi-line text box
+        // call into js, and get the text string from the text widget
+        NSTextView* text_view = cocoaTextGetTextView(ih);
+        NSCAssert([text_view isKindOfClass:[NSTextView class]], @"Expected NSTextView");
+
+        NSString* ns_string = [[text_view textStorage] string];
+        value = iupStrReturnStr([ns_string UTF8String]);
+
+        break;
+      }
+		case IUPCOCOATEXTSUBTYPE_FIELD:
+      {
+        // single line input
+        NSTextField* text_field = cocoaTextGetTextField(ih);
+        NSCAssert([text_field isKindOfClass:[NSTextField class]], @"Expected NSTextField");
+
+        NSString* ns_string = [text_field stringValue];
+        value = iupStrReturnStr([ns_string UTF8String]);
+
+        break;
+      }
+		case IUPCOCOATEXTSUBTYPE_STEPPER:
+      {
+        break;
+      }
+		default:
+      {
+        break;
+      }
+    }
+
+	if(NULL == value)
+    {
+      value = "";
+    }
+
+	return value;
 }
 
 
-
+static int emscriptenTextSetValueAttrib(Ihandle* ih, const char* value)
+{
+  emjsLabel_SetBGColor(7, "red");
+  return 1;
+}
 
 static int emscriptenTextMapMethod(Ihandle* ih)
 {
+  int text_id = 0;
+  InativeHandle* new_handle = NULL;
+
+  text_id = emjsText_CreateText();
+  new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
+
+  new_handle->handleID = text_id;
+  ih->handle = new_handle;
+
+  iupEmscripten_SetIntKeyForIhandleValue(text_id, ih);
+
 #if 0
 	NSView* the_view;
-	
 
-	
+
+
 	if (ih->data->is_multiline)
 	{
 //		NSTextView* text_view = [[NSTextView alloc] initWithFrame:NSZeroRect];
 		NSTextView* text_view = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 0, 400, 400)];
 		the_view = text_view;
-		
 
 		int wordwrap = 0;
-		
 
 
-		
 		/* formatting is always supported when MULTILINE=YES */
 		ih->data->has_formatting = 1;
-		
+
 		if (iupAttribGetBoolean(ih, "WORDWRAP"))
 		{
 			wordwrap = 1;
 			ih->data->sb &= ~IUP_SB_HORIZ;  /* must remove the horizontal scroolbar */
-			
-			
-
 		}
 		else
 		{
@@ -117,51 +190,41 @@ static int emscriptenTextMapMethod(Ihandle* ih)
 			[text_view setMaxSize:layout_size];
 			[[text_view textContainer] setWidthTracksTextView:NO];
 			[[text_view textContainer] setContainerSize:layout_size];
-			
 		}
-		
 	}
 	else
 	{
 		NSTextField* text_field;
-		
-		
 		// IMPORTANT: Secure text fields are not togglable in emscripten
 		// It might be fakeable, however, since this is security related, mucking with it is ill-advised.
 		// Also Mac App Store may reject ill-advised things.
 		if(iupAttribGetBoolean(ih, "PASSWORD"))
 		{
-
 			//text_field = [[NSSecureTextField alloc] initWithFrame:NSZeroRect];
 			text_field = [[NSSecureTextField alloc] initWithFrame:NSMakeRect(0, 0, 140, 40)];
-			
 		}
 		else
 		{
-			
 			//text_field = [[NSTextField alloc] initWithFrame:NSZeroRect];
 			text_field = [[NSTextField alloc] initWithFrame:NSMakeRect(50, 50, 140, 40)];
-			
-			
 		}
 		the_view = text_field;
 
 
 		[text_field setPlaceholderString:@"Placeholder Text"];
-		
+
 		if(iupAttribGetBoolean(ih, "SPIN"))
 		{
 			// TODO: NSStepper
-			
 			/*
 			gtk_spin_button_set_numeric((GtkSpinButton*)ih->handle, FALSE);
 			gtk_spin_button_set_digits((GtkSpinButton*)ih->handle, 0);
-			
+
 			gtk_spin_button_set_wrap((GtkSpinButton*)ih->handle, iupAttribGetBoolean(ih, "SPINWRAP"));
-			
+
 			g_signal_connect(G_OBJECT(ih->handle), "value-changed", G_CALLBACK(gtkTextSpinValueChanged), ih);
 			g_signal_connect(G_OBJECT(ih->handle), "output", G_CALLBACK(gtkTextSpinOutput), ih);
-			
+
 			if (!iupAttribGetBoolean(ih, "SPINAUTO"))
 			{
 				g_signal_connect(G_OBJECT(ih->handle), "input", G_CALLBACK(gtkTextSpinInput), ih);
@@ -171,26 +234,17 @@ static int emscriptenTextMapMethod(Ihandle* ih)
 		}
 		else
 		{
-			
 		}
-		
 
 		/* formatting is never supported when MULTILINE=NO */
 		ih->data->has_formatting = 0;
-		
-		
 //		[text_field sizeToFit];
 
 
 	}
-	
-	
-	
-	
-	
-	
+
 	ih->handle = the_view;
-	
+
 #if 0
 	// I'm using objc_setAssociatedObject/objc_getAssociatedObject because it allows me to avoid making subclasses just to hold ivars.
 	objc_setAssociatedObject(the_toggle, IHANDLE_ASSOCIATED_OBJ_KEY, (id)ih, OBJC_ASSOCIATION_ASSIGN);
@@ -206,29 +260,25 @@ static int emscriptenTextMapMethod(Ihandle* ih)
 	// However, the fact that this is tricky and I had to look up the rules (not to mention worrying about retain cycles)
 	// makes me think I should just explicitly manage the memory so everybody is aware of what's going on.
 	objc_setAssociatedObject(the_toggle, IUP_emscripten_TOGGLE_RECEIVER_OBJ_KEY, (id)toggle_receiver, OBJC_ASSOCIATION_ASSIGN);
-	
+
 #endif
 	// All emscripten views shoud call this to add the new view to the parent view.
 	iupemscriptenAddToParent(ih);
-	
-	
-
 
 #if 0
 	/* configure for DRAG&DROP */
 	if (IupGetCallback(ih, "DROPFILES_CB"))
 		iupAttribSet(ih, "DROPFILESTARGET", "YES");
-	
+
 	/* update a mnemonic in a label if necessary */
 	iupgtkUpdateMnemonic(ih);
-	
+
 	if (ih->data->formattags)
 		iupTextUpdateFormatTags(ih);
 #endif
 
 #endif
-		
-	
+
 	return IUP_NOERROR;
 }
 
@@ -245,7 +295,7 @@ static void emscriptenTextUnMapMethod(Ihandle* ih)
 	[the_view release];
 	ih->handle = NULL;
 #endif
-	
+
 }
 
 
@@ -255,6 +305,7 @@ void iupdrvTextInitClass(Iclass* ic)
   ic->Map = emscriptenTextMapMethod;
 	ic->UnMap = emscriptenTextUnMapMethod;
 
+  iupClassRegisterAttribute(ic, "VALUE", emscriptenTextGetValueAttrib, emscriptenTextSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 #if 0
 
   /* Driver Dependent Attribute functions */
@@ -302,5 +353,5 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "CUEBANNER", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTER", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
 #endif
-	
+
 }
