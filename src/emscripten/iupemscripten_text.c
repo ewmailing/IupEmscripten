@@ -37,7 +37,7 @@ typedef enum
     IUPEMSCRIPTENTEXTSUBTYPE_STEPPER,
   } IupEmscriptenTextSubType;
 
-
+/*
 static IupEmscriptenTextSubType emscriptenTextGetSubType(Ihandle* ih)
 {
   if(ih->data->is_multiline)
@@ -54,6 +54,7 @@ static IupEmscriptenTextSubType emscriptenTextGetSubType(Ihandle* ih)
     }
 	return IupCocoaTextSubType_UNKNOWN;
 }
+*/
 
 void iupdrvTextAddSpin(Ihandle* ih, int *w, int h)
 {
@@ -97,7 +98,8 @@ static char* emscriptenTextGetValueAttrib(Ihandle* ih)
 {
 	char* value;
 
-	IupEmscriptenTextSubType sub_type = emscriptenTextGetSubType(ih);
+	/* IupEmscriptenTextSubType sub_type = emscriptenTextGetSubType(ih); */
+  /*
 	switch(sub_type)
     {
 		case IUPEMSCRIPTENTEXTSUBTYPE_TEXTAREA:
@@ -139,12 +141,13 @@ static char* emscriptenTextGetValueAttrib(Ihandle* ih)
     }
 
 	return value;
+  */
 }
 
 
 static int emscriptenTextSetValueAttrib(Ihandle* ih, const char* value)
 {
-  emjsLabel_SetBGColor(7, "red");
+  /* emjsLabel_SetBGColor(7, "red"); */
   return 1;
 }
 
@@ -153,7 +156,7 @@ static int emscriptenTextMapMethod(Ihandle* ih)
   int text_id = 0;
   InativeHandle* new_handle = NULL;
 
-  text_id = emjsText_CreateText();
+  /* text_id = emjsText_CreateText(); */
   new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 
   new_handle->handleID = text_id;
