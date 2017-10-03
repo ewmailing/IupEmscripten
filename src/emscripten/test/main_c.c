@@ -146,6 +146,9 @@ void IupEntryPoint()
                    "EDITBOX=NO, DROPDOWN=NO, MULTIPLE=YES, VALUE=\"Edit Here\", NAME=list1");
                    /* "DROPDOWN=YES, NAME=testList2"); */
 
+  Ihandle* testText2 = IupText(NULL);
+  /* IupSetAttribute(testText2, "SIZE", "200x"); */
+
   /* IupSetAttribute(testList, "DRAGSOURCE", "YES"); */
   /* IupSetAttribute(testList, "DRAGTYPES", "ITEMLIST"); */
 
@@ -176,7 +179,7 @@ void IupEntryPoint()
 
   /* IupSetAttribute(testLabel2, "TITLE", "CONGRATS"); */
 
-	Ihandle* vb=IupHbox(button, button2, testLabel, testLabel2, testLabel3, testList, testList2, NULL);
+	Ihandle* vb=IupHbox(button, button2, testLabel, testLabel2, testLabel3, testList, testText2, testList2, NULL);
 
 	/* Ihandle* vb=IupHbox(testList, NULL); */
 

@@ -504,6 +504,7 @@ IF(IUP_USE_EMSCRIPTEN)
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_list.js
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_font.js
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_frame.js
+		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_text.js
 	)
 
 	LIST(APPEND IUP_SOURCE_FILES
@@ -531,9 +532,10 @@ IF(IUP_USE_EMSCRIPTEN)
 
 
 	SET(IUPWEB_EMSCRIPTEN_SOURCE_FILES
-		# TODO:
+		${CMAKE_SOURCE_DIR}/srcweb/iupemscripten_webbrowser.c
 	)
-	SET(IUPWEB_EMSCRIPTEN_FOREIGN_SOURCE_FILES 
+	SET(IUPWEB_EMSCRIPTEN_FOREIGN_SOURCE_FILES
+		${CMAKE_SOURCE_DIR}/srcweb/iupemscripten_webbrowser.js
 	)
 
 	LIST(APPEND IUPWEB_SOURCE_FILES
@@ -543,7 +545,7 @@ IF(IUP_USE_EMSCRIPTEN)
 		${IUPWEB_EMSCRIPTEN_FOREIGN_SOURCE_FILES}
 	)
 
-	SET(IUP_SHOULD_BUILD_IUPWEB FALSE)
+	SET(IUP_SHOULD_BUILD_IUPWEB TRUE)
 
 
 ELSEIF(IUP_USE_ANDROID)

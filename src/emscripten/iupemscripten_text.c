@@ -37,24 +37,30 @@ typedef enum
     IUPEMSCRIPTENTEXTSUBTYPE_STEPPER,
   } IupEmscriptenTextSubType;
 
-/*
+extern int emjsText_CreateText(IupEmscriptenTextSubType subtype);
+extern char* emjsText_GetText(int handle_id);
+extern void emjsText_SetText(int handle_id, const char* text);
+
 static IupEmscriptenTextSubType emscriptenTextGetSubType(Ihandle* ih)
 {
   if(ih->data->is_multiline)
     {
-      return IUPCOCOATEXTSUBTYPE_VIEW;
+      iupEmscripten_Log("*** Type is textarea ***");
+      return IUPEMSCRIPTENTEXTSUBTYPE_TEXTAREA;
     }
 	else if(iupAttribGetBoolean(ih, "SPIN"))
     {
-      return IUPCOCOATEXTSUBTYPE_STEPPER;
+      iupEmscripten_Log("*** Type is spin ***");
+      return IUPEMSCRIPTENTEXTSUBTYPE_STEPPER;
     }
 	else
     {
-      return IUPCOCOATEXTSUBTYPE_FIELD;
+      iupEmscripten_Log("*** Type is input ***");
+      return IUPEMSCRIPTENTEXTSUBTYPE_FIELD;
     }
-	return IupCocoaTextSubType_UNKNOWN;
+  iupEmscripten_Log("*** Type is UNKNOWN ***");
+	return IUPEMSCRIPTENTEXTSUBTYPE_UNKNOWN;
 }
-*/
 
 void iupdrvTextAddSpin(Ihandle* ih, int *w, int h)
 {
@@ -98,57 +104,48 @@ static char* emscriptenTextGetValueAttrib(Ihandle* ih)
 {
 	char* value;
 
-	/* IupEmscriptenTextSubType sub_type = emscriptenTextGetSubType(ih); */
-  /*
+	IupEmscriptenTextSubType sub_type = emscriptenTextGetSubType(ih);
+
 	switch(sub_type)
-    {
+  {
 		case IUPEMSCRIPTENTEXTSUBTYPE_TEXTAREA:
-      {
-        // multi-line text box
-        // call into js, and get the text string from the text widget
-        NSTextView* text_view = cocoaTextGetTextView(ih);
-        NSCAssert([text_view isKindOfClass:[NSTextView class]], @"Expected NSTextView");
-
-        NSString* ns_string = [[text_view textStorage] string];
-        value = iupStrReturnStr([ns_string UTF8String]);
-
-        break;
-      }
-		case IUPCOCOATEXTSUBTYPE_FIELD:
-      {
-        // single line input
-        NSTextField* text_field = cocoaTextGetTextField(ih);
-        NSCAssert([text_field isKindOfClass:[NSTextField class]], @"Expected NSTextField");
-
-        NSString* ns_string = [text_field stringValue];
-        value = iupStrReturnStr([ns_string UTF8String]);
-
-        break;
-      }
-		case IUPCOCOATEXTSUBTYPE_STEPPER:
-      {
-        break;
-      }
-		default:
-      {
-        break;
-      }
+    case IUPEMSCRIPTENTEXTSUBTYPE_FIELD:
+    {
+      // single or multi-line text box
+      // call into js, and get the user input from the text widget
+      // iupStrReturnStr makes a copy of string and puts into memory that IUP manages
+      char* c_str = emjsText_GetText(ih->handle->handleID);
+      char* iup_str = iupStrReturnStr(c_str);
+      free(c_str);
+      break;
     }
+		case IUPEMSCRIPTENTEXTSUBTYPE_STEPPER:
+    {
+      break;
+    }
+		default:
+    {
+      break;
+    }
+  }
 
-	if(NULL == value)
+	if (value == NULL)
     {
       value = "";
     }
 
 	return value;
-  */
 }
 
 
 static int emscriptenTextSetValueAttrib(Ihandle* ih, const char* value)
 {
-  /* emjsLabel_SetBGColor(7, "red"); */
-  return 1;
+  if (value == NULL) {
+    value = "";
+  }
+
+  emjsText_SetText(ih->handle->handleID, value);
+  return 0;
 }
 
 static int emscriptenTextMapMethod(Ihandle* ih)
@@ -156,7 +153,8 @@ static int emscriptenTextMapMethod(Ihandle* ih)
   int text_id = 0;
   InativeHandle* new_handle = NULL;
 
-  /* text_id = emjsText_CreateText(); */
+  IupEmscriptenTextSubType sub_type = emscriptenTextGetSubType(ih);
+  text_id = emjsText_CreateText(sub_type);
   new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 
   new_handle->handleID = text_id;
