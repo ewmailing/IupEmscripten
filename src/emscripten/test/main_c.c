@@ -147,6 +147,8 @@ void IupEntryPoint()
                    /* "DROPDOWN=YES, NAME=testList2"); */
 
   Ihandle* testText2 = IupText(NULL);
+  IupSetAttribute(testText2, "VALUE", "IupText works");
+  IupSetAttribute(testText2, "READONLY", "YES");
   /* IupSetAttribute(testText2, "SIZE", "200x"); */
 
   /* IupSetAttribute(testList, "DRAGSOURCE", "YES"); */
@@ -181,7 +183,7 @@ void IupEntryPoint()
 
 	Ihandle* vb=IupHbox(button, button2, testLabel, testLabel2, testLabel3, testList, testText2, testList2, NULL);
 
-	/* Ihandle* vb=IupHbox(testList, NULL); */
+	/* Ihandle* vb=IupHbox(testText2, NULL); */
 
 	/* IupSetAttribute(vb, "GAP", "10"); */
 	/* IupSetAttribute(vb, "MARGIN", "10x10"); */

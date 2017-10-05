@@ -12,6 +12,8 @@ var LibraryIupText = {
     if (subType === 0) widget_object = document.createElement("input");
     else if (subType === 1) widget_object = document.createElement("textarea");
 
+    widget_object.type = 'text';
+
     var handle_id = IupCommon.RegisterNewObject(widget_object);
     IupCommon.InitializeObject(widget_object);
     return handle_id;
@@ -34,10 +36,20 @@ var LibraryIupText = {
 
   emjsText_SetText: function(handle_id, text) {
     var widget_object = IupCommon.GetObjectForID(handle_id);
-    if(widget_object)
+    if (widget_object)
     {
       widget_object.value = Pointer_stringify(text);
     }
+  },
+
+  emjsText_GetReadOnly: function(handle_id) {
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+    return widget_object.readOnly;
+  },
+
+  emjsText_SetReadOnly: function(handle_id, is_readonly) {
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+    widget_object.readOnly = is_readonly;
   }
 
 };

@@ -30,16 +30,19 @@
 #include "iupemscripten_drv.h"
 
 typedef enum
-  {
-    IUPEMSCRIPTENTEXTSUBTYPE_UNKNOWN = -1,
-    IUPEMSCRIPTENTEXTSUBTYPE_FIELD,
-    IUPEMSCRIPTENTEXTSUBTYPE_TEXTAREA,
-    IUPEMSCRIPTENTEXTSUBTYPE_STEPPER,
-  } IupEmscriptenTextSubType;
+{
+  IUPEMSCRIPTENTEXTSUBTYPE_UNKNOWN = -1,
+  IUPEMSCRIPTENTEXTSUBTYPE_FIELD,
+  IUPEMSCRIPTENTEXTSUBTYPE_TEXTAREA,
+  IUPEMSCRIPTENTEXTSUBTYPE_STEPPER,
+} IupEmscriptenTextSubType;
 
 extern int emjsText_CreateText(IupEmscriptenTextSubType subtype);
 extern char* emjsText_GetText(int handle_id);
 extern void emjsText_SetText(int handle_id, const char* text);
+extern void emjsText_DestroyText(int handle_id);
+extern _Bool emjsText_GetReadOnly(int handle_id);
+extern void emjsText_SetReadOnly(int handle_id, _Bool is_readonly);
 
 static IupEmscriptenTextSubType emscriptenTextGetSubType(Ihandle* ih)
 {
@@ -148,6 +151,60 @@ static int emscriptenTextSetValueAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* emscriptenTextGetReadOnlyAttrib(Ihandle* ih)
+{
+	_Bool is_readonly;
+
+	IupEmscriptenTextSubType sub_type = emscriptenTextGetSubType(ih);
+	switch(sub_type)
+  {
+		case IUPEMSCRIPTENTEXTSUBTYPE_TEXTAREA:
+    case IUPEMSCRIPTENTEXTSUBTYPE_FIELD:
+    {
+      is_readonly = emjsText_GetReadOnly(ih->handle->handleID);
+      break;
+    }
+		case IUPEMSCRIPTENTEXTSUBTYPE_STEPPER:
+    {
+      break;
+    }
+		default:
+    {
+      break;
+    }
+  }
+
+	return iupStrReturnBoolean(is_readonly);
+}
+
+static int emscriptenTextSetReadOnlyAttrib(Ihandle* ih, const char* value)
+{
+	_Bool is_readonly = (_Bool)iupStrBoolean(value);
+
+	IupEmscriptenTextSubType sub_type = emscriptenTextGetSubType(ih);
+	switch(sub_type)
+  {
+		case IUPEMSCRIPTENTEXTSUBTYPE_TEXTAREA:
+		case IUPEMSCRIPTENTEXTSUBTYPE_FIELD:
+    {
+      emjsText_SetReadOnly(ih->handle->handleID, is_readonly);
+      break;
+    }
+		case IUPEMSCRIPTENTEXTSUBTYPE_STEPPER:
+    {
+      break;
+    }
+		default:
+    {
+      break;
+    }
+  }
+
+	return 0;
+}
+
+// TODO: just need to do CUEBANNER to complete necessary attributes 
+
 static int emscriptenTextMapMethod(Ihandle* ih)
 {
   int text_id = 0;
@@ -161,6 +218,8 @@ static int emscriptenTextMapMethod(Ihandle* ih)
   ih->handle = new_handle;
 
   iupEmscripten_SetIntKeyForIhandleValue(text_id, ih);
+
+  iupEmscripten_AddWidgetToParent(ih);
 
 #if 0
 	NSView* the_view;
@@ -286,6 +345,14 @@ static int emscriptenTextMapMethod(Ihandle* ih)
 
 static void emscriptenTextUnMapMethod(Ihandle* ih)
 {
+
+	if (ih && ih->handle) {
+    iupEmscripten_RemoveIntKeyFromIhandleMap(ih->handle->handleID);
+    emjsText_DestroyText(ih->handle->handleID);
+    free(ih->handle);
+    ih->handle = NULL;
+  }
+
 #if 0
 	id the_view = ih->handle;
 	/*
@@ -307,8 +374,11 @@ void iupdrvTextInitClass(Iclass* ic)
 	ic->UnMap = emscriptenTextUnMapMethod;
 
   iupClassRegisterAttribute(ic, "VALUE", emscriptenTextGetValueAttrib, emscriptenTextSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-#if 0
+  iupClassRegisterAttribute(ic, "READONLY", emscriptenTextGetReadOnlyAttrib, emscriptenTextSetReadOnlyAttrib, NULL, NULL, IUPAF_DEFAULT);
+  // still need to implement CUEBANNER
+  /* iupClassRegisterAttribute(ic, "CUEBANNER", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT); */
 
+#if 0
   /* Driver Dependent Attribute functions */
 
   /* Visual */
@@ -319,7 +389,6 @@ void iupdrvTextInitClass(Iclass* ic)
 
   /* IupText only */
   iupClassRegisterAttribute(ic, "PADDING", iupTextGetPaddingAttrib, gtkTextSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "VALUE", gtkTextGetValueAttrib, gtkTextSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LINEVALUE", gtkTextGetLineValueAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTEDTEXT", gtkTextGetSelectedTextAttrib, gtkTextSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTION", gtkTextGetSelectionAttrib, gtkTextSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
@@ -328,7 +397,6 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "CARETPOS", gtkTextGetCaretPosAttrib, gtkTextSetCaretPosAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "INSERT", NULL, gtkTextSetInsertAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "APPEND", NULL, gtkTextSetAppendAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "READONLY", gtkTextGetReadOnlyAttrib, gtkTextSetReadOnlyAttrib, NULL, NULL, IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "NC", iupTextGetNCAttrib, gtkTextSetNCAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, gtkTextSetClipboardAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTO", NULL, gtkTextSetScrollToAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
