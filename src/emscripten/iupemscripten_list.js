@@ -7,36 +7,44 @@ var LibraryIupList = {
 
 
   emjsList_CreateList: function(sub_type, data, arr_size) {
-    console.log("Createlist subtype: ");
-    console.log(sub_type);
     var num_widgets = 0;
+
     switch (sub_type) {
-    case 0:
-      console.log("dropdown");
-      var widget_object = document.createElement("select");
-      break;
-    case 1:
-      // need to create <input> element to bind to <datalist>
-      var input_box = document.createElement("datalist");
-      var input_id = IupCommon.RegisterNewObject(input_box);
-      console.log("datalist id = " + input_id);
-      num_widgets++;
-      {{{ makeSetValue('data', '4', 'input_id', 'i32') }}};
-      var widget_object = document.createElement("input");
-      break;
-    case 2:
-    case 3:
-      console.log("multiple or single list");
-      break;
-    case 4:
-      break;
-    default:
-      break;
+      case 0:
+        // dropdown
+        var widget_object = document.createElement("select");
+        break;
+
+      case 1:
+        // editbox+dropdown
+        // need to create <input> element to bind to <datalist>
+        var input_box = document.createElement("datalist");
+        var input_id = IupCommon.RegisterNewObject(input_box);
+        IupCommon.InitializeObject(input_box);
+        num_widgets++;
+
+        // sets the data attribute, which binds the <input> to the <datalist>
+        {{{ makeSetValue('data', '4', 'input_id', 'i32') }}};
+        var widget_object = document.createElement("input");
+        break;
+
+      case 2:
+      case 3:
+        // multiple or single list
+        var widget_object = document.createElement("select");
+        widget_object.setAttribute('multiple', 'multiple');
+        break;
+
+      case 4:
+        break;
+
+      default:
+        break;
     }
 
     // var widget_object = document.createElement("datalist");
     var handle_id = IupCommon.RegisterNewObject(widget_object);
-    console.log("input id = " + handle_id);
+    IupCommon.InitializeObject(widget_object);
     num_widgets++;
     {{{ makeSetValue('data', '0', 'handle_id', 'i32') }}};
 
@@ -46,7 +54,6 @@ var LibraryIupList = {
       input_box.id = 'list_' + input_id;
     }
     else widget_object.id = 'list_' + handle_id;
-    console.log("NUM WIDGETS: " + num_widgets);
     return num_widgets;
   },
 
@@ -67,15 +74,14 @@ var LibraryIupList = {
     var widget_object = IupCommon.GetObjectForID(handle_id);
     switch (sub_type) {
       case 0:
-        console.log("dropdown");
-        console.log(widget_object.length);
+        // dropdown
         return widget_object.length;
       case 1:
-        console.log("editboxdropdown");
-        return widget_object.length;
+        // editbox+dropdown
+        return widget_object.options.length;
       case 2:
       case 3:
-        console.log("multiple or single list");
+        // multiple or single list
         return widget_object.length;
       case 4:
         return "";
@@ -86,32 +92,39 @@ var LibraryIupList = {
 
   emjsList_AppendItem: function(handle_id, sub_type, value) {
     var widget_object = IupCommon.GetObjectForID(handle_id);
-    console.log("widget object check: ");
-    console.log(widget_object);
 
     switch (sub_type) {
       case 0:
-        console.log("dropdown2");
-        console.log(value);
+        // dropdown
         var item = document.createElement('option');
         item.innerHTML = Pointer_stringify(value);
         widget_object.appendChild(item);
         return "";
       case 1:
-        console.log("editboxdropdown2");
+        // editbox+dropdown
         var item = document.createElement('option');
         item.innerHTML = Pointer_stringify(value);
         widget_object.appendChild(item);
         return "";
       case 2:
       case 3:
-        console.log("multiple or single list2");
-        return widget_object.length;
+        // multiple or single list
+        var item = document.createElement('option');
+        item.innerHTML = Pointer_stringify(value);
+        widget_object.appendChild(item);
+        return "";
       case 4:
         return "";
       default:
         return 0;
     }
+  },
+
+  emjsListCreateIdValueAttrib: function(handle_id, pos) {
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+    var ret_str = widget_object.options[pos].text;
+    var c_str = allocate(intArrayFromString(ret_str), 'i8', ALLOC_NORMAL);
+    return c_str;
   }
 };
 

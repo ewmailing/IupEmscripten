@@ -95,6 +95,28 @@ void testConfigFile()
 
 }
 
+Ihandle* DropDownListTest(void)
+{
+  Ihandle* list2;
+
+  list2 = IupList(NULL);
+  //IupSetAttributes(list2, "1=\"Banana\", 2=\"Apple\", 3=\"Orange\", 4=\"Strawberry Shortcake vs. B. Pudding\", 5=\"Grape\","
+  // "DROPDOWN=YES, NAME=list2, TIP=Drop, XXX_VALUE=2, XXX_SORT=YES, XXX_BGCOLOR=\"192 64 192\"");
+  IupSetAttributes(list2,"1=\"Banana\", 2=\"Apple\", 3=\"Orange\", 4=\"Strawberry Shortcake vs. B. Pudding\", 5=\"Grape\","
+                   "DROPDOWN=NO, EDITBOX=NO, MULTIPLE=YES, TIP=List, NAME=list2");
+  //set_callbacks(list2);
+
+  Ihandle* dialog = IupDialog(list2);
+  IupShow(dialog);
+
+  return dialog;
+}
+
+/* void IupEntryPoint() */
+/* { */
+/*   DropDownListTest(); */
+/* } */
+
 void IupEntryPoint()
 {
 
@@ -112,14 +134,22 @@ void IupEntryPoint()
   Ihandle* testLabel3 = IupLabel("TestLabel----3");
   // create test list
   Ihandle* testList = IupList(NULL);
-  IupSetAttributes(testList, "1=Gold, 2=Silver, 3=Bronze, 4=Latão, 5=None,"
-                          "DROPDOWN=YES, NAME=testList");
+  /* IupSetAttributes(testList, "1=Gold, 2=Silver, 3=Bronze, 4=Latão, 5=None," */
+  /*                         "DROPDOWN=YES, NAME=testList"); */
+
+  IupSetAttributes(testList, "1=Measurements,"
+                   "DROPDOWN=YES, NAME=testList");
   Ihandle* testList2 = IupList(NULL);
   /* IupSetAttributes(testList2, "1=Gold, 2=Silver, 3=Bronze, 4=Latão, 5=None," */
   /*                  "DROPDOWN=YES, EDITBOX=YES, NAME=testList2"); */
   IupSetAttributes(testList2, "1=\"US$ 1000\", 2=\"US$ 2000\", 3=\"US$ 300.000.000\", 4=\"Strawberry Shortcake vs. B. Pudding\","
-                   "EDITBOX=YES, DROPDOWN=YES, TIP=Edit+Drop, VALUE=\"Edit Here\", NAME=list1");
+                   "EDITBOX=NO, DROPDOWN=NO, MULTIPLE=YES, VALUE=\"Edit Here\", NAME=list1");
                    /* "DROPDOWN=YES, NAME=testList2"); */
+
+  Ihandle* testText2 = IupText(NULL);
+  IupSetAttribute(testText2, "VALUE", "IupText works");
+  IupSetAttribute(testText2, "READONLY", "YES");
+  /* IupSetAttribute(testText2, "SIZE", "200x"); */
 
   /* IupSetAttribute(testList, "DRAGSOURCE", "YES"); */
   /* IupSetAttribute(testList, "DRAGTYPES", "ITEMLIST"); */
@@ -151,19 +181,18 @@ void IupEntryPoint()
 
   /* IupSetAttribute(testLabel2, "TITLE", "CONGRATS"); */
 
-	Ihandle* vb=IupHbox(button, button2, testLabel, testLabel2, testLabel3, testList, testList2, NULL);
+	Ihandle* vb=IupHbox(button, button2, testLabel, testLabel2, testLabel3, testList, testText2, testList2, NULL);
 
-	/* Ihandle* vb=IupHbox(testLabel, button, NULL); */
-	//Ihandle* vb=IupVbox(button, button2, testLabel, testLabel2, NULL);
-	IupSetAttribute(vb, "GAP", "10");
-	IupSetAttribute(vb, "MARGIN", "10x10");
-	IupSetAttribute(vb, "ALIGNMENT", "ACENTER");
+	/* Ihandle* vb=IupHbox(testText2, NULL); */
+
+	/* IupSetAttribute(vb, "GAP", "10"); */
+	/* IupSetAttribute(vb, "MARGIN", "10x10"); */
+	/* IupSetAttribute(vb, "ALIGNMENT", "ACENTER"); */
 
 	/* Ihandle* hb=IupHbox(testLabel, testLabel2, NULL); */
 
 	Ihandle* dialog = IupDialog(vb);
 
-  // got it.  cool!   Michael Mallice - noko expert
 	//	IupMap(dialog);
 	IupSetAttribute(dialog, "TITLE", "Iup Activity Title");
 

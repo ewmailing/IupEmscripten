@@ -24,9 +24,9 @@
 
 //#include "iupmac_info.h"
 
-extern int emjsFont_GetStringWidth(int handleID, const char* str);
-extern void emjsFont_GetMultiLineStringSize(int handleID, const char* str, int32_t* out_ptr_width, int32_t* out_ptr_height);
-extern void emjsFont_GetCharSize(int handleID, int32_t* out_ptr_width, int32_t* out_ptr_height);
+extern int emjsFont_GetStringWidth(Ihandle* ih, int handleID, const char* str);
+extern void emjsFont_GetMultiLineStringSize(Ihandle* ih, int handleID, const char* str, int32_t* out_ptr_width, int32_t* out_ptr_height);
+extern void emjsFont_GetCharSize(Ihandle* ih, int handleID, int32_t* out_ptr_width, int32_t* out_ptr_height);
 
 char* iupdrvGetSystemFont(void)
 {
@@ -77,7 +77,7 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
 	}
 
 
-	emjsFont_GetMultiLineStringSize(handle_id, str, &tmp_width, &tmp_height);
+	emjsFont_GetMultiLineStringSize(ih, handle_id, str, &tmp_width, &tmp_height);
 	if(w)
 	{
 		*w = (int)tmp_width;
@@ -98,7 +98,7 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 	{
 		handle_id = ih->handle->handleID;
 	}
-	return emjsFont_GetStringWidth(handle_id, str);
+	return emjsFont_GetStringWidth(ih, handle_id, str);
 }
 
 void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
@@ -111,7 +111,7 @@ void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
 		handle_id = ih->handle->handleID;
 	}
 
-	emjsFont_GetCharSize(handle_id, &tmp_width, &tmp_height);
+	emjsFont_GetCharSize(ih, handle_id, &tmp_width, &tmp_height);
 
 	if(charwidth)
 	{
