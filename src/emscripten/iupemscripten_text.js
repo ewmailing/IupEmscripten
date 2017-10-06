@@ -31,6 +31,8 @@ var LibraryIupText = {
       userText = widget_object.value;
     }
     var c_str = allocate(intArrayFromString(userText), 'i8', ALLOC_NORMAL);
+    console.log("GET for value");
+    console.log(c_str + " from JS");
     return c_str;
   },
 

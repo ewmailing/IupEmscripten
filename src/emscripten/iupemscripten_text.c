@@ -174,6 +174,7 @@ static char* emscriptenTextGetReadOnlyAttrib(Ihandle* ih)
     }
   }
 
+  iupEmscripten_Log("%d", is_readonly);
 	return iupStrReturnBoolean(is_readonly);
 }
 
