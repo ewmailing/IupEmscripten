@@ -137,7 +137,6 @@ static char* emscriptenTextGetValueAttrib(Ihandle* ih)
       value = "";
     }
 
-  iupEmscripten_Log("%s", value);
 	return value;
 }
 
