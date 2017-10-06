@@ -118,7 +118,7 @@ static char* emscriptenTextGetValueAttrib(Ihandle* ih)
       // call into js, and get the user input from the text widget
       // iupStrReturnStr makes a copy of string and puts into memory that IUP manages
       char* c_str = emjsText_GetText(ih->handle->handleID);
-      char* iup_str = iupStrReturnStr(c_str);
+      value = iupStrReturnStr(c_str);
       free(c_str);
       break;
     }
@@ -137,6 +137,7 @@ static char* emscriptenTextGetValueAttrib(Ihandle* ih)
       value = "";
     }
 
+  iupEmscripten_Log("%s", value);
 	return value;
 }
 
@@ -174,7 +175,6 @@ static char* emscriptenTextGetReadOnlyAttrib(Ihandle* ih)
     }
   }
 
-  iupEmscripten_Log("%d", is_readonly);
 	return iupStrReturnBoolean(is_readonly);
 }
 
