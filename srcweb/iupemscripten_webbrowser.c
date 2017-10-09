@@ -24,9 +24,13 @@
 #include "iup_key.h"
 #include "iup_register.h"
 
-/* #include "iupemscripten_drv.h" */
+#include "iupemscripten_drv.h"
+
+extern int emjsWebBrowser_CreateBrowser(void);
+extern void emjsWebBrowser_DestroyBrowser(int handle_id);
 
 #if 0
+// don't need for demo
 static char* gtkWebBrowserGetItemHistoryAttrib(Ihandle* ih, int id)
 {
   WebKitWebBackForwardList *back_forward_list = webkit_web_view_get_back_forward_list ((WebKitWebView*)ih->handle);
@@ -37,18 +41,25 @@ static char* gtkWebBrowserGetItemHistoryAttrib(Ihandle* ih, int id)
     return NULL;
 }
 
+// same as below but for going forward
+// same as below, need to find JS APIs to do this
 static char* gtkWebBrowserGetForwardCountAttrib(Ihandle* ih)
 {
   WebKitWebBackForwardList *back_forward_list = webkit_web_view_get_back_forward_list ((WebKitWebView*)ih->handle);
   return iupStrReturnInt(webkit_web_back_forward_list_get_forward_length(back_forward_list));
 }
 
+// keeps tracks of number of links clicked so you can go back (example, loaded 5 links so can click back button 5 times)
+// see if there's a javascript function that allows you to go back or forward; does js store browsing data?
+// if not, can make own list and manually store each item every time they clicked
 static char* gtkWebBrowserGetBackCountAttrib(Ihandle* ih)
 {
   WebKitWebBackForwardList *back_forward_list = webkit_web_view_get_back_forward_list ((WebKitWebView*)ih->handle);
   return iupStrReturnInt(webkit_web_back_forward_list_get_back_length(back_forward_list));
 }
 
+// don't need for demo
+// this is where you feed the widget raw HTML and it displays it
 static int gtkWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
 {
   if (value)
@@ -56,6 +67,8 @@ static int gtkWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
   return 0; /* do not store value in hash table */
 }
 
+// dont' need for demo
+// for copying the selected text (is there a way to programmatically copy text with JS?)
 static int gtkWebBrowserSetCopyAttrib(Ihandle* ih, const char* value)
 {
   webkit_web_view_copy_clipboard((WebKitWebView*)ih->handle);
@@ -63,6 +76,8 @@ static int gtkWebBrowserSetCopyAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+// don't need for demo
+// need to find JS API that allows you to select all selectable text in a webview
 static int gtkWebBrowserSetSelectAllAttrib(Ihandle* ih, const char* value)
 {
   webkit_web_view_select_all((WebKitWebView*)ih->handle);
@@ -70,6 +85,8 @@ static int gtkWebBrowserSetSelectAllAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+// don't need for demo
+// JS print API that allows user to print current page
 static int gtkWebBrowserSetPrintAttrib(Ihandle* ih, const char* value)
 {
   WebKitWebFrame* frame = webkit_web_view_get_main_frame((WebKitWebView*)ih->handle);
@@ -78,6 +95,8 @@ static int gtkWebBrowserSetPrintAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+// don't need for demo
+// not supported on new systems - see if JS has an API to manage, if not don't worry about (very low priority)
 static int gtkWebBrowserSetZoomAttrib(Ihandle* ih, const char* value)
 {
   int zoom;
@@ -86,12 +105,17 @@ static int gtkWebBrowserSetZoomAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+// same as above
 static char* gtkWebBrowserGetZoomAttrib(Ihandle* ih)
 {
   int zoom = (int)(webkit_web_view_get_zoom_level((WebKitWebView*)ih->handle) * 100);
   return iupStrReturnInt(zoom);
 }
 
+// examples: is loading, finished loading, failed to load_cb
+// TODO: maybe need for demo
+// should be able to get callback notifications for if an iframe is finished loading or failed
+// derive from noticiations received from iframe
 static char* gtkWebBrowserGetStatusAttrib(Ihandle* ih)
 {
   WebKitLoadStatus status = webkit_web_view_get_load_status((WebKitWebView*)ih->handle);
@@ -103,6 +127,8 @@ static char* gtkWebBrowserGetStatusAttrib(Ihandle* ih)
     return "LOADING";
 }
 
+// only need if want to show feature during demo
+// reloads the page displayed in iframe
 static int gtkWebBrowserSetReloadAttrib(Ihandle* ih, const char* value)
 {
   webkit_web_view_reload((WebKitWebView*)ih->handle);
@@ -110,6 +136,8 @@ static int gtkWebBrowserSetReloadAttrib(Ihandle* ih, const char* value)
   return 0; /* do not store value in hash table */
 }
 
+// only need if want to show feature in demo
+// stops page being loaded in iframe
 static int gtkWebBrowserSetStopAttrib(Ihandle* ih, const char* value)
 {
   webkit_web_view_stop_loading((WebKitWebView*)ih->handle);
@@ -117,6 +145,9 @@ static int gtkWebBrowserSetStopAttrib(Ihandle* ih, const char* value)
   return 0; /* do not store value in hash table */
 }
 
+// only need if want to show feature in demo
+// this is called once user has pressed button - this is called from button action
+// so basically this func receives a request saying 'user wants to go back two webpages' - make it happen
 static int gtkWebBrowserSetBackForwardAttrib(Ihandle* ih, const char* value)
 {
   int val;
@@ -128,6 +159,9 @@ static int gtkWebBrowserSetBackForwardAttrib(Ihandle* ih, const char* value)
   return 0; /* do not store value in hash table */
 }
 
+// sets new URL to go to - sets the iframe source from what user entered in URL bar
+// tells iframe to go to URL - this is called once something set a new URL to go to
+// MOST IMPORTANT ONE TO IMPLEMENT
 static int gtkWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (value)
@@ -135,6 +169,7 @@ static int gtkWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
   return 0; /* do not store value in hash table */
 }
 
+// getting the actual URL from the iframe
 static char* gtkWebBrowserGetValueAttrib(Ihandle* ih)
 {
   const gchar* value = webkit_web_view_get_uri((WebKitWebView*)ih->handle);
@@ -210,7 +245,6 @@ static WebKitWebView* gtkWebBrowserNewWindow(WebKitWebView  *web_view, WebKitWeb
 }
 
 /*********************************************************************************************/
-
 static void gtkWebBrowserDummyLogFunc(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
 {
   /* does nothing */
@@ -223,9 +257,54 @@ static void gtkWebBrowserDummyLogFunc(const gchar *log_domain, GLogLevelFlags lo
 
 static int emscriptenWebBrowserMapMethod(Ihandle* ih)
 {
+  int webbrowser_id = 0;
+  InativeHandle* new_handle = NULL;
+
+  webbrowser_id = emjsWebBrowser_CreateBrowser();
+
+  new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
+
+  new_handle->handleID = webbrowser_id;
+  ih->handle = new_handle;
+
+  iupEmscripten_SetIntKeyForIhandleValue(webbrowser_id, ih);
+
+  iupEmscripten_AddWidgetToParent(ih);
 
   return IUP_NOERROR;
 }
+
+static void emscriptenWebBrowserComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
+{
+  int natural_w = 0, natural_h = 0;
+  (void)children_expand; /* unset if not a container */
+
+  /* natural size is 1 character */
+  iupdrvFontGetCharSize(ih, &natural_w, &natural_h);
+
+  *w = natural_w;
+  /* *h = natural_h; */
+  *h = 500;
+}
+
+static int emscriptenWebBrowserCreateMethod(Ihandle* ih, void **params)
+{
+	ih->expand = IUP_EXPAND_BOTH;
+
+#if 0
+  (void)params;
+
+  ih->data = iupALLOCCTRLDATA();
+
+  /* default EXPAND is YES */
+  ih->expand = IUP_EXPAND_BOTH;
+  ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;  /* default is YES */
+
+#endif
+
+  return IUP_NOERROR;
+}
+
 
 /* static void gtkWebBrowserComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand) */
 /* { */
@@ -264,14 +343,15 @@ Iclass* iupWebBrowserNewClass(void)
   ic->has_attrib_id = 1;   /* has attributes with IDs that must be parsed */
 
   /* Class functions */
-  #if 0
-  ic->New = iupWebBrowserNewClass;
-  ic->Create = gtkWebBrowserCreateMethod;
-  ic->Map = gtkWebBrowserMapMethod;
-  ic->UnMap = iupdrvBaseUnMapMethod;
-  ic->ComputeNaturalSize = gtkWebBrowserComputeNaturalSizeMethod;
+  /* ic->New = iupWebBrowserNewClass; */
+  ic->Create = emscriptenWebBrowserCreateMethod;
+  ic->Map = emscriptenWebBrowserMapMethod;
+
+  /* ic->UnMap = emscriptenWebBrowserUnMapMethod; */
+  ic->ComputeNaturalSize = emscriptenWebBrowserComputeNaturalSizeMethod;
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
 
+#if 0
   /* Callbacks */
   iupClassRegisterCallback(ic, "NEWWINDOW_CB", "s");
   iupClassRegisterCallback(ic, "NAVIGATE_CB", "s");
@@ -284,7 +364,7 @@ Iclass* iupWebBrowserNewClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT); 
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
 
   /* IupWebBrowser only */
   iupClassRegisterAttribute(ic, "VALUE", gtkWebBrowserGetValueAttrib, gtkWebBrowserSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
@@ -301,6 +381,12 @@ Iclass* iupWebBrowserNewClass(void)
   iupClassRegisterAttribute(ic, "BACKCOUNT", gtkWebBrowserGetBackCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FORWARDCOUNT", gtkWebBrowserGetForwardCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "ITEMHISTORY",  gtkWebBrowserGetItemHistoryAttrib,  NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+
+  // eric's new version - simpler to implement - will need to assign to these attriutes in class setup function
+  iupClassRegisterAttribute(ic, "CANGOBACK", cocoaWebBrowserCanGoBackAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CANGOFORWARD", cocoaWebBrowserCanGoForwardAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "GOBACK", NULL, cocoaWebBrowserSetBackAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "GOFORWARD", NULL, cocoaWebBrowserSetForwardAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 #endif
 
   return ic;

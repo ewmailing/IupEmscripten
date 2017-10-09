@@ -251,8 +251,8 @@ IF(IUP_USE_EMSCRIPTEN)
 	SET(CMAKE_EXECUTABLE_SUFFIX ".html")
 
 	# IUP executables will always need this switch because IUP is event driven and doesn't quit when Emscripten tries to run/quit main().
-	SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s NO_EXIT_RUNTIME=1")
-
+	# SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s NO_EXIT_RUNTIME=1")
+	SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} --shell-file ${CMAKE_SOURCE_DIR}/etc/iupemscripten_shell.html -s NO_EXIT_RUNTIME=1")
 
 
 ELSEIF(WANTS_BUILD_SHARED_LIBRARY)
@@ -1138,11 +1138,18 @@ if(IUP_SHOULD_BUILD_IUPWEB)
 	# Having problem with include paths on Android, partly because everything is spread out
 	IF(ANDROID)
 		# TARGET_INCLUDE_DIRECTORIES is guaranteed to be available on Android
-		TARGET_INCLUDE_DIRECTORIES(iupweb PRIVATE 
+		TARGET_INCLUDE_DIRECTORIES(iupweb PRIVATE
 			"${CMAKE_SOURCE_DIR}/src"
 			"${CMAKE_SOURCE_DIR}/src/android/source"
 			"${CMAKE_SOURCE_DIR}/srcweb"
 			"${CMAKE_SOURCE_DIR}/srcweb/android"
+		)
+  # Fix similar problem in Emscripten
+	ELSEIF(EMSCRIPTEN)
+		TARGET_INCLUDE_DIRECTORIES(iupweb PRIVATE
+			"${CMAKE_SOURCE_DIR}/src"
+			"${CMAKE_SOURCE_DIR}/src/emscripten"
+			"${CMAKE_SOURCE_DIR}/srcweb"
 		)
 	ENDIF()
 else()
