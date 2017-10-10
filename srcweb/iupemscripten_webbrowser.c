@@ -28,6 +28,10 @@
 
 extern int emjsWebBrowser_CreateBrowser(void);
 extern void emjsWebBrowser_DestroyBrowser(int handle_id);
+extern void emjsWebBrowser_SetValueAttrib(int handle_id, const char* value);
+extern char* emjsWebBrowser_GetValueAttrib(int handle_id);
+extern void emjsWebBrowser_GoBack(int handle_id);
+extern void emjsWebBrowser_GoForward(int handle_id);
 
 #if 0
 // don't need for demo
@@ -144,39 +148,44 @@ static int gtkWebBrowserSetStopAttrib(Ihandle* ih, const char* value)
   (void)value;
   return 0; /* do not store value in hash table */
 }
-
+#endif
 // only need if want to show feature in demo
 // this is called once user has pressed button - this is called from button action
 // so basically this func receives a request saying 'user wants to go back two webpages' - make it happen
 static int gtkWebBrowserSetBackForwardAttrib(Ihandle* ih, const char* value)
 {
-  int val;
-  if (iupStrToInt(value, &val))
-  {
-    /* Negative values represent steps backward while positive values represent steps forward. */
-    webkit_web_view_go_back_or_forward((WebKitWebView*)ih->handle, val);
-  }
+  emjsWebBrowser_GoBack(ih->handle->handleID);
+  /* int val; */
+  /* if (iupStrToInt(value, &val)) */
+  /* { */
+  /*   /\* Negative values represent steps backward while positive values represent steps forward. *\/ */
+  /*   webkit_web_view_go_back_or_forward((WebKitWebView*)ih->handle, val); */
+  /* } */
   return 0; /* do not store value in hash table */
 }
 
 // sets new URL to go to - sets the iframe source from what user entered in URL bar
 // tells iframe to go to URL - this is called once something set a new URL to go to
 // MOST IMPORTANT ONE TO IMPLEMENT
-static int gtkWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
+static int emscriptenWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (value)
-    webkit_web_view_load_uri((WebKitWebView*)ih->handle, value);
+    // webkit_web_view_load_uri((WebKitWebView*)ih->handle, value);
+    emjsWebBrowser_SetValueAttrib(ih->handle->handleID, value);
+
   return 0; /* do not store value in hash table */
 }
 
 // getting the actual URL from the iframe
-static char* gtkWebBrowserGetValueAttrib(Ihandle* ih)
+static char* emscriptenWebBrowserGetValueAttrib(Ihandle* ih)
 {
-  const gchar* value = webkit_web_view_get_uri((WebKitWebView*)ih->handle);
+  const char* value = emjsWebBrowser_GetValueAttrib(ih->handle->handleID);
+  // const gchar* value = webkit_web_view_get_uri((WebKitWebView*)ih->handle);
   return iupStrReturnStr(value);
 }
 
 /*********************************************************************************************/
+#if 0
 
 static void gtkWebBrowserDocumentLoadFinished(WebKitWebView *web_view, WebKitWebFrame *frame, Ihandle *ih)
 {
@@ -351,7 +360,6 @@ Iclass* iupWebBrowserNewClass(void)
   ic->ComputeNaturalSize = emscriptenWebBrowserComputeNaturalSizeMethod;
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
 
-#if 0
   /* Callbacks */
   iupClassRegisterCallback(ic, "NEWWINDOW_CB", "s");
   iupClassRegisterCallback(ic, "NAVIGATE_CB", "s");
@@ -364,30 +372,29 @@ Iclass* iupWebBrowserNewClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
+  /* iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT); */
 
-  /* IupWebBrowser only */
-  iupClassRegisterAttribute(ic, "VALUE", gtkWebBrowserGetValueAttrib, gtkWebBrowserSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  /* /\* IupWebBrowser only *\/ */
+  iupClassRegisterAttribute(ic, "VALUE", emscriptenWebBrowserGetValueAttrib, emscriptenWebBrowserSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKFORWARD", NULL, gtkWebBrowserSetBackForwardAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "STOP", NULL, gtkWebBrowserSetStopAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RELOAD", NULL, gtkWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HTML", NULL, gtkWebBrowserSetHTMLAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "STATUS", gtkWebBrowserGetStatusAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "COPY", NULL, gtkWebBrowserSetCopyAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTALL", NULL, gtkWebBrowserSetSelectAllAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ZOOM", gtkWebBrowserGetZoomAttrib, gtkWebBrowserSetZoomAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRINT", NULL, gtkWebBrowserSetPrintAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  /* iupClassRegisterAttribute(ic, "STOP", NULL, gtkWebBrowserSetStopAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT); */
+  /* iupClassRegisterAttribute(ic, "RELOAD", NULL, gtkWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT); */
+  /* iupClassRegisterAttribute(ic, "HTML", NULL, gtkWebBrowserSetHTMLAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT); */
+  /* iupClassRegisterAttribute(ic, "STATUS", gtkWebBrowserGetStatusAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT); */
+  /* iupClassRegisterAttribute(ic, "COPY", NULL, gtkWebBrowserSetCopyAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT); */
+  /* iupClassRegisterAttribute(ic, "SELECTALL", NULL, gtkWebBrowserSetSelectAllAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT); */
+  /* iupClassRegisterAttribute(ic, "ZOOM", gtkWebBrowserGetZoomAttrib, gtkWebBrowserSetZoomAttrib, NULL, NULL, IUPAF_NO_INHERIT); */
+  /* iupClassRegisterAttribute(ic, "PRINT", NULL, gtkWebBrowserSetPrintAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT); */
 
-  iupClassRegisterAttribute(ic, "BACKCOUNT", gtkWebBrowserGetBackCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORWARDCOUNT", gtkWebBrowserGetForwardCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "ITEMHISTORY",  gtkWebBrowserGetItemHistoryAttrib,  NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  /* iupClassRegisterAttribute(ic, "BACKCOUNT", gtkWebBrowserGetBackCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT); */
+  /* iupClassRegisterAttribute(ic, "FORWARDCOUNT", gtkWebBrowserGetForwardCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT); */
+  /* iupClassRegisterAttributeId(ic, "ITEMHISTORY",  gtkWebBrowserGetItemHistoryAttrib,  NULL, IUPAF_READONLY|IUPAF_NO_INHERIT); */
 
   // eric's new version - simpler to implement - will need to assign to these attriutes in class setup function
-  iupClassRegisterAttribute(ic, "CANGOBACK", cocoaWebBrowserCanGoBackAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CANGOFORWARD", cocoaWebBrowserCanGoForwardAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "GOBACK", NULL, cocoaWebBrowserSetBackAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "GOFORWARD", NULL, cocoaWebBrowserSetForwardAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-#endif
+  /* iupClassRegisterAttribute(ic, "CANGOBACK", cocoaWebBrowserCanGoBackAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT); */
+  /* iupClassRegisterAttribute(ic, "CANGOFORWARD", cocoaWebBrowserCanGoForwardAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT); */
+  /* iupClassRegisterAttribute(ic, "GOBACK", NULL, cocoaWebBrowserSetBackAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT); */
+  /* iupClassRegisterAttribute(ic, "GOFORWARD", NULL, cocoaWebBrowserSetForwardAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT); */
 
   return ic;
 }
