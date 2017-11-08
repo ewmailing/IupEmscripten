@@ -36,7 +36,8 @@ extern int emjsLabel_CreateLabel(void);
 extern void emjsLabel_SetTitle(int handle_id, const char* title);
 
 extern void emjsLabel_CreateSeparator(int handle_id, char* type);
-
+// this probably needs to return a char*
+extern void emjsLabel_SetPadding(int handleID, int horiz, int vert);
 extern void emjsLabel_SetFGColor(int handle_id, const char* color); /* should it be constant char*? */
 extern void emjsLabel_SetBGColor(int handle_id, char* color); 
 extern int emjsLabel_SetAlignmentAttrib(int handle_id, const char* value);
@@ -60,6 +61,26 @@ static int emscriptenLabelSetTitleAttrib(Ihandle* ih, const char* value)
 
 }
 
+static int emscriptenLabelSetPaddingAttrib(Ihandle* ih, const char* value)
+{
+  // it will try to set attributes before the widget is created - don't let it
+  if (ih == NULL || ih->handle == NULL) {
+    return 0;
+  }
+  else if (ih->handle->handleID == 0) {
+    return 0;
+  }
+  else if (value == NULL) {
+    value = "";
+  }
+
+  // split Iup's padding format (ex. "0x0") into ints
+  iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
+
+  emjsLabel_SetPadding(ih->handle->handleID, ih->data->horiz_padding, ih->data->vert_padding);
+  return 0;
+}
+
 static int emscriptenLabelSetFgColorAttrib(Ihandle* ih, const char* value)
 {
   // call helper func from common; func will parse string and apply color to widget
@@ -73,6 +94,11 @@ static int emscriptenLabelSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   emjsLabel_SetBGColor(7, "red");
   return 1;
+}
+
+static int emscriptenLabelSetWordWrapAttrib(Ihandle* ih, const char* value)
+{
+  return 0;
 }
 /* { */
 
@@ -292,22 +318,20 @@ void iupdrvLabelInitClass(Iclass* ic)
   /* iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_DEFAULT); */
 
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, emscriptenLabelSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_DEFAULT);
-	
+  iupClassRegisterAttribute(ic, "PADDING", iupLabelGetPaddingAttrib, emscriptenLabelSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
 	
   iupClassRegisterAttribute(ic, "TITLE", NULL, emscriptenLabelSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-
+  iupClassRegisterAttribute(ic, "WORDWRAP", NULL, emscriptenLabelSetWordWrapAttrib, NULL, NULL, IUPAF_DEFAULT);
 
 #if 0
   /* IupLabel only */
   iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, gtkLabelSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkLabelSetImageAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PADDING", iupLabelGetPaddingAttrib, gtkLabelSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
 
   /* IupLabel GTK and Motif only */
   iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, gtkLabelSetImInactiveAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupLabel Windows and GTK only */
-  iupClassRegisterAttribute(ic, "WORDWRAP", NULL, gtkLabelSetWordWrapAttrib, NULL, NULL, IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "ELLIPSIS", NULL, gtkLabelSetEllipsisAttrib, NULL, NULL, IUPAF_DEFAULT);
 
   /* IupLabel GTK only */

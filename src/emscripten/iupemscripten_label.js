@@ -8,9 +8,10 @@ var LibraryIupLabel = {
   emjsLabel_CreateLabel: function() {
     var widget_object;
     widget_object = document.createElement("div");
+
     var handle_id = IupCommon.RegisterNewObject(widget_object);
     IupCommon.InitializeObject(widget_object);
-    // widget_object.id = handle_id;
+
     return handle_id;
   },
 
@@ -26,6 +27,16 @@ var LibraryIupLabel = {
     {
       widget_object.innerHTML = Pointer_stringify(label_title);
     }
+  },
+
+  emjsLabel_SetPadding: function(handle_id, horiz, vert) {
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+
+    // how does padding work in Iup?  Is it from corners or center?
+    widget_object.style.paddingTop = vert + "px";
+    widget_object.style.paddingBottom = vert + "px";
+    widget_object.style.paddingLeft = horiz + "px";
+    widget_object.style.paddingRight = horiz + "px";
   },
 
   emjsLabel_SetFGColor: function(handle_id, color) {
