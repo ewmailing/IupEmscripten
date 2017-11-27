@@ -31,12 +31,30 @@
 
 extern int emjsProgressBar_Create(void);
 
+static int emscriptenProgressBarMapMethod(Ihandle* ih)
+{
+  
+  int progressBar_id = 0;
+  InativeHandle* new_handle = NULL;
+
+  progressBar_id = emjsProgressBar_Create();
+  new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
+
+  new_handle->handleID = progressBar_id;
+  ih->handle = new_handle;
+
+  iupEmscripten_SetIntKeyForIhandleValue(progressBar_id, ih);
+
+  iupEmscripten_AddWidgetToParent(ih);
+
+  return IUP_NOERROR;
+}
 
 void iupdrvProgressBarInitClass(Iclass* ic)
 {
   /* Driver Dependent Class functions */
-//	ic->Map = emscriptenProgressBarMapMethod;
-//	ic->UnMap = emscriptenProgressBarUnMapMethod;
+	ic->Map = emscriptenProgressBarMapMethod;
+	//ic->UnMap = emscriptenProgressBarUnMapMethod;
 
   /* Driver Dependent Attribute functions */
   
@@ -58,17 +76,3 @@ void iupdrvProgressBarInitClass(Iclass* ic)
 	
 }
 
-static int emscmscriptenProgressBarMapMethod(Ihandle* ih)
-{
-  
-  int progressBar_id = 0;
-  InativeHandle* new_handle = NULL;
-
-  progressBar_id = emjsProgressBar_Create();
-  new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
-
-  new_handle->handleID = progressBar_id;
-  ih->handle = new_handle;
-
-  iupEmscripten_SetIntKeyForIhandleValue(progressBar_id, ih);
-}
