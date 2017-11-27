@@ -181,6 +181,8 @@ void IupEntryPoint()
 
   /* IupSetAttribute(testLabel2, "TITLE", "CONGRATS"); */
 
+  Ihandle* motherMatzenbach = IupProgressBar();
+
 	Ihandle* vb=IupHbox(button, button2, testLabel, testLabel2, testLabel3, testList, testText2, testList2, NULL);
 
 	/* Ihandle* vb=IupHbox(testText2, NULL); */
@@ -189,9 +191,9 @@ void IupEntryPoint()
 	/* IupSetAttribute(vb, "MARGIN", "10x10"); */
 	/* IupSetAttribute(vb, "ALIGNMENT", "ACENTER"); */
 
-	/* Ihandle* hb=IupHbox(testLabel, testLabel2, NULL); */
+	Ihandle* hb=IupHbox(testLabel, motherMatzenbach, NULL);
 
-	Ihandle* dialog = IupDialog(vb);
+	Ihandle* dialog = IupDialog(hb);
 
 	//	IupMap(dialog);
 	IupSetAttribute(dialog, "TITLE", "Iup Activity Title");

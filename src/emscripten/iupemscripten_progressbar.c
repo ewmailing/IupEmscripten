@@ -29,6 +29,7 @@
 // TODO: FEATURE: emscripten provides spinner style
 
 
+extern int emjsProgressBar_Create(void);
 
 
 void iupdrvProgressBarInitClass(Iclass* ic)
@@ -44,15 +45,30 @@ void iupdrvProgressBarInitClass(Iclass* ic)
   
   /* Special */
 //  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);
-#if 0
+/* #if 0 */
 
-  /* IupProgressBar only */
-  iupClassRegisterAttribute(ic, "VALUE",  iProgressBarGetValueAttrib,  emscriptenProgressBarSetValueAttrib,  NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+/*   /\* IupProgressBar only *\/ */
+/*   iupClassRegisterAttribute(ic, "VALUE",  iProgressBarGetValueAttrib,  emscriptenProgressBarSetValueAttrib,  NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT); */
 
 	
-  iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MARQUEE",     NULL, emscriptenProgressBarSetMarqueeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DASHED",      NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-#endif
+/*   iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NO_INHERIT); */
+/*   iupClassRegisterAttribute(ic, "MARQUEE",     NULL, emscriptenProgressBarSetMarqueeAttrib, NULL, NULL, IUPAF_NO_INHERIT); */
+/*   iupClassRegisterAttribute(ic, "DASHED",      NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT); */
+/* #endif */
 	
+}
+
+static int emscmscriptenProgressBarMapMethod(Ihandle* ih)
+{
+  
+  int progressBar_id = 0;
+  InativeHandle* new_handle = NULL;
+
+  progressBar_id = emjsProgressBar_Create();
+  new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
+
+  new_handle->handleID = progressBar_id;
+  ih->handle = new_handle;
+
+  iupEmscripten_SetIntKeyForIhandleValue(progressBar_id, ih);
 }
