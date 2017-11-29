@@ -505,6 +505,7 @@ IF(IUP_USE_EMSCRIPTEN)
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_font.js
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_frame.js
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_text.js
+		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_progressbar.js
 	)
 
 	LIST(APPEND IUP_SOURCE_FILES

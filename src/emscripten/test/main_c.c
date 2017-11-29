@@ -183,7 +183,7 @@ void IupEntryPoint()
 
   Ihandle* progbar = IupProgressBar();
 
-	Ihandle* vb=IupHbox(button, button2, testLabel, testLabel2, testLabel3, testList, testText2, testList2, NULL);
+	Ihandle* vb=IupHbox(button, button2, testLabel2, testLabel3, testList, testText2, testList2, NULL);
 
 	/* Ihandle* vb=IupHbox(testText2, NULL); */
 
