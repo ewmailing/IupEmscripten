@@ -33,7 +33,7 @@ extern int emjsProgressBar_Create(void);
 
 static int emscriptenProgressBarMapMethod(Ihandle* ih)
 {
-  
+
   int progressBar_id = 0;
   InativeHandle* new_handle = NULL;
 
@@ -50,11 +50,15 @@ static int emscriptenProgressBarMapMethod(Ihandle* ih)
   return IUP_NOERROR;
 }
 
+static void emscriptenProgressBarUnMapMethod(Ihandle* ih)
+{
+}
+
 void iupdrvProgressBarInitClass(Iclass* ic)
 {
   /* Driver Dependent Class functions */
 	ic->Map = emscriptenProgressBarMapMethod;
-	//ic->UnMap = emscriptenProgressBarUnMapMethod;
+	ic->UnMap = emscriptenProgressBarUnMapMethod;
 
   /* Driver Dependent Attribute functions */
   

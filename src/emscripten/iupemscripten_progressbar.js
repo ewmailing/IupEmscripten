@@ -2,16 +2,17 @@
 
 var LibraryIupProgressBar = {
   $ProgressBar: {},
+
   emjsProgressBar_Create: function() {
+    console.log("TESTING");
     var widget_object;
     widget_object = document.createElement('progress');
+    console.log(widget_object);
     var handle_id = IupCommon.RegisterNewObject(widget_object);
     IupCommon.InitializeObject(widget_object);
-    console.log(widget_object);
-    console.log('chris kind mother was in the progress bar create function sucking some d');
     return handle_id;
   }
 };
+
 autoAddDeps(LibraryIupProgressBar, '$ProgressBar');
 mergeInto(LibraryManager.library, LibraryIupProgressBar);
-console.log('eeyyyy boyyyeee u in da progress bar file');
