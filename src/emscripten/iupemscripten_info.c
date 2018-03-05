@@ -60,7 +60,7 @@ int iupdrvGetScreenDepth(void)
 	return 32;
 }
 
-float iupdrvGetScreenDpi(void)
+double iupdrvGetScreenDpi(void)
 {
 #if 0
 	CGRect rect = CGDisplayBounds(kCGDirectMainDisplay);

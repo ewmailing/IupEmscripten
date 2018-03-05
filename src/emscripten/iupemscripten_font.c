@@ -26,6 +26,7 @@
 
 extern int emjsFont_GetStringWidth(Ihandle* ih, int handleID, const char* str);
 extern void emjsFont_GetMultiLineStringSize(Ihandle* ih, int handleID, const char* str, int32_t* out_ptr_width, int32_t* out_ptr_height);
+extern void emjsFont_GetTextSize(const char* font_name, int point_size, int is_bold, int is_italic, int is_underline, int is_strikeout, const char* str, int32_t* out_ptr_width, int32_t* out_ptr_height);
 extern void emjsFont_GetCharSize(Ihandle* ih, int handleID, int32_t* out_ptr_width, int32_t* out_ptr_height);
 
 char* iupdrvGetSystemFont(void)
@@ -89,6 +90,43 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
 
 	iupEmscripten_Log("iupdrvFontGetMultiLineStringSize being called.  Here's an arg: %s", str);
 	return;
+}
+
+// FIXME: This is a quick-and-dirty copy-and-paste from emjsFont_GetMultiLineStringSize to get things working due to Iup internal API changes.
+void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
+{
+	int32_t tmp_width = 0;
+	int32_t tmp_height = 0;
+
+	char typeface[50] = "";
+	int point_size = 8;
+	int is_bold = 0;
+	int is_italic = 0;
+	int is_underline = 0;
+	int is_strikeout = 0;
+
+	iupEmscripten_Log("iupdrvFontGetTextSize being called: font: %s, str: %s", font, str);
+
+	if (!iupGetFontInfo(font, typeface, &point_size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+	{
+		// I'm told this function does nothing if the font doesn't exist.
+		return;
+	}
+
+
+	emjsFont_GetTextSize(typeface, point_size, is_bold, is_italic, is_underline, is_strikeout, str, &tmp_width, &tmp_height);
+	if(w)
+	{
+		*w = (int)tmp_width;
+	}
+	if(h)
+	{ 
+		*h = (int)tmp_height;
+	}
+	iupEmscripten_Log("iupdrvFontGetTextSize w:%d, h:%d", tmp_width, tmp_height);
+
+	return;
+
 }
 
 int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
