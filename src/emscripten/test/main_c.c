@@ -1,29 +1,19 @@
 #include "iup.h"
+#include "iup_varg.h"
 #include "iup_config.h"
 #include "iupcbs.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdarg.h>
 
-#if __ANDROID__
-#include <android/log.h>
+void MyPrintf(const char* fmt, ...)
+{
+	va_list ap;
+	va_start(ap, fmt);
+	IupLogV("DEBUG", fmt, ap);
+	va_end(ap);
+}
 
-void MyPrintf(const char* fmt, ...)
-{
-	va_list ap;
-	va_start(ap, fmt);
-	__android_log_vprint(ANDROID_LOG_INFO, "IupTest", fmt, ap);
-	va_end(ap);
-}
-#else
-void MyPrintf(const char* fmt, ...)
-{
-	va_list ap;
-	va_start(ap, fmt);
-	fprintf(stderr, fmt, ap);
-	va_end(ap);
-}
-#endif
 int OnButtonCallback(Ihandle* ih)
 {
 	MyPrintf("OnButtonCallback()\n");
@@ -66,6 +56,9 @@ int testCallback(Ihandle* ih, int but, int pressed, int x, int y, char* status) 
 	return IUP_DEFAULT;
 }
 
+// WARNING: There seems to be a race condition in Emscripten's file system implementation which I believe sometimes causes this config file test code to crash.
+// Running with breakpoints seems to avoid races.
+// Disable this function if this is getting in your way and you need to test other things.
 void testConfigFile()
 {
 		int ret_val = 0;	
@@ -77,16 +70,16 @@ void testConfigFile()
 		if(ret_val == 0)
 		{
 			const char* config_value = IupConfigGetVariableStrDef(config_file, "Group1", "Key1", "");
-			printf("IDBFS worked: found existing config file: config value is %s\n", config_value);
+			MyPrintf("IDBFS worked: found existing config file: config value is %s\n", config_value);
 		}
 		else
 		{
-			printf("config file not found\n");
+			MyPrintf("config file not found\n");
 		}
 		IupConfigSetVariableStr(config_file, "Group1", "Key1", "Value1");
 		IupConfigSave(config_file);
 		config_value = IupConfigGetVariableStrDef(config_file, "Group1", "Key1", "");
-		printf("retrieved saved config value is %s\n", config_value);
+		MyPrintf("retrieved saved config value is %s\n", config_value);
 
 
 

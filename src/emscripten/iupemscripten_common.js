@@ -110,9 +110,45 @@ var LibraryIupCommon = {
   },
 
   emjsCommon_Log: function(message) {
-    console.log("our log is working");
+//    console.log("our log is working");
       console.log(Pointer_stringify(message));
   },
+
+	emjsCommon_IupLog: function(priority, message)
+	{
+		var stringified_message = Pointer_stringify(message);
+		/*	 
+		enum IUPLOG_LEVEL
+		{
+			IUPLOG_LEVEL_LOG = 0,
+			IUPLOG_LEVEL_DEBUG,
+			IUPLOG_LEVEL_INFO,
+			IUPLOG_LEVEL_WARN,
+			IUPLOG_LEVEL_ERROR
+		};
+		*/
+
+		switch(priority)
+		{
+			case 1:
+				console.debug(stringified_message);
+				break; 
+			case 2:
+				console.info(stringified_message);
+				break;
+			case 3:
+				console.warn(stringified_message);
+				break;
+			case 4:
+				console.error(stringified_message);
+				break;
+			default: 
+				console.log(stringified_message);
+		}
+	},
+
+
+
 
   emjsCommon_SetFgColor: function(handle_id, r, g, b)
   {

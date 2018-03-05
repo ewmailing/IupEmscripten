@@ -13,6 +13,7 @@
 #include <stdarg.h>
 
 #include "iup.h"
+#include "iup_varg.h"
 #include "iupcbs.h"
 #include "iupkey.h"
 
@@ -76,6 +77,53 @@ void iupEmscripten_Log(const char* restrict format, ...) {
   /* printf(format, argList); */
   va_end(argList);
   free(my_string);
+}
+
+extern void emjsCommon_IupLog(int priority, char* message);
+void IupLogV(const char* type, const char* format, va_list arglist)
+{
+	enum IUPLOG_LEVEL
+	{
+		IUPLOG_LEVEL_LOG = 0,
+		IUPLOG_LEVEL_DEBUG,
+		IUPLOG_LEVEL_INFO,
+		IUPLOG_LEVEL_WARN,
+		IUPLOG_LEVEL_ERROR
+	};
+	enum IUPLOG_LEVEL priority = IUPLOG_LEVEL_LOG;
+
+	if (iupStrEqualNoCase(type, "DEBUG"))
+	{
+		priority = IUPLOG_LEVEL_DEBUG;
+	}
+	else if (iupStrEqualNoCase(type, "ERROR"))
+	{
+		priority = IUPLOG_LEVEL_ERROR;
+	}
+	else if (iupStrEqualNoCase(type, "WARNING"))
+	{
+		priority = IUPLOG_LEVEL_WARN;
+	}
+	else if (iupStrEqualNoCase(type, "INFO"))
+	{
+		priority = IUPLOG_LEVEL_INFO;
+	}
+
+	char *my_string;
+	vasprintf(&my_string, format, arglist); // this mallocs under the hood - need to free later
+
+	emjsCommon_IupLog((int)priority, my_string);
+
+	free(my_string);
+	
+}
+
+void IupLog(const char* type, const char* format, ...)
+{
+  va_list arglist;
+  va_start(arglist, format);
+  IupLogV(type, format, arglist);
+  va_end(arglist);
 }
 
 extern void emjsCommon_AddWidgetToDialog(int parent_id, int child_id);
