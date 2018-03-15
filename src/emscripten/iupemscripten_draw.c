@@ -51,10 +51,7 @@ void iupDrawGetSize(IdrawCanvas* dc, int *w, int *h)
 //	if (h) *h = dc->h;
 }
 
-void iupDrawParentBackground(IdrawCanvas* dc)
-{
 
-}
 
 void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
 {
@@ -119,7 +116,7 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
 void iupdrvDrawParentBackground(IdrawCanvas* dc)
 {
 }
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int align)
 {
 }
 void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
@@ -143,7 +140,7 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
 #endif
   return NULL;
 }
-void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
+void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
 }
 void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
@@ -152,7 +149,13 @@ void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 void iupdrvDrawKillCanvas(IdrawCanvas* dc)
 {
 }
-void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
+void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
+{
+}
+void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width)
+{
+}
+void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width)
 {
 }
 void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
