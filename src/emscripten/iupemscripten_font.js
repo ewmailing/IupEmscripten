@@ -86,8 +86,12 @@ var LibraryIupFont = {
 
     var w = Math.ceil(temp_object.offsetWidth);
     var h = Math.ceil(temp_object.offsetHeight);
-    Module.setValue(out_ptr_width,w,'i32');
-    Module.setValue(out_ptr_height,h,'i32');
+
+    // API change - getValue/setValue no longer being auto-exported under Module (previous call was Module.setValue)
+    // https://github.com/kripken/emscripten/pull/5839
+    // https://groups.google.com/forum/#!searchin/emscripten-discuss/setValue%7Csort:date/emscripten-discuss/OY_6JCIjimc/Iv_HrV0HBgAJ
+    setValue(out_ptr_width,w,'i32');
+    setValue(out_ptr_height,h,'i32');
 
     document.body.removeChild(temp_object);
   },
@@ -160,8 +164,8 @@ var LibraryIupFont = {
 
     temp_object.style.position = 'absolute';
 
-    Module.setValue(out_ptr_width,w,'i32');
-    Module.setValue(out_ptr_height,h,'i32');
+    setValue(out_ptr_width,w,'i32');
+    setValue(out_ptr_height,h,'i32');
 
     document.body.removeChild(temp_object);
   }
