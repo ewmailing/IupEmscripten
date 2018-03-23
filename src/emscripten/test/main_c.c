@@ -1,3 +1,4 @@
+
 #include "iup.h"
 #include "iup_varg.h"
 #include "iup_config.h"
@@ -113,9 +114,9 @@ Ihandle* DropDownListTest(void)
 void IupEntryPoint()
 {
 
-	{
-		testConfigFile();
-	}
+	/* { */
+	/* 	testConfigFile(); */
+	/* } */
 
 
   // create test buttons
@@ -176,6 +177,8 @@ void IupEntryPoint()
 
   Ihandle* progbar = IupProgressBar();
 
+
+
 	Ihandle* vb=IupHbox(button, button2, testLabel2, testLabel3, testList, testText2, testList2, NULL);
 
 	/* Ihandle* vb=IupHbox(testText2, NULL); */
@@ -186,7 +189,7 @@ void IupEntryPoint()
 
 	Ihandle* hb=IupHbox(progbar, testLabel, NULL);
 
-	Ihandle* dialog = IupDialog(vb);
+	Ihandle* dialog = IupDialog(hb);
 
 	//	IupMap(dialog);
 	IupSetAttribute(dialog, "TITLE", "Iup Activity Title");
@@ -202,4 +205,3 @@ int main(int argc, char* argv[])
 	IupMainLoop();
 	return 0;
 }
-
