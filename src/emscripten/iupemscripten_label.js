@@ -57,19 +57,31 @@ var LibraryIupLabel = {
     // console.log("bgcolor sec arg: " + val);
   },
 
+  emjsLabel_ToggleActive: function(handle_id, enable) {
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+    enable === 1 ? widget_object.disabled = false : widget_object.disabled = true;
+  },
+
   emjsLabel_SetAlignmentAttrib: function(handle_id, value) {
     // FUT - check to make sure ih->data->type != IUP_LABEL_SETP_HORIZ
 
     // get object to apply alignment to
     var widget_object = IupCommon.GetObjectForID(handle_id);
+    console.log('alignment firing');
 
     if (value === "ARIGHT") {
+      widget_object.style.display = "table-cell";
+      widget_object.style.verticalAlign = "top";
       widget_object.style.textAlign = "right";  
     }
     else if (value === "ACENTER") {
+      widget_object.style.display = "table-cell";
+      widget_object.style.verticalAlign = "top";
       widget_object.style.textAlign = "center";
     }
     else {  // must be ALEFT
+      widget_object.style.display = "table-cell";
+      widget_object.style.verticalAlign = "top";
       widget_object.style.textAlign = "left"; 
     }
 
@@ -89,6 +101,14 @@ var LibraryIupLabel = {
     else if (type === "vertical") {
       alert("vertical separator");
     }
+  },
+
+  emjsLabel_EnableEllipsis: function(handle_id) {
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+    widget_object.style.whiteSpace = "nowrap";
+    widget_object.style.overflow = "hidden";
+    widget_object.style.textOverflow = "ellipsis";
+    // missing: -o-text-overflow: ellipsis;
   }
 
 };

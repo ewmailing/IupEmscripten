@@ -113,9 +113,10 @@ Ihandle* DropDownListTest(void)
 void IupEntryPoint()
 {
 
-	{
-		testConfigFile();
-	}
+  // what is this?
+	/* { */
+	/* 	testConfigFile(); */
+	/* } */
 
 
   // create test buttons
@@ -160,6 +161,7 @@ void IupEntryPoint()
   IupSetAttribute(button, "HEIGHT", "50px");
   IupSetAttribute(button2, "WIDTH", "50px");
   IupSetAttribute(button2, "HEIGHT", "50px");
+  // IupSetAttribute(testLabel, "PADDING", "20x20");
 
   //IupSetAttribute(testLabel, "BGCOLOR", "20 129 115");
 
@@ -171,9 +173,13 @@ void IupEntryPoint()
   IupSetAttribute(testLabel2, "FGCOLOR", "100 255 100");
   IupSetAttribute(testLabel3, "FGCOLOR", "70 70 0");
   /* IupSetAttribute(testLabel, "TITLE", "OVERWRITE"); */
+  /* IupSetAttribute(testLabel2, "PADDING", "20x50"); */
+  IupSetAttribute(testLabel2, "WIDTH", "30");
 
   /* IupSetAttribute(testLabel2, "TITLE", "CONGRATS"); */
+  IupSetAttribute(testLabel2, "ALIGNMENT", "ARIGHT");
 
+  IupSetAttribute(testLabel3, "ELLIPSIS", "YES");
   Ihandle* progbar = IupProgressBar();
 
 	Ihandle* vb=IupHbox(button, button2, testLabel2, testLabel3, testList, testText2, testList2, NULL);

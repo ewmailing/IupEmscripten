@@ -12,6 +12,7 @@
 #include <stdarg.h>
 
 #include "iup.h"
+#include "iup.h"
 #include "iupcbs.h"
 
 #include "iup_object.h"

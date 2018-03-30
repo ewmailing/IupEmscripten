@@ -37,10 +37,12 @@ extern void emjsLabel_SetTitle(int handle_id, const char* title);
 
 extern void emjsLabel_CreateSeparator(int handle_id, char* type);
 // this probably needs to return a char*
+extern void emjsLabel_ToggleActive(int handle_id, int enable);
 extern void emjsLabel_SetPadding(int handleID, int horiz, int vert);
 extern void emjsLabel_SetFGColor(int handle_id, const char* color); /* should it be constant char*? */
 extern void emjsLabel_SetBGColor(int handle_id, char* color); 
 extern int emjsLabel_SetAlignmentAttrib(int handle_id, const char* value);
+extern void emjsLabel_EnableEllipsis(Ihandle* ih);
 
 // adds padding to element
 void iupdrvLabelAddBorders(Ihandle* ih, int *x, int *y)
@@ -90,6 +92,11 @@ static int emscriptenLabelSetFgColorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
+static void emscriptenLabelSetActiveAttrib(Ihandle* ih, int enable)
+{
+  emjsLabel_ToggleActive(ih->handle->handleID, enable);
+}
+
 static int emscriptenLabelSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   emjsLabel_SetBGColor(7, "red");
@@ -99,6 +106,15 @@ static int emscriptenLabelSetBgColorAttrib(Ihandle* ih, const char* value)
 static int emscriptenLabelSetWordWrapAttrib(Ihandle* ih, const char* value)
 {
   return 0;
+}
+
+// TODO: check args for this function (its a callback)
+// TODO: does this need to support multi-line text?
+static int emscriptenLabelSetEllipsisAttrib(Ihandle* ih, const char* value)
+{
+  // assuming I dont need value right now (that is the string in the label being shortened)
+  emjsLabel_EnableEllipsis(ih->handle->handleID);
+
 }
 /* { */
 
@@ -307,32 +323,34 @@ void iupdrvLabelInitClass(Iclass* ic)
 
 
   /* Driver Dependent Attribute functions */
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, emscriptenLabelSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
-  /* Overwrite Visual */
-  /* iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkLabelSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT); */
-
-  /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, emscriptenLabelSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
 
-  /* Special */
   /* iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_DEFAULT); */
 
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, emscriptenLabelSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "PADDING", iupLabelGetPaddingAttrib, emscriptenLabelSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
-	
   iupClassRegisterAttribute(ic, "TITLE", NULL, emscriptenLabelSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "WORDWRAP", NULL, emscriptenLabelSetWordWrapAttrib, NULL, NULL, IUPAF_DEFAULT);
 
+  // ERIC?: how does alignment work?
+  //iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, gtkLabelSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NO_INHERIT);  /* force new default value */
+
+  iupClassRegisterAttribute(ic, "ELLIPSIS", NULL, emscriptenLabelSetEllipsisAttrib, NULL, NULL, IUPAF_DEFAULT);
+
+  // ERIC?:
+  // dropfilestarget
+  // turn div/widget into area that files can be dropped onto to trigger a file upload dialog; as simple as possible
+  
 #if 0
   /* IupLabel only */
-  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, gtkLabelSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NO_INHERIT);  /* force new default value */
+  // upon compile, image is compiled into binary format, possibly need special apis to read
+  // emscripten should provide these apis
   iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkLabelSetImageAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupLabel GTK and Motif only */
   iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, gtkLabelSetImInactiveAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-
-  /* IupLabel Windows and GTK only */
-  iupClassRegisterAttribute(ic, "ELLIPSIS", NULL, gtkLabelSetEllipsisAttrib, NULL, NULL, IUPAF_DEFAULT);
 
   /* IupLabel GTK only */
   iupClassRegisterAttribute(ic, "MARKUP", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);
