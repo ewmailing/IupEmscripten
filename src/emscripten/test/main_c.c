@@ -175,7 +175,7 @@ void IupEntryPoint()
   IupSetAttribute(testLabel3, "FGCOLOR", "70 70 0");
   /* IupSetAttribute(testLabel, "TITLE", "OVERWRITE"); */
   /* IupSetAttribute(testLabel2, "PADDING", "20x50"); */
-  IupSetAttribute(testLabel2, "WIDTH", "30");
+  IupSetAttribute(testLabel2, "WIDTH", "5");
 
   /* IupSetAttribute(testLabel2, "TITLE", "CONGRATS"); */
   IupSetAttribute(testLabel2, "ALIGNMENT", "ARIGHT");
@@ -195,7 +195,13 @@ void IupEntryPoint()
 
 	Ihandle* hb=IupHbox(progbar, testLabel, NULL);
 
-	Ihandle* dialog = IupDialog(hb);
+
+  Ihandle* the_label = IupLabel("The");
+  IupSetAttribute(the_label, "RASTERSIZE", "80x80");
+  /* IupSetAttribute(the_label, "ELLIPSIS", "YES"); */
+  IupSetAttribute(the_label, "ALIGNMENT", "ARIGHT");
+
+	Ihandle* dialog = IupDialog(the_label);
 
 	//	IupMap(dialog);
 	IupSetAttribute(dialog, "TITLE", "Iup Activity Title");

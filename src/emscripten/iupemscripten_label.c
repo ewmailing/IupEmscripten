@@ -115,7 +115,18 @@ static int emscriptenLabelSetEllipsisAttrib(Ihandle* ih, const char* value)
   // assuming I dont need value right now (that is the string in the label being shortened)
   emjsLabel_EnableEllipsis(ih->handle->handleID);
 
+	// if (ih->data->type == IUP_LABEL_TEXT) returns 1, all else returns 0 ?ERIC
+  return 0;
 }
+
+static int emscriptenLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
+{
+  emjsLabel_SetAlignmentAttrib(ih->handle->handleID, value);
+
+  // label_text or label_image returns 1, everything else returns 0? ?ERIC
+  return 0;
+}
+
 /* { */
 
 /*   GtkWidget* eventbox = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT"); */
@@ -335,7 +346,7 @@ void iupdrvLabelInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "WORDWRAP", NULL, emscriptenLabelSetWordWrapAttrib, NULL, NULL, IUPAF_DEFAULT);
 
   // ERIC?: how does alignment work?
-  //iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, gtkLabelSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NO_INHERIT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, emscriptenLabelSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NO_INHERIT);  /* force new default value */
 
   iupClassRegisterAttribute(ic, "ELLIPSIS", NULL, emscriptenLabelSetEllipsisAttrib, NULL, NULL, IUPAF_DEFAULT);
 
