@@ -199,7 +199,7 @@ void IupEntryPoint()
   Ihandle* the_label = IupLabel("The");
   IupSetAttribute(the_label, "RASTERSIZE", "80x80");
   /* IupSetAttribute(the_label, "ELLIPSIS", "YES"); */
-  IupSetAttribute(the_label, "ALIGNMENT", "ARIGHT");
+  IupSetAttribute(the_label, "ALIGNMENT", "ACENTER");
 
 	Ihandle* dialog = IupDialog(the_label);
 

@@ -67,21 +67,27 @@ var LibraryIupLabel = {
 
     // get object to apply alignment to
     var widget_object = IupCommon.GetObjectForID(handle_id);
-    console.log('alignment firing');
+    var alignment = Pointer_stringify(value);
 
-    if (value === "ARIGHT") {
+    // works like ARIGHT:ABOTTOM
+    if (alignment === "ARIGHT") {
+      widget_object.style.height = "30px";
       widget_object.style.display = "table-cell";
-      widget_object.style.verticalAlign = "top";
+      widget_object.style.verticalAlign = "middle";
       widget_object.style.textAlign = "right";  
     }
-    else if (value === "ACENTER") {
+    else if (alignment === "ACENTER") {
+
+      widget_object.style.height = "30px";
       widget_object.style.display = "table-cell";
-      widget_object.style.verticalAlign = "top";
+      widget_object.style.verticalAlign = "middle";
       widget_object.style.textAlign = "center";
     }
     else {  // must be ALEFT
+
+      widget_object.style.height = "30px";
       widget_object.style.display = "table-cell";
-      widget_object.style.verticalAlign = "top";
+      widget_object.style.verticalAlign = "middle";
       widget_object.style.textAlign = "left"; 
     }
 
@@ -109,6 +115,14 @@ var LibraryIupLabel = {
     widget_object.style.overflow = "hidden";
     widget_object.style.textOverflow = "ellipsis";
     // missing: -o-text-overflow: ellipsis;
+  },
+
+  emjsLabel_DisableWordWrap: function(handle_id) {
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+    widget_object.style.whiteSpace = "-moz-pre-wrap"; /* Firefox */
+    widget_object.style.whiteSpace = "-o-pre-wrap"; /* Opera */
+    widget_object.style.whiteSpace = "pre-wrap"; /* Chrome */
+    widget_object.style.wordWrap = "break-word"; /* IE */
   }
 
 };
