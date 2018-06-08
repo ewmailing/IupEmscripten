@@ -581,6 +581,7 @@ IF(IUP_USE_EMSCRIPTEN)
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_frame.js
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_text.js
 		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_progressbar.js
+		${CMAKE_SOURCE_DIR}/src/emscripten/iupemscripten_timer.js
 	)
 
 	LIST(APPEND IUP_SOURCE_FILES

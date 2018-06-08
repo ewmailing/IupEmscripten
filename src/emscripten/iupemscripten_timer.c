@@ -8,13 +8,13 @@
 
 #include "iup.h"
 #include "iupcbs.h"
-
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_assert.h"
 #include "iup_timer.h"
 
+extern void emjsTimer_CreateTimer(void);
 
 #if 0
 - (void) onTimerCallback:(NSTimer*)theTimer
@@ -40,17 +40,18 @@
 #endif
 
 
+#if 0
 void iupdrvTimerRun(Ihandle* ih)
 {
-#if 0
   unsigned int time_ms;
+  
 
-  if (ih->handle != nil) /* timer already started */
-    {
-      return;
-    }
+  if (ih->handle != nil) { /* timer already started */
+    return;
+  }
+  
   time_ms = iupAttribGetInt(ih, "TIME");
-  if(time_ms > 0)
+  if (time_ms > 0)
     {
       IupCocoaTimerController* timer_controller = [[IupCocoaTimerController alloc] init];
       // CACurrentMediaTime is tied to a real time clock. It uses mach_absolute_time() under the hood.
@@ -83,12 +84,12 @@ void iupdrvTimerRun(Ihandle* ih)
       ih->handle = (__unsafe_unretained void*)timer_controller;
     }
   
-#endif
 }
+#endif
 
+#if 0
 static void cocoaTimerDestroy(Ihandle* ih)
 {
-#if 0
   if(nil != ih->handle)
     {
       IupCocoaTimerController* timer_controller = (IupCocoaTimerController*)ih->handle;
@@ -101,8 +102,8 @@ static void cocoaTimerDestroy(Ihandle* ih)
     
       ih->handle = nil;
     }
-#endif
 }
+#endif
 
 void iupdrvTimerStop(Ihandle* ih)
 {
@@ -116,15 +117,15 @@ static int emscriptenTimerMapMethod(Ihandle* ih)
   int timer_id = 0;
   InativeHandle* new_handle = NULL;
 
-  timer_id = emjsTimer_CreateTimer();
-  new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
+  emjsTimer_CreateTimer();
+  /* new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle)); */
 
-  new_handle->handleID = timer_id;
-  ih->handle = new_handle;
+  /* new_handle->handleID = timer_id; */
+  /* ih->handle = new_handle; */
 
-  iupEmscripten_SetIntKeyForIhandleValue(timer_id, ih);
+  /* iupEmscripten_SetIntKeyForIhandleValue(timer_id, ih); */
 
-  iupEmscripten_AddWidgetToParent(ih);
+  /* iupEmscripten_AddWidgetToParent(ih); */
   
 	return IUP_NOERROR;
 }

@@ -111,6 +111,36 @@ Ihandle* DropDownListTest(void)
 /*   DropDownListTest(); */
 /* } */
 
+int timer_cb(Ihandle *n)
+{
+  /* if(n == timer1) */
+  /*   printf("timer 1 called\n"); */
+
+  /* if(n == timer2) */
+  /* { */
+    printf("timer 2 called\n");
+  /*   return IUP_CLOSE;   */
+  /* } */
+
+  return IUP_DEFAULT;
+}
+
+void TimerTest(void)
+{
+
+  Ihandle *timer1, *timer2;
+  timer1 = IupTimer();
+  timer2 = IupTimer();
+
+  /* IupSetAttribute(timer1, "TIME", "1000"); */
+  /* IupSetAttribute(timer1, "RUN", "YES"); */
+  /* IupSetCallback(timer1, "ACTION_CB", (Icallback)timer_cb); */
+
+  /* IupSetAttribute(timer2, "TIME", "4000"); */
+  /* IupSetAttribute(timer2, "RUN", "YES"); */
+  /* IupSetCallback(timer2, "ACTION_CB", (Icallback)timer_cb); */
+}
+
 void IupEntryPoint()
 {
 
@@ -183,7 +213,7 @@ void IupEntryPoint()
   IupSetAttribute(testLabel3, "ELLIPSIS", "YES");
   Ihandle* progbar = IupProgressBar();
 
-
+  Ihandle* timer1 = IupTimer();
 
 	Ihandle* vb=IupHbox(button, button2, testLabel2, testLabel3, testList, testText2, testList2, NULL);
 
