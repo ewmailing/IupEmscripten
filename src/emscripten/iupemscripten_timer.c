@@ -14,7 +14,13 @@
 #include "iup_assert.h"
 #include "iup_timer.h"
 
-extern void emjsTimer_CreateTimer(void);
+#include "iupemscripten_drv.h"
+
+#include <emscripten.h>
+
+extern int emjsTimer_CreateTimer(int time_ms);
+extern void emjsTimer_DestroyTimer(int handle_id);
+extern int emjsTimer_GetTime();
 
 #if 0
 - (void) onTimerCallback:(NSTimer*)theTimer
@@ -39,111 +45,65 @@ extern void emjsTimer_CreateTimer(void);
 
 #endif
 
+EMSCRIPTEN_KEEPALIVE void emscriptenTimerCallbackTrampoline(int handle_id, int elapsed_time)
+{
+  iupEmscripten_Log("Hello world");
+	Ihandle* ih = iupEmscripten_GetIhandleValueForKey(handle_id);
+  Icallback action_callback = IupGetCallback(ih, "ACTION_CB");
+  if (action_callback)
+  {
+    action_callback(ih);
 
-#if 0
+	  iupAttribSetInt(ih, "ELAPSEDTIME", (int)elapsed_time);
+		/* if(action_callback(ih) == IUP_CLOSE) */
+		/* { */
+		/* 	IupExitLoop(); */
+		/* } */
+  }
+
+}
+
 void iupdrvTimerRun(Ihandle* ih)
 {
   unsigned int time_ms;
+  int timer_id;
+	InativeHandle* new_handle = NULL;
   
-
-  if (ih->handle != nil) { /* timer already started */
+  if (ih->handle != NULL) { /* timer already started */
     return;
   }
   
   time_ms = iupAttribGetInt(ih, "TIME");
+
   if (time_ms > 0)
     {
-      IupCocoaTimerController* timer_controller = [[IupCocoaTimerController alloc] init];
-      // CACurrentMediaTime is tied to a real time clock. It uses mach_absolute_time() under the hood.
-      // GNUStep: Neither of these is likely directly portable (CACurrentMediaTime more likely), so we may need an #ifdef here.
-      // [[NSDate date] timeIntervalSince1970]; isn't so great because it is affected by network clock changes and so forth.
-      double start_time = CACurrentMediaTime();
+      timer_id = emjsTimer_CreateTimer(time_ms);
 
-      NSTimer* the_timer = [NSTimer scheduledTimerWithTimeInterval:(time_ms/1000.0)
-                            target:timer_controller
-                            selector:@selector(onTimerCallback:)
-                            userInfo:(id)[NSValue valueWithPointer:ih]
-                            repeats:YES
-                            ];
-    
+      new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
+      new_handle->handleID = timer_id;
+      ih->handle = new_handle;
 
-
-      // Cocoa seems to block timers or events sometimes. This can be seen
-      // when I'm animating (via a timer) and you open an popup box or move a slider.
-      // Apparently, sheets and dialogs can also block (try printing).
-      // To work around this, Cocoa provides different run-loop modes. I need to
-      // specify the modes to avoid the blockage.
-      // NSDefaultRunLoopMode seems to be the default. I don't think I need to explicitly
-      // set this one, but just in case, I will set it anyway.
-      [[NSRunLoop currentRunLoop] addTimer:the_timer forMode:NSRunLoopCommonModes];
-
-
-      [timer_controller setTheTimer:the_timer];
-      [timer_controller setStartTime:start_time];
-
-      ih->handle = (__unsafe_unretained void*)timer_controller;
+      iupEmscripten_SetIntKeyForIhandleValue(timer_id, ih);
     }
-  
-}
-#endif
-
-#if 0
-static void cocoaTimerDestroy(Ihandle* ih)
-{
-  if(nil != ih->handle)
-    {
-      IupCocoaTimerController* timer_controller = (IupCocoaTimerController*)ih->handle;
-      NSTimer* the_timer = [timer_controller theTimer];
-    
-      [the_timer invalidate];
-    
-      // This will also release the timer instance via the dealloc
-      [timer_controller release];
-    
-      ih->handle = nil;
-    }
-}
-#endif
-
-void iupdrvTimerStop(Ihandle* ih)
-{
-
-  //	cocoaTimerDestroy(ih);
-
-}
-
-static int emscriptenTimerMapMethod(Ihandle* ih)
-{
-  int timer_id = 0;
-  InativeHandle* new_handle = NULL;
-
-  emjsTimer_CreateTimer();
-  /* new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle)); */
-
-  /* new_handle->handleID = timer_id; */
-  /* ih->handle = new_handle; */
-
-  /* iupEmscripten_SetIntKeyForIhandleValue(timer_id, ih); */
-
-  /* iupEmscripten_AddWidgetToParent(ih); */
-  
-	return IUP_NOERROR;
 }
 
 static void emscriptenTimerUnMapMethod(Ihandle* ih)
 {
-	/*
-	id the_label = ih->handle;
-	[the_label release];
-	ih->handle = nil;
-	*/
+  if (ih->handle != NULL) {
+    emjsTimer_DestroyTimer(ih->handle->handleID);
+    ih->handle = NULL;
+  }
+}
 
+void iupdrvTimerStop(Ihandle* ih)
+{
+  emscriptenTimerUnMapMethod(ih);
 }
 
 void iupdrvTimerInitClass(Iclass* ic)
 {
-  /* Driver Dependent Class functions */
-  ic->Map = emscriptenTimerMapMethod;
+	(void)ic;
+	// This must be UnMap and not Destroy because we're using the ih->handle and UnMap will clear the pointer to NULL before we reach Destroy.
 	ic->UnMap = emscriptenTimerUnMapMethod;
 }
 
