@@ -4,15 +4,13 @@ var LibraryIupTimer = {
   },
 
   emjsTimer_CreateTimer: function(time_ms) {
-    var startDate = new Date();
-    var startTime = startDate.getTime();
+    var startTime = performance.now();
     var timerCallback = function(startTime) {
-      var nowDate = new Date();
-      var nowTime = nowDate.getTime();
+      var nowTime = performance.now();
       var elapsedTime = nowTime - startTime;
       console.log(`timer ${time_ms} is firing`);
       var c_callback = Module.cwrap('emscriptenTimerCallbackTrampoline', null, ['number', 'number']);
-      c_callback(handle_id);
+      c_callback(handle_id, elapsedTime);
     };
     var timerId = setInterval(timerCallback, time_ms, startTime);
     console.log(timerId);

@@ -42,7 +42,6 @@ extern int emjsTimer_GetTime();
         }
     }
 }
-
 #endif
 
 EMSCRIPTEN_KEEPALIVE void emscriptenTimerCallbackTrampoline(int handle_id, int elapsed_time)
@@ -52,9 +51,10 @@ EMSCRIPTEN_KEEPALIVE void emscriptenTimerCallbackTrampoline(int handle_id, int e
   Icallback action_callback = IupGetCallback(ih, "ACTION_CB");
   if (action_callback)
   {
-    action_callback(ih);
+    // need to implement this - store value in global dictionary
+	  iupAttribSetInt(ih, "ELAPSEDTIME", elapsed_time);
 
-	  iupAttribSetInt(ih, "ELAPSEDTIME", (int)elapsed_time);
+    action_callback(ih);
 		/* if(action_callback(ih) == IUP_CLOSE) */
 		/* { */
 		/* 	IupExitLoop(); */
