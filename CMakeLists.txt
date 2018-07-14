@@ -1,9 +1,15 @@
 # For Emscripten, invoke something like:
-# source ~/emsdk_portable/emsdk_env.sh;
-# mkdir BUILD; cd BUILD;
-# cmake -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Release ..
-# for lsp with cmake:
-# cmake -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug -g4 ../..
+# source ~/emsdk_portable/emsdk_env.sh || source ~/emsdk/emsdk_env.sh;
+# mkdir -p BUILD/emscripten; cd BUILD/emscripten;
+
+# release build compile command
+# cmake -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Release ../..
+
+# compile command for ninja and debug mode, assumes 4 cores
+# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -g4 ../..
+
+# compile command for lsp and ninja and debug mode, assumes 4 cores
+# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug -g4 ../..
 
 # For Mac, you must use the Xcode generator. Makefile is currently broken.
 # mkdir BUILD; cd BUILD;
