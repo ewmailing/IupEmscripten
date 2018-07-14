@@ -241,7 +241,7 @@ void IupEntryPoint()
   /* IupSetAttribute(the_label, "ELLIPSIS", "YES"); */
   IupSetAttribute(the_label, "ALIGNMENT", "ACENTER");
 
-	Ihandle* dialog = IupDialog(the_label);
+	Ihandle* dialog = IupDialog(vb);
 
 	//	IupMap(dialog);
 	IupSetAttribute(dialog, "TITLE", "Iup Activity Title");
