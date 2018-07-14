@@ -2,6 +2,8 @@
 # source ~/emsdk_portable/emsdk_env.sh;
 # mkdir BUILD; cd BUILD;
 # cmake -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Release ..
+# for lsp with cmake:
+# cmake -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug -g4 ../..
 
 # For Mac, you must use the Xcode generator. Makefile is currently broken.
 # mkdir BUILD; cd BUILD;
@@ -285,7 +287,7 @@ IF(IUP_USE_EMSCRIPTEN)
 
 	# IUP executables will always need this switch because IUP is event driven and doesn't quit when Emscripten tries to run/quit main().
 	# SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s NO_EXIT_RUNTIME=1")
-	SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} --shell-file ${CMAKE_SOURCE_DIR}/etc/iupemscripten_shell.html -s NO_EXIT_RUNTIME=1")
+	SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} --shell-file ${CMAKE_SOURCE_DIR}/etc/iupemscripten_shell.html -s EXTRA_EXPORTED_RUNTIME_METHODS=\"['cwrap']\" -s NO_EXIT_RUNTIME=1")
 
 
 ELSEIF(WANTS_BUILD_SHARED_LIBRARY)
