@@ -112,6 +112,9 @@ var LibraryIupLabel = {
   emjsLabel_DropFilesTarget: function(handle_id) {
     var widget_object = IupCommon.GetObjectForID(handle_id);
     var elem = document.createElement('div');
+    elem.style.border = '1px solid black';
+    elem.style.height = '100px';
+    elem.style.width = '200px';
     elem.ondrop = this.dropHandler(event);
     elem.ondragover = this.dragOverHandler(event);
   },
