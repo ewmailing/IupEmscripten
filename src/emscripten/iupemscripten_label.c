@@ -43,6 +43,7 @@ extern void emjsLabel_SetFGColor(int handle_id, const char* color); /* should it
 extern void emjsLabel_SetBGColor(int handle_id, char* color); 
 extern int emjsLabel_SetAlignmentAttrib(int handle_id, const char* value);
 extern void emjsLabel_EnableEllipsis(Ihandle* ih);
+extern void emjsLabel_DropFilesTarget(Ihandle* ih);
 
 // adds padding to element
 void iupdrvLabelAddBorders(Ihandle* ih, int *x, int *y)
@@ -117,6 +118,11 @@ static int emscriptenLabelSetEllipsisAttrib(Ihandle* ih, const char* value)
 
 	// if (ih->data->type == IUP_LABEL_TEXT) returns 1, all else returns 0 ?ERIC
   return 0;
+}
+
+static int emscriptenSetDropFilesTargetAttrib(Ihandle* ih, const char* value)
+{
+  emjsLabel_DropFilesTarget(ih->handle->handleID);
 }
 
 static int emscriptenLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
@@ -349,6 +355,10 @@ void iupdrvLabelInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, emscriptenLabelSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NO_INHERIT);  /* force new default value */
 
   iupClassRegisterAttribute(ic, "ELLIPSIS", NULL, emscriptenLabelSetEllipsisAttrib, NULL, NULL, IUPAF_DEFAULT);
+
+  iupClassRegisterAttribute(ic, "DROPFILESTARGET", NULL, emscriptenSetDropFilesTargetAttrib, NULL, NULL, IUPAF_DEFAULT);
+  // gtk defined in iup_dragdrop.c with IUPAF_NO_INHERIT as the last larg - which should be used?
+
 
   // ERIC?:
   // dropfilestarget
