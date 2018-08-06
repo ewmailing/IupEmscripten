@@ -23,7 +23,7 @@
 (define (launch defFile dir)
   (let ([funcList (remove-empty-strings-from-list (get-function-list defFile))])
     ;; open every file in folder and check for match in func list
-    (for ([fle (in-directory dir)] #:when (or (file-exists? fle) (not (string-contains? (file->string fle) ".cquery_cached_index"))))
+    (for ([fle (in-directory dir)] #:when (and (file-exists? fle) (not (string-contains? (file->string fle) ".cquery_cached_index"))))
       (for/list ([str funcList])
         (find-string-in-file fle str)))))
 
