@@ -24,6 +24,33 @@
       (let ([res (string-contains? (port->string in) str)])
                    (if (eq? res #t) str #f)))))
 
+;; this one is going item by item from .def file and searching each file with each iteration
+(define (start defFile dir)
+  (let ([funcList (remove-empty-strings-from-list (get-function-list defFile))])
+    (for ([str funcList])
+      (for ([fle (in-directory dir)]
+          ;; only loop through items that meet the condition(s) below
+          #:when (and
+                  ;; check if it exists
+                  (file-exists? fle)
+                  ;; get file extension, which is either a byte string or false
+                  (equal?
+                   ;; return false if it's false or convert byte string to string
+                   (if (equal? (path-get-extension fle) #f)
+                              #f
+                              (bytes->string/utf-8 (path-get-extension fle)))
+                   ;; we only want header files, so comparing extension to .h
+                   ".h")
+                  ;; and make sure to exclude the stupid .cquery dir
+                  (not (string-contains? (some-system-path->string fle) ".cquery"))))
+      ;; start body of (for) loop
+        (if (equal? #t (not (find-string-in-file (some-system-path->string fle) str)))
+            #f
+            ;; we have a match - need to find line of match
+            (display-lines-to-file (file->lines fle) "test-chirs2.h")
+            )))))
+
+;; this one searches by file, and sees if there's a match in the list when it's in that file
 (define (launch defFile dir)
   (let ([funcList (remove-empty-strings-from-list (get-function-list defFile))])
     ;; open every file in folder and check for match in func list
