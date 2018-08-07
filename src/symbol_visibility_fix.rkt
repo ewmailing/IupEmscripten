@@ -2,6 +2,9 @@
 ; Author: Chris Matzenbach
 #lang racket
 
+;; packages
+(require racket/path)
+
 ;; global vars
 (define inputDir ".") 
 
@@ -17,15 +20,36 @@
 ;; returns the string if match is found, false otherwise
 (define (find-string-in-file fle str)
   (call-with-input-file fle
-    (lambda (in) (let ([res (string-contains? (port->string in) str)])
+    (lambda (in)
+      (let ([res (string-contains? (port->string in) str)])
                    (if (eq? res #t) str #f)))))
 
 (define (launch defFile dir)
   (let ([funcList (remove-empty-strings-from-list (get-function-list defFile))])
     ;; open every file in folder and check for match in func list
-    (for ([fle (in-directory dir)] #:when (and (file-exists? fle) (not (string-contains? (file->string fle) ".cquery_cached_index"))))
-      (for/list ([str funcList])
-        (find-string-in-file fle str)))))
+    (for ([fle (in-directory dir)]
+          ;; only loop through items that meet the condition(s) below
+          #:when (and
+                  ;; check if it exists
+                  (file-exists? fle)
+                  ;; get file extension, which is either a byte string or false
+                  (equal?
+                   ;; return false if it's false or convert byte string to string
+                   (if (equal? (path-get-extension fle) #f)
+                              #f
+                              (bytes->string/utf-8 (path-get-extension fle)))
+                   ;; we only want header files, so comparing extension to .h
+                   ".h")
+                  ;; and make sure to exclude the stupid .cquery dir
+                  (not (string-contains? (some-system-path->string fle) ".cquery"))))
+      ;; start body of (for) loop
+      (for ([str funcList])
+        (if (equal? #t (not (find-string-in-file (some-system-path->string fle) str)))
+            ;; if it's false then do nothing I guess?
+            #f
+            ;; otherwise it should return the string
+            ;; 1. find line in file
+            (display-lines-to-file (file->lines fle) "test-chris.h"))))))
 
 ;; (define (launch defFile dir)
 ;;   (let ([funcList (remove-empty-strings-from-list (get-function-list defFile))])
