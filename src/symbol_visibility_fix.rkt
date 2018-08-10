@@ -24,6 +24,20 @@
       (let ([res (string-contains? (port->string in) str)])
                    (if (eq? res #t) str #f)))))
 
+;; file string text -> void
+;; finds first match of string in file, then adds text right before it (with spacing)
+(define (add-text-to-file fle str txt)
+  ;; store file data as a list of strings, with each line as a string
+  (let ([file-data (file->lines fle)])
+    (for ([e (in-list file-data)])
+      (if (string-contains? e str)
+          ;; now need a regex test to make sure it is the definition and not a func call or coment or random mention
+          (print e)
+          (print "")
+          ))))
+
+;; to add data back into file - (display-lines-to-file lines file[string])
+
 ;; this one is going item by item from .def file and searching each file with each iteration
 (define (start defFile dir)
   (let ([funcList (remove-empty-strings-from-list (get-function-list defFile))])
@@ -35,7 +49,7 @@
                   (file-exists? fle)
                   ;; get file extension, which is either a byte string or false
                   (equal?
-                   ;; return false if it's false or convert byte string to string
+                   ;; return false if it's false or convert byte string to string otherwise
                    (if (equal? (path-get-extension fle) #f)
                               #f
                               (bytes->string/utf-8 (path-get-extension fle)))
@@ -43,11 +57,11 @@
                    ".h")
                   ;; and make sure to exclude the stupid .cquery dir
                   (not (string-contains? (some-system-path->string fle) ".cquery"))))
-      ;; start body of (for) loop
+        ;; start body of (for) loop
         (if (equal? #t (not (find-string-in-file (some-system-path->string fle) str)))
             #f
             ;; we have a match - need to find line of match
-            (display-lines-to-file (file->lines fle) "test-chirs2.h")
+            (add-text-to-file fle str "something")
             )))))
 
 ;; this one searches by file, and sees if there's a match in the list when it's in that file
@@ -76,6 +90,10 @@
             #f
             ;; otherwise it should return the string
             ;; 1. find line in file
+            ;; 2. check if IUP_EXPORT is already there
+            ;; 3. find beginning of function definition
+            ;; 4. insert IUP_EXPORT or IUP_EXPORTI into file
+            ;; profit
             (display-lines-to-file (file->lines fle) "test-chris.h"))))))
 
 ;; (define (launch defFile dir)
