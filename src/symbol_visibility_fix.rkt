@@ -30,10 +30,10 @@
   ;; store file data as a list of strings, with each line as a string
   (let ([file-data (file->lines fle)])
     (for ([e (in-list file-data)])
-      (if (string-contains? e str)
+      (cond
+        [(and (string-contains? e str) (regexp-match #px"\\S+\\s+\\S*\\s*\\S*\\w+\\(.*?\\)" e)) (display (~a e "\n"))]
+        ;; [(string-contains? e str) (display (~a e "\n"))]
           ;; now need a regex test to make sure it is the definition and not a func call or coment or random mention
-          (print e)
-          (print "")
           ))))
 
 ;; to add data back into file - (display-lines-to-file lines file[string])
@@ -95,50 +95,3 @@
             ;; 4. insert IUP_EXPORT or IUP_EXPORTI into file
             ;; profit
             (display-lines-to-file (file->lines fle) "test-chris.h"))))))
-
-;; (define (launch defFile dir)
-;;   (let ([funcList (remove-empty-strings-from-list (get-function-list defFile))])
-;;     ;; open every file in folder and check for match in func list
-;;     (for ([fle (in-directory dir)] #:when (file-exists? fle))
-;;       (for/list ([str funcList])
-;;         (if (not (eq? (find-string-in-file fle str) #f))
-;;             (find-string-in-file fle str)
-;;             '(""))))))
-
-;; ;; main function
-;; (defun sym-vis-fix (searchFunc)
-
-;;   (defun my-process-file (fPath)
-;;     "Process the file at FPATH …"
-;;     (let (myBuffer p1 p2 (ii 0) searchStr)
-;;       (when (not (string-match "/xx" fPath)) ; exclude some dir
-;;         (let ((fileChanged-p nil))
-;;           (with-temp-buffer
-;;             ;; insert code from file into temp buffer
-;;             (insert-file-contents fPath nil nil nil t)
-
-;;             ;; need to get all search keys in here and iterate through each
-;;             (setq searchStr searchFunc) ; search string here
-;;             ;; start from first point in buffer
-;;             (goto-char 1)
-;;             (while (search-forward searchStr nil t)
-;;               ;; go to beginning of function def line
-;;               (forward-word -3)
-;;               (if (not (string-equal (thing-at-point 'word) "IUP_EXPORTI"))
-;;                 (forward-word 1)
-;;                 (insert "IUP_EXPORTI "))
-;;               ;; go back to cursor start
-;;               (forward-word 3)
-;;               (setq fileChanged-p t)
-;;               ;; (setq ii (1+ ii))
-;;               )
-;;             (when fileChanged-p (write-region 1 (point-max) fPath)))))))
-
-;;   (let (outputBuffer)
-;;     (setq outputBuffer "*my occur output*" )
-;;     (with-output-to-temp-buffer outputBuffer
-;;       (mapc 'my-process-file (find-lisp-find-files inputDir "\\.h$"))
-;;       (princ "Done deal!"))))
-
-;; ;; apply main function to the function list to get everything started
-;; (mapc 'sym-vis-fix searchList)
