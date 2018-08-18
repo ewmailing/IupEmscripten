@@ -1,15 +1,15 @@
 # For Emscripten, invoke something like:
-# source ~/emsdk_portable/emsdk_env.sh || source ~/emsdk/emsdk_env.sh;
+# source source ~/emsdk/emsdk_env.sh;
 # mkdir -p BUILD/emscripten; cd BUILD/emscripten;
 
 # release build compile command
 # cmake -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Release ../..
 
-# compile command for ninja and debug mode, assumes 4 cores
-# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -g4 ../..
+# compile command for ninja, debug mode, source maps (for some browser debuggers), emrun
+# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS=--emrun ../..
 
-# compile command for lsp and ninja and debug mode, assumes 4 cores
-# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug -g4 ../..
+# above plus export CMkae compile commands to JSON for some external tools, e.g. lsp
+# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS=--emrun -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ../..
 
 # For Mac, you must use the Xcode generator. Makefile is currently broken.
 # mkdir BUILD; cd BUILD;
