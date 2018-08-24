@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
+#include <stdbool.h>
 
 #include "iup.h"
 
@@ -16,6 +17,8 @@
 #include "iup_image.h"
 
 #include "iupemscripten_drv.h"
+#include "SDL.h"
+#include "SDL_image.h"
 
 
 /* Adapted from SDL (zlib)
@@ -85,49 +88,148 @@ void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
 // FIXME: Carried over implementation. Probably wrong. Untested, don't know what calls this, don't know how to test.
 void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata)
 {
-#if 0
-  int x,y;
-  unsigned char *red,*green,*blue,*alpha;
-  void *theArray[1];
-  unsigned char *pixels = malloc(width*height*bpp);
-  theArray[0] = (void*)pixels;
-  int planesize = width*height;
-  red = imgdata;
-  green = imgdata+planesize;
-  blue = imgdata+2*planesize;
-  alpha = imgdata+3*planesize;
-  for(y=0;y<height;y++){
-    for(x=0;x<width;x++) {
-      *pixels++ = *red++;
-      *pixels++ = *green++;
-      *pixels++ = *blue++;
-      if(bpp==32)
-        *pixels++ = *alpha;
-    }
-  }
-	NSBitmapImageRep* theRep;
-	
-if(bpp==32)
-{
- theRep=[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:(unsigned char **)&theArray
-			pixelsWide:width pixelsHigh:height bitsPerSample:8
-				samplesPerPixel:4 hasAlpha:YES isPlanar:NO
-				colorSpaceName:NSDeviceRGBColorSpace bytesPerRow:0
-				bitsPerPixel:bpp];
-}
-else
-{
-	theRep=[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:(unsigned char **)&theArray
-												   pixelsWide:width pixelsHigh:height bitsPerSample:8
-											  samplesPerPixel:3 hasAlpha:NO isPlanar:NO
-											   colorSpaceName:NSDeviceRGBColorSpace bytesPerRow:0
-												 bitsPerPixel:bpp];
-}
-  NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(width,height)];
-  [image addRepresentation:theRep];
-  return (void*)CFBridgingRetain(image);
-#endif
-  return NULL;
+    SDL_Surface* sdl_surface = NULL;
+	if(32 == bpp)
+	{
+		sdl_surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+		if(NULL == sdl_surface)
+		{
+			return NULL;
+		}
+
+		int row_length = sdl_surface->pitch;
+		unsigned char* pixels = sdl_surface->pixels;
+
+		unsigned char* source_pixel = imgdata;
+
+		SDL_LockSurface(sdl_surface);
+
+		for(int y=0;y<height;y++)
+		{
+			for(int x=0;x<row_length;x++)
+			{
+				*pixels = *source_pixel;
+				pixels++;
+				source_pixel++;
+
+				*pixels = *source_pixel;
+				pixels++;
+				source_pixel++;
+
+				*pixels = *source_pixel;
+				pixels++;
+				source_pixel++;
+
+				if(bpp==32)
+				{
+					*pixels = *source_pixel;
+					pixels++;
+					source_pixel++;
+				}
+				else
+				{
+					*pixels = 255;
+					pixels++;
+				}
+			}
+		}
+		SDL_UnlockSurface(sdl_surface);
+
+
+	}
+	else if(24 == bpp)
+	{
+		sdl_surface = SDL_CreateRGBSurface(0, width, height, 24, 0, 0, 0, 0);
+		if(NULL == sdl_surface)
+		{
+			return NULL;
+		}
+
+		int row_length = sdl_surface->pitch;
+		unsigned char* pixels = sdl_surface->pixels;
+
+		unsigned char* source_pixel = imgdata;
+
+
+		SDL_LockSurface(sdl_surface);
+
+		for(int y=0;y<height;y++)
+		{
+			for(int x=0;x<row_length;x++)
+			{
+				*pixels = *source_pixel;
+				pixels++;
+				source_pixel++;
+
+				*pixels = *source_pixel;
+				pixels++;
+				source_pixel++;
+
+				*pixels = *source_pixel;
+				pixels++;
+				source_pixel++;
+			}
+		}
+		SDL_UnlockSurface(sdl_surface);
+
+	}
+	else if(8 == bpp)
+	{
+		// We'll make a full 32-bit image for this case
+		sdl_surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+		if(NULL == sdl_surface)
+		{
+			return NULL;
+		}
+
+		int row_length = sdl_surface->pitch;
+		unsigned char* pixels = sdl_surface->pixels;
+
+		unsigned char* source_pixel = imgdata;
+
+
+		int colors_count = 0;
+		iupColor colors[256];
+		
+		int has_alpha = false;
+
+		SDL_LockSurface(sdl_surface);
+		
+		for(int y=0;y<height;y++)
+		{
+			for(int x=0;x<row_length;x++)
+			{
+				unsigned char index = *source_pixel;
+				iupColor* c = &colors[index];
+
+				*pixels = c->r;
+				pixels++;
+				*pixels = c->g;
+				pixels++;
+				*pixels = c->b;
+				pixels++;
+
+				if(has_alpha)
+				{
+					*pixels = c->a;
+				}
+				else
+				{
+					*pixels = 255;
+				}
+				pixels++;
+				source_pixel++;
+
+			}
+		}
+		SDL_UnlockSurface(sdl_surface);
+
+
+
+	}
+		
+
+	return sdl_surface;
 }
 
 int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colors, int *colors_count)
@@ -142,190 +244,131 @@ int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colo
 // NOTE: Returns an autoreleased NSImage.
 void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive)
 {
-#if 0
-  int y, x, bpp, bgcolor_depend = 0,
-      width = ih->currentwidth,
-      height = ih->currentheight;
-  unsigned char *imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
-  unsigned char bg_r=0, bg_g=0, bg_b=0;
-  bpp = iupAttribGetInt(ih, "BPP");
-  iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
+    SDL_Surface* sdl_surface = NULL;
+	int bpp;
+	int width;
+	int height;
+	unsigned char* imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
 
-  NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(width,height)];
-  if (!image)
-  {
-    return NULL;
-  }
-	
-	NSBitmapImageRep* bitmap_image = nil;
+	width = ih->currentwidth;
+	height = ih->currentheight;
+	bpp = iupAttribGetInt(ih, "BPP");
 
-	
+	unsigned char bg_r=0, bg_g=0, bg_b=0;
+	iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
+
 	if(32 == bpp)
 	{
-		bitmap_image = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
-														 pixelsWide:width pixelsHigh:height bitsPerSample:8
-													samplesPerPixel:4 hasAlpha:YES isPlanar:NO
-													 colorSpaceName:NSDeviceRGBColorSpace
-															// I thought this should be 0 because I thought I want pre-multipled alpha, but some png's I'm testing render better with this flag.
-															 bitmapFormat:NSAlphaNonpremultipliedBitmapFormat
-														bytesPerRow:CalculateBytesPerRow(width, 4)
-													   bitsPerPixel:32
-						];
+		sdl_surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+		if(NULL == sdl_surface)
+		{
+			return NULL;
+		}
+
+		int row_length = sdl_surface->pitch;
+		unsigned char* pixels = sdl_surface->pixels;
+
+		unsigned char* source_pixel = imgdata;
+
+		SDL_LockSurface(sdl_surface);
+
+		for(int y=0;y<height;y++)
+		{
+			for(int x=0;x<row_length;x++)
+			{
+				*pixels = *source_pixel;
+				pixels++;
+				source_pixel++;
+
+				*pixels = *source_pixel;
+				pixels++;
+				source_pixel++;
+
+				*pixels = *source_pixel;
+				pixels++;
+				source_pixel++;
+
+				if(make_inactive)
+				{
+					unsigned char r = *(pixels-3);
+					unsigned char g = *(pixels-2);
+					unsigned char b = *(pixels-1);
+					iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
+				}
+				if(bpp==32)
+				{
+					*pixels = *source_pixel;
+					pixels++;
+					source_pixel++;
+				}
+				else
+				{
+					*pixels = 255;
+					pixels++;
+				}
+			}
+		}
+		SDL_UnlockSurface(sdl_surface);
+
 	}
 	else if(24 == bpp)
 	{
-		bitmap_image = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
-															   pixelsWide:width pixelsHigh:height bitsPerSample:8
-														  samplesPerPixel:3 hasAlpha:NO isPlanar:NO
-														   colorSpaceName:NSDeviceRGBColorSpace
-															// untested
-															 bitmapFormat:NSAlphaNonpremultipliedBitmapFormat
-															  bytesPerRow:CalculateBytesPerRow(width, 3)
-													   bitsPerPixel:24
-						];
+		sdl_surface = SDL_CreateRGBSurface(0, width, height, 24, 0, 0, 0, 0);
+		if(NULL == sdl_surface)
+		{
+			return NULL;
+		}
+
+		int row_length = sdl_surface->pitch;
+		unsigned char* pixels = sdl_surface->pixels;
+
+		unsigned char* source_pixel = imgdata;
+
+		for(int y=0;y<height;y++)
+		{
+			for(int x=0;x<row_length;x++)
+			{
+				*pixels = *source_pixel;
+				pixels++;
+				source_pixel++;
+
+				*pixels = *source_pixel;
+				pixels++;
+				source_pixel++;
+
+				*pixels = *source_pixel;
+				pixels++;
+				source_pixel++;
+
+
+				if(make_inactive)
+				{
+					unsigned char r = *(pixels-3);
+					unsigned char g = *(pixels-2);
+					unsigned char b = *(pixels-1);
+					iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
+				}
+
+
+			}
+		}
+		SDL_UnlockSurface(sdl_surface);
+
+
 	}
 	else if(8 == bpp)
 	{
-		
 		// We'll make a full 32-bit image for this case
-		bitmap_image = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
-															   pixelsWide:width pixelsHigh:height bitsPerSample:8
-														  samplesPerPixel:4 hasAlpha:YES isPlanar:NO
-														   colorSpaceName:NSDeviceRGBColorSpace
-															// untested
-															bitmapFormat:NSAlphaNonpremultipliedBitmapFormat
-															  bytesPerRow:CalculateBytesPerRow(width, 4)
-													   bitsPerPixel:32
-						];
-		
-	}
-	else
-	{
-		[image release];
-		return NULL;
-	}
-	
-	
-	
-	if(32 == bpp)
-	{
-		//  unsigned char *red,*green,*blue,*alpha;
-		unsigned char* source_pixel;
+		sdl_surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+		if(NULL == sdl_surface)
+		{
+			return NULL;
+		}
 
-		//  unsigned char *pixels = malloc(width*height*bpp);
-		unsigned char *pixels = [bitmap_image bitmapData];
-		int row_length = CalculateRowLength(width, 4);
+		int row_length = sdl_surface->pitch;
+		unsigned char* pixels = sdl_surface->pixels;
 
-
-		
-		source_pixel = imgdata;
-
-		
-		  for(y=0;y<height;y++){
-			  for(x=0;x<row_length;x++) {
-				  /*
-				   *pixels++ = *red++;
-				   *pixels++ = *green++;
-				   *pixels++ = *blue++;
-				   */
-				  *pixels = *source_pixel;
-				  pixels++;
-				  source_pixel++;
-				  
-				  *pixels = *source_pixel;
-				  pixels++;
-				  source_pixel++;
-				  
-				  *pixels = *source_pixel;
-				  pixels++;
-				  source_pixel++;
-				  
-				  if(make_inactive) {
-					  unsigned char r = *(pixels-3),
-					  g = *(pixels-2),
-					  b = *(pixels-1);
-					  iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
-				  }
-				  if(bpp==32)
-				  {
-			 //   *pixels++ = *alpha++;
-					  
-					  *pixels = *source_pixel;
-					  pixels++;
-					  source_pixel++;
-				  }
-				  else
-				  {
-					  //      *pixels++ = 255;
-					  
-					  *pixels = 255;
-					  pixels++;
-				  }
-			  }
-		  }
-
-		
-		
-		
-		
-	}
-	else if(24 == bpp)
-	{
-		//  unsigned char *red,*green,*blue,*alpha;
-		unsigned char* source_pixel;
-		
-		//  unsigned char *pixels = malloc(width*height*bpp);
-		unsigned char *pixels = [bitmap_image bitmapData];
-		
-		int row_length = CalculateRowLength(width, 3);
-		
-		source_pixel = imgdata;
-		
-		
-  for(y=0;y<height;y++){
-	  for(x=0;x<row_length;x++) {
-		  /*
-		   *pixels++ = *red++;
-		   *pixels++ = *green++;
-		   *pixels++ = *blue++;
-		   */
-		  *pixels = *source_pixel;
-		  pixels++;
-		  source_pixel++;
-		  
-		  *pixels = *source_pixel;
-		  pixels++;
-		  source_pixel++;
-		  
-		  *pixels = *source_pixel;
-		  pixels++;
-		  source_pixel++;
-		  
-		  
-		  if(make_inactive) {
-			  unsigned char r = *(pixels-3),
-			  g = *(pixels-2),
-			  b = *(pixels-1);
-			  iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
-		  }
-
-		  
-	  }
-  }
-		
-		
-
-	}
-	else if(8 == bpp)
-	{
-#if 1
-		//  unsigned char *red,*green,*blue,*alpha;
-		unsigned char* source_pixel;
-		
-		//  unsigned char *pixels = malloc(width*height*bpp);
-		unsigned char *pixels = [bitmap_image bitmapData];
-		
-		int row_length = CalculateRowLength(width, 4);
+		unsigned char* source_pixel = imgdata;
 
 		int colors_count = 0;
 		iupColor colors[256];
@@ -333,85 +376,53 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 		int has_alpha = iupImageInitColorTable(ih, colors, &colors_count);
 
 		
+		for(int y=0;y<height;y++)
+		{
+			for(int x=0;x<row_length;x++)
+			{
+				unsigned char index = *source_pixel;
+				iupColor* c = &colors[index];
 
-		
-		
-		
-		source_pixel = imgdata;
-		
-		
-		  for(y=0;y<height;y++){
-			  for(x=0;x<row_length;x++) {
+				*pixels = c->r;
+				pixels++;
+				*pixels = c->g;
+				pixels++;
+				*pixels = c->b;
+				pixels++;
 
-				  unsigned char index = *source_pixel;
-				  iupColor* c = &colors[index];
+				if(has_alpha)
+				{
+					*pixels = c->a;
+				}
+				else
+				{
+					*pixels = 255;
+				}
+				pixels++;
+				source_pixel++;
 
-				  *pixels = c->r;
-				  pixels++;
-				  *pixels = c->g;
-				  pixels++;
-				  *pixels = c->b;
-				  pixels++;
-				  
-				  if (has_alpha)
-				  {
-					  *pixels = c->a;
-				  }
-				  else
-				  {
-					  *pixels = 255;
-				  }
-				  pixels++;
-				  source_pixel++;
 
-				  
-				  
-				  if(make_inactive) {
-					  unsigned char r = *(pixels-3),
-					  g = *(pixels-2),
-					  b = *(pixels-1);
-					  iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
-				  }
+				if(make_inactive)
+				{
+					unsigned char r = *(pixels-3);
+					unsigned char g = *(pixels-2);
+					unsigned char b = *(pixels-1);
+					iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
+				}				 
+			}
+		}
+		SDL_UnlockSurface(sdl_surface);
 
-				  
-				  
-				  /*
-				  if(make_inactive) {
-					  unsigned char r = *(pixels-3),
-					  g = *(pixels-2),
-					  b = *(pixels-1);
-					  iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
-				  }
-				   */
-			  }
-		  }
-		
 
-		
-#endif
-		
 	}
-	else
+		
+	int bgcolor_depend = 0;
+	if(bgcolor_depend || make_inactive)
 	{
-
-		
+		iupAttribSetStr(ih, "_IUP_BGCOLOR_DEPEND", "1");
 	}
-	
 
-	
-	
-  [image addRepresentation:bitmap_image];
-  if (bgcolor_depend || make_inactive)
-    iupAttribSetStr(ih, "_IUP_BGCOLOR_DEPEND", "1");
-
-//  return (void*)CFBridgingRetain(image);
-
-	// Doing an autorelease because the typical pattern is to call image = iupImageGetImage(),
-	// and then call [foo setImage:image];
-	// It is easy to forget to release the image for emscripten because the API doesn't use new/create/alloc in the name.
-	return [image autorelease];
-#endif
-	return NULL;
+	return sdl_surface;
 }
 
 void* iupdrvImageCreateIcon(Ihandle *ih)
@@ -527,41 +538,29 @@ void* iupdrvImageCreateMask(Ihandle *ih)
 
 void* iupdrvImageLoad(const char* name, int type)
 {
-#if 0
-  //int iup2mac[3] = {IMAGE_BITMAP, IMAGE_ICON, IMAGE_CURSOR};
-  NSImage *image;
-  NSString *path = [[NSString alloc] initWithUTF8String:name];
-  image = [[NSImage alloc] initWithContentsOfFile: path];
-  NSBitmapImageRep *rep = [[image representations] objectAtIndex: 0];
-  // If you think you might get something other than a bitmap image representation,
-  // check for it here.
-
-  NSSize size = NSMakeSize ([rep pixelsWide], [rep pixelsHigh]);
-  [image setSize: size];
-  
-  return (void*)CFBridgingRetain(image);
-#endif
-  return NULL;
+	SDL_Surface* sdl_surface = IMG_Load(name);
+	return sdl_surface;
 }
 
 int iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp)
 {
-#if 0
-  NSImage *image = (__bridge NSImage*)handle;
-  NSBitmapImageRep *bitmap = nil;
-  if([[image representations] count]>0) bitmap = [[image representations] objectAtIndex:0];
-  if(bitmap==nil) return 0;
-  if(w) *w = [bitmap pixelsWide];
-  if(h) *h = [bitmap pixelsHigh];
-  if(bpp) *bpp = [bitmap bitsPerPixel];
-#endif
-  return 1;
+ 	SDL_Surface* sdl_surface = (SDL_Surface*)handle;
+	if(NULL == sdl_surface)
+	{
+		return 0;
+	}
+  	if(w) *w = format->w;
+	if(h) *h = sdl_surface->h;
+	if(bpp) *bpp = (int)sdl_surface->format->BitsPerPixel;
+
+	return 1;
 }
 
 // [NSApp setApplicationIconImage: [NSImage imageNamed: @"Icon_name.icns"]]
 
 void iupdrvImageDestroy(void* handle, int type)
 {
+	SDL_FreeSurface((SDL_Surface*)handle);
 }
 
 void iupdrvImageGetData(void* handle, unsigned char* imgdata)
