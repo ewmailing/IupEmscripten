@@ -214,7 +214,7 @@ void LabelTest(void)
 //  IupSetAttribute(image_label, "ALIGNMENT", "ARIGHT");
 //  IupSetCallback(label, "BUTTON_CB", (Icallback)button_cb);
 //  IupAppend(box2, label);
- #if 0
+ #if 1
   image2 = IupImageRGB(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_24);
   Ihandle* image_label_24 = IupLabel(NULL);
   IupSetAttributeHandle(image_label_24, "IMAGE", image2);
@@ -234,8 +234,8 @@ Ihandle* image_label_8 = IupLabel(NULL);
 
 
 //  box1 = IupVbox(text_label, text_label2, text_label3, text_label4, text_label5, text_label6, image_label_32, image_label_24, image_label_8, NULL);
-//  box1 = IupVbox(text_label, text_label2, text_label3, text_label4, text_label5, text_label6, button1, image_label_32, image_label_24, image_label_8, NULL);
-  box1 = IupVbox(text_label, text_label2, button1, image_label_32, NULL);
+  box1 = IupVbox(text_label, text_label2, text_label3, text_label4, text_label5, text_label6, button1, image_label_32, image_label_24, image_label_8, NULL);
+//  box1 = IupVbox(text_label, text_label2, button1, image_label_32, NULL);
 //  box1 = IupVbox(text_label, text_label2, image_label_32, button1, NULL);
 //  box1 = IupVbox(text_label, text_label2, text_label3, text_label4, text_label5, text_label6, button1, NULL);
 //  IupSetAttribute(box1, "MARGIN", "5x5");

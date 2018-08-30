@@ -305,13 +305,15 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 	}
 	else if(24 == bpp)
 	{
-		sdl_surface = SDL_CreateRGBSurface(0, width, height, 24, 0, 0, 0, 0);
+		// Convert to 32-bit because the native CANVAS/IMG needs 32-bit data.
+		sdl_surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
 		if(NULL == sdl_surface)
 		{
 			return NULL;
 		}
 
-		int row_length = sdl_surface->pitch;
+		int row_length = CalculateRowLength(width, 3);
+//		int row_length = sdl_surface->pitch;
 		unsigned char* pixels = sdl_surface->pixels;
 
 		unsigned char* source_pixel = imgdata;
@@ -328,6 +330,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 				unsigned char s_b = *source_pixel;
 				source_pixel++;
 
+
 				if(make_inactive)
 				{
 					iupImageColorMakeInactive(&s_r, &s_g, &s_b, bg_r, bg_g, bg_b);
@@ -339,6 +342,9 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 				pixels++;
 				*pixels = s_b;
 				pixels++;
+				*pixels = 255;
+				pixels++;
+
 			}
 		}
 
@@ -402,7 +408,11 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 				*pixels = s_b;
 				pixels++;
 				*pixels = s_a;
-				pixels++;		 
+				pixels++;
+
+
+				source_pixel++;
+				
 			}
 		}
 
