@@ -31,6 +31,7 @@
 
 #include "iup_key.h"
 #include <emscripten.h>
+#include "SDL.h"
 
 extern int emjsLabel_CreateLabel(void);
 extern void emjsLabel_SetTitle(int handle_id, const char* title);
@@ -44,6 +45,8 @@ extern void emjsLabel_SetBGColor(int handle_id, char* color);
 extern int emjsLabel_SetAlignmentAttrib(int handle_id, const char* value);
 extern void emjsLabel_EnableEllipsis(Ihandle* ih);
 extern void emjsLabel_DropFilesTarget(Ihandle* ih);
+extern void emjsLabel_SetImageAttrib(int handle_id, void* pixel_data, int width, int height);
+
 
 // adds padding to element
 void iupdrvLabelAddBorders(Ihandle* ih, int *x, int *y)
@@ -148,6 +151,61 @@ static int emscriptenLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
 /*   return iupdrvBaseSetBgColorAttrib(ih, parent_value); */
 /* } */
 
+
+static int emscriptenLabelSetImageAttrib(Ihandle* ih, const char* value)
+{
+	
+	if(ih->data->type == IUP_LABEL_IMAGE)
+	{
+		/*
+		UIImageView* image_view = cocoaTouchLabelGetImageView(ih);
+		if(NULL == image_view)
+		{
+			return 0;
+		}
+		*/
+		char* name;
+		int make_inactive = 0;
+		
+		if (iupdrvIsActive(ih))
+		{
+			make_inactive = 0;
+		}
+		else
+		{
+			name = iupAttribGet(ih, "IMINACTIVE");
+			if (!name)
+			{
+				make_inactive = 1;
+			}
+		}
+		
+		
+		// NOTE: Maybe SDL_surface is too low level, and we should be creating the JavaScript imageData.
+		SDL_Surface* the_bitmap;
+		the_bitmap = iupImageGetImage(value, ih, make_inactive);
+		int width;
+		int height;
+		int bpp;
+		
+		iupdrvImageGetInfo(the_bitmap, &width, &height, &bpp);
+		
+/*
+		// FIXME: What if the width and height change? Do we change it or leave it alone?
+		CGSize new_size = CGSizeMake(width, height);
+		CGRect the_frame = [image_view frame];
+		the_frame.size = new_size;
+		[image_view setFrame:the_frame];
+
+		[image_view setImage:the_bitmap];
+*/		
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
 
 static int emscriptenLabelMapMethod(Ihandle* ih)
 {
@@ -364,11 +422,11 @@ void iupdrvLabelInitClass(Iclass* ic)
   // dropfilestarget
   // turn div/widget into area that files can be dropped onto to trigger a file upload dialog; as simple as possible
   
-#if 0
   /* IupLabel only */
   // upon compile, image is compiled into binary format, possibly need special apis to read
   // emscripten should provide these apis
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkLabelSetImageAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, emscriptenLabelSetImageAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+#if 0
 
   /* IupLabel GTK and Motif only */
   iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, gtkLabelSetImInactiveAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
