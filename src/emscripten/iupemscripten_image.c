@@ -178,7 +178,7 @@ void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors
 	else if(8 == bpp)
 	{
 		// We'll make a full 32-bit image for this case
-		// NOTE: SDL_surface actually supports 8-bit palette images. Might consider using.
+		// NOTE: Even though SDL_surface actually supports 8-bit palette images, we need to supply the underlying native Canvas with 32-bit RGBA.
 		sdl_surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
 		if(NULL == sdl_surface)
 		{
@@ -361,7 +361,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 	else if(8 == bpp)
 	{
 		// We'll make a full 32-bit image for this case
-		// NOTE: SDL_surface actually supports 8-bit palette images. Might consider using.
+		// NOTE: Even though SDL_surface actually supports 8-bit palette images, we need to supply the underlying native Canvas with 32-bit RGBA.
 		sdl_surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
 		if(NULL == sdl_surface)
 		{
