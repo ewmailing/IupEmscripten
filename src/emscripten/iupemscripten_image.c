@@ -133,13 +133,15 @@ void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors
 	}
 	else if(24 == bpp)
 	{
-		sdl_surface = SDL_CreateRGBSurface(0, width, height, 24, 0, 0, 0, 0);
+		sdl_surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
 		if(NULL == sdl_surface)
 		{
 			return NULL;
 		}
 
-		int row_length = sdl_surface->pitch;
+		int row_length = CalculateRowLength(width, 3);
+//		int row_length = sdl_surface->pitch;
+
 		unsigned char* pixels = sdl_surface->pixels;
 
 		unsigned char* source_pixel = imgdata;
@@ -164,6 +166,9 @@ void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors
 				pixels++;
 				*pixels = s_b;
 				pixels++;
+				*pixels = 255;
+				pixels++;
+
 			}
 		}
 
