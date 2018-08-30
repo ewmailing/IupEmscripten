@@ -5,7 +5,7 @@ var LibraryIupLabel = {
   $Label: {
   },
 
-  emjsLabel_CreateLabel: function() {
+  emjsLabel_CreateText: function() {
     var widget_object;
     widget_object = document.createElement("div");
 
@@ -14,6 +14,27 @@ var LibraryIupLabel = {
 
     return handle_id;
   },
+
+  emjsLabel_CreateImage: function() {
+    var widget_object;
+    widget_object = document.createElement("CANVAS");
+
+    var handle_id = IupCommon.RegisterNewObject(widget_object);
+    IupCommon.InitializeObject(widget_object);
+
+    return handle_id;
+  },
+  emjsLabel_CreateSeparatorHorizontal: function(handle_id) {
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+    var h = document.createElement("hr");
+    widget_object.appendChild(h); 
+  },
+
+  emjsLabel_CreateSeparatorVertical: function(handle_id) {
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+    alert("vertical separator");
+  },
+
 
   emjsLabel_DestroyLabel: function(handle_id) {
     // Do I need to removeEventListener?
@@ -98,15 +119,24 @@ var LibraryIupLabel = {
     return 1;
   },
 
-  emjsLabel_CreateSeparator: function(handle_id, type) {
-    var widget_object = IupCommon.GetObjectForID(handle_id);
-    if (type === "horizontal") {
-      var h = document.createElement("hr");
-      widget_object.appendChild(h); 
-    }
-    else if (type === "vertical") {
-      alert("vertical separator");
-    }
+
+  emjsLabel_SetImageAttrib: function(handle_id, pixel_ptr, array_length, width, height, pitch) {
+    var canvas_widget = IupCommon.GetObjectForID(handle_id);
+	var canvas_context = canvas_widget.getContext("2d");
+	// pitch is effectively width (with alignment padding) * 4 bytes per pixel
+//    var pixal_data = Module.HEAPU8.slice(pixel_ptr, pixel_ptr + pitch * height);
+    var pixal_data = Module.HEAPU8.slice(pixel_ptr, pixel_ptr + width * height * 4);
+    var image_data = canvas_context.getImageData(0, 0, width, height);
+    image_data.data.set(pixal_data);
+    canvas_context.putImageData(image_data, 0, 0);
+
+	  // hack for size
+//	    canvas_widget.width  = width*2+"px";
+//  		canvas_widget.height = height*2+"px";
+//	    canvas_widget.width  = width*2;
+  //		canvas_widget.height = height*2;
+//	    canvas_context.canvas.width  = width*2+"px";
+ // 		canvas_context.canvas.height = height*2+"px";
   },
 
   emjsLabel_DropFilesTarget: function(handle_id) {

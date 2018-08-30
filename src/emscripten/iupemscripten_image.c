@@ -544,7 +544,7 @@ int iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp)
 	{
 		return 0;
 	}
-  	if(w) *w = format->w;
+  	if(w) *w = sdl_surface->w;
 	if(h) *h = sdl_surface->h;
 	if(bpp) *bpp = (int)sdl_surface->format->BitsPerPixel;
 
