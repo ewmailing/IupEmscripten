@@ -108,29 +108,23 @@ void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors
 		{
 			for(int x=0;x<row_length;x++)
 			{
-				*pixels = *source_pixel;
-				pixels++;
+				unsigned char s_r = *source_pixel;
+				source_pixel++;
+				unsigned char s_g = *source_pixel;
+				source_pixel++;
+				unsigned char s_b = *source_pixel;
+				source_pixel++;
+				unsigned char s_a = *source_pixel;
 				source_pixel++;
 
-				*pixels = *source_pixel;
+				*pixels = s_r;
 				pixels++;
-				source_pixel++;
-
-				*pixels = *source_pixel;
+				*pixels = s_g;
 				pixels++;
-				source_pixel++;
-
-				if(bpp==32)
-				{
-					*pixels = *source_pixel;
-					pixels++;
-					source_pixel++;
-				}
-				else
-				{
-					*pixels = 255;
-					pixels++;
-				}
+				*pixels = s_b;
+				pixels++;
+				*pixels = s_a;
+				pixels++;
 			}
 		}
 		SDL_UnlockSurface(sdl_surface);
@@ -157,25 +151,29 @@ void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors
 		{
 			for(int x=0;x<row_length;x++)
 			{
-				*pixels = *source_pixel;
-				pixels++;
+				unsigned char s_r = *source_pixel;
+				source_pixel++;
+				unsigned char s_g = *source_pixel;
+				source_pixel++;
+				unsigned char s_b = *source_pixel;
 				source_pixel++;
 
-				*pixels = *source_pixel;
+				*pixels = s_r;
 				pixels++;
-				source_pixel++;
-
-				*pixels = *source_pixel;
+				*pixels = s_g;
 				pixels++;
-				source_pixel++;
+				*pixels = s_b;
+				pixels++;
 			}
 		}
+
 		SDL_UnlockSurface(sdl_surface);
 
 	}
 	else if(8 == bpp)
 	{
 		// We'll make a full 32-bit image for this case
+		// NOTE: SDL_surface actually supports 8-bit palette images. Might consider using.
 		sdl_surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
 		if(NULL == sdl_surface)
 		{
@@ -191,6 +189,7 @@ void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors
 		int colors_count = 0;
 		iupColor colors[256];
 		
+		// FIXME: What should we do here?
 		int has_alpha = false;
 
 		SDL_LockSurface(sdl_surface);
@@ -276,38 +275,31 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 		{
 			for(int x=0;x<row_length;x++)
 			{
-				*pixels = *source_pixel;
-				pixels++;
+				unsigned char s_r = *source_pixel;
 				source_pixel++;
-
-				*pixels = *source_pixel;
-				pixels++;
+				unsigned char s_g = *source_pixel;
 				source_pixel++;
-
-				*pixels = *source_pixel;
-				pixels++;
+				unsigned char s_b = *source_pixel;
+				source_pixel++;
+				unsigned char s_a = *source_pixel;
 				source_pixel++;
 
 				if(make_inactive)
 				{
-					unsigned char r = *(pixels-3);
-					unsigned char g = *(pixels-2);
-					unsigned char b = *(pixels-1);
-					iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
+					iupImageColorMakeInactive(&s_r, &s_g, &s_b, bg_r, bg_g, bg_b);
 				}
-				if(bpp==32)
-				{
-					*pixels = *source_pixel;
-					pixels++;
-					source_pixel++;
-				}
-				else
-				{
-					*pixels = 255;
-					pixels++;
-				}
+
+				*pixels = s_r;
+				pixels++;
+				*pixels = s_g;
+				pixels++;
+				*pixels = s_b;
+				pixels++;
+				*pixels = s_a;
+				pixels++;
 			}
 		}
+
 		SDL_UnlockSurface(sdl_surface);
 
 	}
@@ -324,34 +316,33 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 
 		unsigned char* source_pixel = imgdata;
 
+
 		for(int y=0;y<height;y++)
 		{
 			for(int x=0;x<row_length;x++)
 			{
-				*pixels = *source_pixel;
-				pixels++;
+				unsigned char s_r = *source_pixel;
 				source_pixel++;
-
-				*pixels = *source_pixel;
-				pixels++;
+				unsigned char s_g = *source_pixel;
 				source_pixel++;
-
-				*pixels = *source_pixel;
-				pixels++;
+				unsigned char s_b = *source_pixel;
 				source_pixel++;
-
 
 				if(make_inactive)
 				{
-					unsigned char r = *(pixels-3);
-					unsigned char g = *(pixels-2);
-					unsigned char b = *(pixels-1);
-					iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
+					iupImageColorMakeInactive(&s_r, &s_g, &s_b, bg_r, bg_g, bg_b);
 				}
 
-
+				*pixels = s_r;
+				pixels++;
+				*pixels = s_g;
+				pixels++;
+				*pixels = s_b;
+				pixels++;
 			}
 		}
+
+
 		SDL_UnlockSurface(sdl_surface);
 
 
@@ -359,6 +350,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 	else if(8 == bpp)
 	{
 		// We'll make a full 32-bit image for this case
+		// NOTE: SDL_surface actually supports 8-bit palette images. Might consider using.
 		sdl_surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
 		if(NULL == sdl_surface)
 		{
@@ -383,34 +375,37 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 				unsigned char index = *source_pixel;
 				iupColor* c = &colors[index];
 
-				*pixels = c->r;
-				pixels++;
-				*pixels = c->g;
-				pixels++;
-				*pixels = c->b;
-				pixels++;
+				unsigned char s_r = c->r;
+				unsigned char s_g = c->g;
+				unsigned char s_b = c->b;
+				unsigned char s_a;
 
 				if(has_alpha)
 				{
-					*pixels = c->a;
+					s_a = c->a;
 				}
 				else
 				{
-					*pixels = 255;
+					s_a = 255;
 				}
-				pixels++;
-				source_pixel++;
-
 
 				if(make_inactive)
 				{
-					unsigned char r = *(pixels-3);
-					unsigned char g = *(pixels-2);
-					unsigned char b = *(pixels-1);
-					iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
-				}				 
+					iupImageColorMakeInactive(&s_r, &s_g, &s_b, bg_r, bg_g, bg_b);
+				}
+
+
+				*pixels = s_r;
+				pixels++;
+				*pixels = s_g;
+				pixels++;
+				*pixels = s_b;
+				pixels++;
+				*pixels = s_a;
+				pixels++;		 
 			}
 		}
+
 		SDL_UnlockSurface(sdl_surface);
 
 
