@@ -230,11 +230,15 @@ void LabelTest(void)
 Ihandle* image_label_8 = IupLabel(NULL);
   IupSetAttributeHandle(image_label_8, "IMAGE", image1);
   IupSetAttribute(image_label_8, "RASTERSIZE", "80x80");
+
+   Ihandle* image_label_32_load = IupLabel(NULL);
+  IupSetAttribute(image_label_32_load, "IMAGE", "tecgraf.bmp");
+  IupSetAttribute(image_label_32_load, "RASTERSIZE", "80x80");
 #endif
 
 
 //  box1 = IupVbox(text_label, text_label2, text_label3, text_label4, text_label5, text_label6, image_label_32, image_label_24, image_label_8, NULL);
-  box1 = IupVbox(text_label, text_label2, text_label3, text_label4, text_label5, text_label6, button1, image_label_32, image_label_24, image_label_8, NULL);
+  box1 = IupVbox(text_label, text_label2, text_label3, text_label4, text_label5, text_label6, button1, image_label_32, image_label_24, image_label_8, image_label_32_load, NULL);
 //  box1 = IupVbox(text_label, text_label2, button1, image_label_32, NULL);
 //  box1 = IupVbox(text_label, text_label2, image_label_32, button1, NULL);
 //  box1 = IupVbox(text_label, text_label2, text_label3, text_label4, text_label5, text_label6, button1, NULL);
