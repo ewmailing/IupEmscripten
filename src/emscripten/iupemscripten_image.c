@@ -549,7 +549,70 @@ void* iupdrvImageCreateMask(Ihandle *ih)
 void* iupdrvImageLoad(const char* name, int type)
 {
 	SDL_Surface* sdl_surface = IMG_Load(name);
-	return sdl_surface;
+	// Because the native Canvas/IMG require RGBA, we must make sure to convert the SDL_surface to 32-bit RGBA if it is not already in that format.
+	if(NULL == sdl_surface)
+	{
+		return NULL;
+	}
+
+	// UGH: Show stopping bug with Emscripten's IMG_Load implementation.
+	// It does not set the correct SDL_PixelFormat values in the surface so I don't know how the data is laid out.
+	// And it also breaks SDL_ConvertSurfaceFormat().
+	// My bug report: https://github.com/kripken/emscripten/issues/7076
+
+
+#if 1
+	Uint32 fmt = sdl_surface->format->format;
+	iupEmscripten_Log("sdl_surface->format->format: %d", sdl_surface->format->format);
+
+	iupEmscripten_Log("SDL_PIXELTYPE: %d", SDL_PIXELTYPE(fmt));
+	iupEmscripten_Log("SDL_PIXELORDER: %d", SDL_PIXELORDER(fmt));
+	iupEmscripten_Log("SDL_PIXELLAYOUT: %d", SDL_PIXELLAYOUT(fmt));
+	iupEmscripten_Log("SDL_BITSPERPIXEL: %d", SDL_BITSPERPIXEL(fmt));
+	iupEmscripten_Log("SDL_BYTESPERPIXEL: %d", SDL_BYTESPERPIXEL(fmt));
+	iupEmscripten_Log("SDL_BYTESPERPIXEL: %d", SDL_BYTESPERPIXEL(fmt));
+	iupEmscripten_Log("SDL_ISPIXELFORMAT_INDEXED: %d", SDL_ISPIXELFORMAT_INDEXED(fmt));
+	iupEmscripten_Log("SDL_ISPIXELFORMAT_ALPHA: %d", SDL_ISPIXELFORMAT_ALPHA(fmt));
+	iupEmscripten_Log("SDL_ISPIXELFORMAT_FOURCC: %d", SDL_ISPIXELFORMAT_FOURCC(fmt));
+
+	iupEmscripten_Log("SDL_PIXELFORMAT_RGBA8888: %d", SDL_PIXELFORMAT_RGBA8888);
+
+	iupEmscripten_Log("SDL_PIXELTYPE: %d", SDL_PIXELTYPE(SDL_PIXELFORMAT_RGBA8888));
+	iupEmscripten_Log("SDL_PIXELORDER: %d", SDL_PIXELORDER(SDL_PIXELFORMAT_RGBA8888));
+	iupEmscripten_Log("SDL_PIXELLAYOUT: %d", SDL_PIXELLAYOUT(SDL_PIXELFORMAT_RGBA8888));
+	iupEmscripten_Log("SDL_BITSPERPIXEL: %d", SDL_BITSPERPIXEL(SDL_PIXELFORMAT_RGBA8888));
+	iupEmscripten_Log("SDL_BYTESPERPIXEL: %d", SDL_BYTESPERPIXEL(SDL_PIXELFORMAT_RGBA8888));
+	iupEmscripten_Log("SDL_BYTESPERPIXEL: %d", SDL_BYTESPERPIXEL(SDL_PIXELFORMAT_RGBA8888));
+	iupEmscripten_Log("SDL_ISPIXELFORMAT_INDEXED: %d", SDL_ISPIXELFORMAT_INDEXED(SDL_PIXELFORMAT_RGBA8888));
+	iupEmscripten_Log("SDL_ISPIXELFORMAT_ALPHA: %d", SDL_ISPIXELFORMAT_ALPHA(SDL_PIXELFORMAT_RGBA8888));
+	iupEmscripten_Log("SDL_ISPIXELFORMAT_FOURCC: %d", SDL_ISPIXELFORMAT_FOURCC(SDL_PIXELFORMAT_RGBA8888));
+#endif
+
+
+	if(SDL_PIXELFORMAT_RGBA8888 == sdl_surface->format->format)
+	{
+		iupEmscripten_Log("iupdrvImageLoad got SDL_PIXELFORMAT_RGBA8888");
+		return sdl_surface;
+	}
+	else
+	{
+		iupEmscripten_Log("iupdrvImageLoad need to convert to SDL_PIXELFORMAT_RGBA8888 (%d) from %d", SDL_PIXELFORMAT_RGBA8888, sdl_surface->format->format);
+		SDL_Surface* converted_format = SDL_ConvertSurfaceFormat(sdl_surface, SDL_PIXELFORMAT_RGBA8888, 0);
+		if(converted_format)
+		{
+			iupEmscripten_Log("iupdrvImageLoad convert worked %d",converted_format->format->format);
+		}
+		else
+		{
+			iupEmscripten_Log("iupdrvImageLoad convert failed, %s",  SDL_GetError());
+			// I should just fall through, but because of the show stopping bug, for now, I would like to see something, even if corrupted, on screen.
+			return sdl_surface;
+		}
+
+		SDL_FreeSurface(sdl_surface);
+		sdl_surface = NULL;
+		return converted_format;
+	}
 }
 
 int iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp)
