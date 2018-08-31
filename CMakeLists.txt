@@ -1,23 +1,33 @@
 # For Emscripten, invoke something like:
-# source source ~/emsdk/emsdk_env.sh;
+# source ~/emsdk/emsdk_env.sh;
 # mkdir -p BUILD/emscripten; cd BUILD/emscripten;
 
 # release build compile command
 # cmake -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Release ../..
 
 # compile command for ninja, debug mode, source maps (for some browser debuggers), emrun
-# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS=--emrun ../..
+# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS="--emrun --source-map-base http://localhost:8888/" ../..
 
 # above plus export CMkae compile commands to JSON for some external tools, e.g. lsp
-# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS=--emrun -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ../..
+# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS="--emrun --source-map-base http://localhost:8888/" -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ../..
+
+# For testing/debugging Emscripten, you can use the CLI tool: emrun
+# You should first create a symlink to the src directory because the source-map system doesn't handle out-of-source builds well.
+# ln -s ../../src src
+# emrun --browser firefox --port 8888 dev_test.html
+# or
+# emrun --browser firefox --port 8888 .
+# Note: --browser <foo> lets you override picking the system default browser.
+# --port <number> should match the linker flag you specified running cmake above. This allows sourcemaps to be used for debugging.
+
 
 # For Mac, you must use the Xcode generator. Makefile is currently broken.
-# mkdir BUILD; cd BUILD;
-# cmake -GXcode ..
+# mkdir -p BUILD/macOS; cd BUILD/macOS;
+# cmake -GXcode ../..
 
 # For iOS, you must use the Xcode generator and the bundled toolchain
-# mkdir BUILD; cd BUILD;
-# cmake -DCMAKE_TOOLCHAIN_FILE=../CMakeModules/iOS.toolchain.cmake -GXcode ..
+# mkdir -p BUILD/iOS; cd BUILD/iOS;
+# cmake -DCMAKE_TOOLCHAIN_FILE=../CMakeModules/iOS.toolchain.cmake -GXcode ../..
 
 
 if(APPLE)
