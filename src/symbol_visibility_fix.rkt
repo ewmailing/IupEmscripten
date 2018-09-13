@@ -38,7 +38,7 @@
 
 ;; to add data back into file - (display-lines-to-file lines file[string])
 
-;; this one is going item by item from .def file and searching each file with each iteration
+;; goes item by item from .def file and searching each file with each iteration
 (define (start defFile dir)
   (let ([funcList (remove-empty-strings-from-list (get-function-list defFile))])
     (for ([str funcList])
@@ -64,7 +64,7 @@
             (add-text-to-file fle str "something")
             )))))
 
-;; this one searches by file, and sees if there's a match in the list when it's in that file
+;; searches by file, and sees if there's a match in the list when it's in that file
 (define (launch defFile dir)
   (let ([funcList (remove-empty-strings-from-list (get-function-list defFile))])
     ;; open every file in folder and check for match in func list
