@@ -233,20 +233,30 @@ void iupdrvReparent(Ihandle* ih)
 
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
-  
-  // Set element's position on screen
-  iupEmscripten_Log("x:%d, y:%d, w:%d, h:%d, id: %d", ih->x,ih->y,ih->currentwidth,ih->currentheight,ih->handle->handleID);
+//	iupEmscripten_Log("x:%d, y:%d, w:%d, h:%d, id: %d", ih->x,ih->y,ih->currentwidth,ih->currentheight,ih->handle->handleID);
 
-  if (ih->handle->isCompound) {
-    for (int i = 0; i < ih->handle->numElemsIfCompound; i++) {
-      emjsCommon_SetPosition(ih->handle->compoundHandleIDArray[i],ih->x,ih->y,ih->currentwidth,ih->currentheight);
-    }
-  }
-  else {
-    emjsCommon_SetPosition(ih->handle->handleID,ih->x,ih->y,ih->currentwidth,ih->currentheight);
-  }
+	if (ih->handle->isCompound)
+	{
+		for (int i = 0; i < ih->handle->numElemsIfCompound; i++)
+		{
+			// Our JS implementation uses elem which doesn't exist for Windows (Dialogs). Avoid for safety.
+			if(ih->iclass->nativetype != IUP_TYPEDIALOG)
+			{
+				// Set element's position on screen
+				emjsCommon_SetPosition(ih->handle->compoundHandleIDArray[i],ih->x,ih->y,ih->currentwidth,ih->currentheight);
+			}
+		}
+	}
+	else
+	{
+		// Our JS implementation uses elem which doesn't exist for Windows (Dialogs). Avoid for safety.
+		if(ih->iclass->nativetype != IUP_TYPEDIALOG)
+		{
+			// Set element's position on screen
+			emjsCommon_SetPosition(ih->handle->handleID,ih->x,ih->y,ih->currentwidth,ih->currentheight);
+		}
+	}
 
-  /* emjsCommon_SetPosition(ih->handle->handleID,ih->x,ih->y,ih->currentwidth,ih->currentheight); */
 
   //TODO Calculate size and return to ih
   

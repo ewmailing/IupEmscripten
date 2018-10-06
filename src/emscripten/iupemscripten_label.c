@@ -33,19 +33,22 @@
 #include <emscripten.h>
 #include "SDL.h"
 
-extern int emjsLabel_CreateLabel(void);
+extern int emjsLabel_CreateText(void);
+extern int emjsLabel_CreateImage(void);
+extern int emjsLabel_CreateSeparatorHorizontal(void);
+extern int emjsLabel_CreateSeparatorVertical(void);
 extern void emjsLabel_SetTitle(int handle_id, const char* title);
 
 extern void emjsLabel_CreateSeparator(int handle_id, char* type);
 // this probably needs to return a char*
 extern void emjsLabel_ToggleActive(int handle_id, int enable);
-extern void emjsLabel_SetPadding(int handleID, int horiz, int vert);
+extern void emjsLabel_SetPadding(int handle_id, int horiz, int vert);
 extern void emjsLabel_SetFGColor(int handle_id, const char* color); /* should it be constant char*? */
 extern void emjsLabel_SetBGColor(int handle_id, char* color); 
 extern int emjsLabel_SetAlignmentAttrib(int handle_id, const char* value);
-extern void emjsLabel_EnableEllipsis(Ihandle* ih);
-extern void emjsLabel_DropFilesTarget(Ihandle* ih);
-extern void emjsLabel_SetImageAttrib(int handle_id, void* pixel_data, int width, int height);
+extern void emjsLabel_EnableEllipsis(int handle_id);
+extern void emjsLabel_DropFilesTarget(int handle_id);
+extern void emjsLabel_SetImageAttrib(int handle_id, void* pixel_data, size_t array_length, int width, int height, int pitch);
 
 
 // adds padding to element
@@ -96,9 +99,40 @@ static int emscriptenLabelSetFgColorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static void emscriptenLabelSetActiveAttrib(Ihandle* ih, int enable)
+static int emscriptenLabelSetActiveAttrib(Ihandle* ih, const char* value)
 {
+  int enable = iupStrBoolean(value);
+
+  /* update the inactive image if necessary */
+  if (ih->data->type == IUP_LABEL_IMAGE)
+  {
+    if (!enable)
+    {
+      char* name = iupAttribGet(ih, "IMINACTIVE");
+      if (name)
+	  {
+      //  gtkLabelSetPixbuf(ih, name, 0);
+	  }
+      else
+      {
+        /* if not defined then automatically create one based on IMAGE */
+        name = iupAttribGet(ih, "IMAGE");
+      //  gtkLabelSetPixbuf(ih, name, 1); /* make_inactive */
+      }
+    }
+    else
+    {
+      /* must restore the normal image */
+      char* name = iupAttribGet(ih, "IMAGE");
+    //  gtkLabelSetPixbuf(ih, name, 0);
+    }
+  }
+
+  //return iupBaseSetActiveAttrib(ih, value);
+	
+
   emjsLabel_ToggleActive(ih->handle->handleID, enable);
+  return 1; // ???
 }
 
 static int emscriptenLabelSetBgColorAttrib(Ihandle* ih, const char* value)
@@ -126,6 +160,8 @@ static int emscriptenLabelSetEllipsisAttrib(Ihandle* ih, const char* value)
 static int emscriptenSetDropFilesTargetAttrib(Ihandle* ih, const char* value)
 {
   emjsLabel_DropFilesTarget(ih->handle->handleID);
+  // label_text or label_image returns 1, everything else returns 0? ?ERIC
+  return 0; 
 }
 
 static int emscriptenLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
@@ -182,13 +218,20 @@ static int emscriptenLabelSetImageAttrib(Ihandle* ih, const char* value)
 		
 		
 		// NOTE: Maybe SDL_surface is too low level, and we should be creating the JavaScript imageData.
-		SDL_Surface* the_bitmap;
-		the_bitmap = iupImageGetImage(value, ih, make_inactive);
+		SDL_Surface* sdl_surface;
+		sdl_surface = iupImageGetImage(value, ih, make_inactive);
 		int width;
 		int height;
 		int bpp;
 		
-		iupdrvImageGetInfo(the_bitmap, &width, &height, &bpp);
+		iupdrvImageGetInfo(sdl_surface, &width, &height, &bpp);
+		
+		int pitch = sdl_surface->pitch;
+		size_t array_length = pitch * height;
+iupEmscripten_Log("emjsLabel_SetImageAttrib id:%d, ptr:0x%p, arr_len:%d, w:%d, h:%d, p:%d", ih->handle->handleID, sdl_surface->pixels, array_length, width, height, pitch);
+		
+		emjsLabel_SetImageAttrib(ih->handle->handleID, sdl_surface->pixels, array_length, width, height, pitch);
+
 		
 /*
 		// FIXME: What if the width and height change? Do we change it or leave it alone?
@@ -212,7 +255,79 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
   int label_id = 0;
   InativeHandle* new_handle = NULL;
 
-  label_id = emjsLabel_CreateLabel();
+
+  // Set text inside label (uses title attribute)
+#if 0
+	char* attrib_title = iupAttribGet(ih, "TITLE");
+	if(attrib_title && *attrib_title != 0)
+	{
+		ih->data->type |= IUP_LABEL_TEXT;
+		emjsLabel_SetTitle(label_id, attrib_title);
+	}
+#endif
+	
+	char* value = iupAttribGet(ih, "SEPARATOR");
+	if (value)
+	{
+		if (iupStrEqualNoCase(value, "HORIZONTAL"))
+		{
+			ih->data->type = IUP_LABEL_SEP_HORIZ;
+
+			label_id = emjsLabel_CreateSeparatorHorizontal();
+
+			
+		}
+		else /* "VERTICAL" */
+		{
+			ih->data->type = IUP_LABEL_SEP_VERT;
+			label_id = emjsLabel_CreateSeparatorVertical();
+
+
+		}
+
+		
+	}
+	else
+	{
+
+		value = iupAttribGet(ih, "IMAGE");
+		if (value)
+		{
+			ih->data->type = IUP_LABEL_IMAGE;
+			/*
+			char *name;
+			int make_inactive = 0;
+			
+			if (iupdrvIsActive(ih))
+			{
+				name = iupAttribGet(ih, "IMAGE");
+			}
+			else
+			{
+				name = iupAttribGet(ih, "IMINACTIVE");
+				if (!name)
+				{
+					name = iupAttribGet(ih, "IMAGE");
+					make_inactive = 1;
+				}
+			}
+			*/
+
+			label_id = emjsLabel_CreateImage();
+			
+		}
+		else
+		{
+			ih->data->type = IUP_LABEL_TEXT;
+
+
+			label_id = emjsLabel_CreateText();
+	
+
+		
+		}
+	}
+
   new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 
   new_handle->handleID = label_id;
@@ -220,154 +335,7 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
 
   iupEmscripten_SetIntKeyForIhandleValue(label_id, ih);
 
-  // Set text inside label (uses title attribute)
-	char* attrib_title = iupAttribGet(ih, "TITLE");
-	if(attrib_title && *attrib_title != 0)
-	{
-		ih->data->type |= IUP_LABEL_TEXT;
-		/*
-		if(ih->data->type & IUP_BUTTON_IMAGE)
-		{
-		}
-		else
-		{
-		}
-		*/
 
-		emjsLabel_SetTitle(label_id, attrib_title);
-	}
-#if 0
-	char* value;
-	value = iupAttribGet(ih, "SEPARATOR");
-
-	if (value)
-	{
-		if (iupStrEqualNoCase(value, "HORIZONTAL"))
-		{
-			ih->data->type = IUP_LABEL_SEP_HORIZ;
-
-      // create horizontal separater in js
-      emjsLabel_CreateSeparator("horizontal");
-		}
-		else /* "VERTICAL" */
-		{
-			ih->data->type = IUP_LABEL_SEP_VERT;
-
-      ih->data->type = IUP_LABEL_SEP_VERT;
-#if GTK_CHECK_VERSION(3, 0, 0)
-      label = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
-#else
-      label = gtk_vseparator_new();
-#endif
-//			NSBox* vertical_separator=[[NSBox alloc] initWithFrame:NSMakeRect(20.0, 20.0, 1.0, 250.0)];
-			NSBox* vertical_separator=[[NSBox alloc] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 250.0)];
-			[vertical_separator setBoxType:NSBoxSeparator];
-			the_label = vertical_separator;
-
-		}
-	}
-	else
-	{
-    // does this mean the label needs to be created here? need to find where the label should be made
-    label_id = emjsButton_CreateLabel();
-
-		value = iupAttribGet(ih, "IMAGE");
-		if (value)
-		{
-			ih->data->type = IUP_LABEL_IMAGE;
-			
-			char *name;
-			int make_inactive = 0;
-			
-			if (iupdrvIsActive(ih))
-    name = iupAttribGet(ih, "IMAGE");
-			else
-			{
-    name = iupAttribGet(ih, "IMINACTIVE");
-    if (!name)
-	  {
-		name = iupAttribGet(ih, "IMAGE");
-		make_inactive = 1;
-	  }
-	}
-			
-			id the_bitmap;
-			the_bitmap = iupImageGetImage(name, ih, make_inactive);
-			int width;
-			int height;
-			int bpp;
-			
-			iupdrvImageGetInfo(the_bitmap, &width, &height, &bpp);
-
-//			static int woffset = 0;
-//			static int hoffset = 0;
-			
-			NSImageView* image_view = [[NSImageView alloc] initWithFrame:NSMakeRect(0, 0, width, height)];
-//			NSImageView* image_view = [[NSImageView alloc] initWithFrame:NSMakeRect(woffset, hoffset, width, height)];
-			[image_view setImage:the_bitmap];
-			
-//			woffset += 30;
-//			hoffset += 30;
-			
-			the_label = image_view;
-			
-			if (!the_bitmap)
-					return;
-			
-			/* must use this info, since image can be a driver image loaded from resources */
-			iupdrvImageGetInfo(hBitmap, &width, &height, &bpp);
-			
-			NSBitmapImageRep* bitmap_image = [[NSBitmapImageRep alloc]
-									 initWithBitmapDataPlanes:NULL
-									 pixelsWide: width
-									 pixelsHigh: height
-									 bitsPerSample: 8
-									 samplesPerPixel: 4
-									 hasAlpha: YES
-									 isPlanar: NO
-									 colorSpaceName: NSCalibratedRGBColorSpace
-									 bytesPerRow: width * 4
-									 bitsPerPixel: 32]
-
-		}
-		else
-		{
-			ih->data->type = IUP_LABEL_TEXT;
-
-			the_label = [[NSTextField alloc] initWithFrame:NSZeroRect];
-//			the_label = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
-
-			[the_label setBezeled:NO];
-			[the_label setDrawsBackground:NO];
-			[the_label setEditable:NO];
-//			[the_label setSelectable:NO];
-			// TODO: FEATURE: I think this is really convenient for users so it should be the default
-			[the_label setSelectable:YES];
-			
-			NSFont* the_font = [the_label font];
-			NSLog(@"font %@", the_font);
-		
-		}
-	}
-	
-
-	if (!the_label)
-	{
-		return IUP_ERROR;
-	}
-	
-	
-	ih->handle = the_label;
-
-#endif
-	
-	/* add to the parent, all GTK controls must call this. */
-//	iupgtkAddToParent(ih);
-	
-	
-//	Ihandle* ih_parent = ih->parent;
-//	id parent_native_handle = ih_parent->handle;
-	
 	iupEmscripten_AddWidgetToParent(ih);
 	
 	

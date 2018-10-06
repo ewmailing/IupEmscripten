@@ -1,259 +1,290 @@
+//
+//  main.m
+//  TestApp
+//
+//  Created by Eric Wing on 12/15/16.
+//  Copyright © 2016 Tecgraf, PUC-Rio, Brazil. All rights reserved.
+//
+
+
+
 
 #include "iup.h"
-#include "iup_varg.h"
-#include "iup_config.h"
-#include "iupcbs.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdarg.h>
 
+#if __ANDROID__
+#include <android/log.h>
 void MyPrintf(const char* fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
-	IupLogV("DEBUG", fmt, ap);
+	__android_log_vprint(ANDROID_LOG_INFO, "IupTest", fmt, ap);
 	va_end(ap);
 }
-
-int OnButtonCallback(Ihandle* ih)
+#else
+void MyPrintf(const char* fmt, ...)
 {
-	MyPrintf("OnButtonCallback()\n");
-
-	char temp_string[1024];
-	static int button_count = 0;
-  // Stores button text in string with updated count
-	snprintf(temp_string, 1024, "Iup Button %d", button_count);
-  // Create button element
-	Ihandle* button = IupButton(temp_string, "");
-
-  // Set recursive callback so a new window with button opens
-	IupSetCallback(button, "ACTION", (Icallback)OnButtonCallback);
-	Ihandle* dialog = IupDialog(button);
-	snprintf(temp_string, 1024, "Iup Activity Title %d", button_count);
-
-	IupSetStrAttribute(dialog, "TITLE", temp_string);
-
-	IupShow(dialog);
-
-	button_count++;
-
-	return IUP_DEFAULT;
+	va_list ap;
+	va_start(ap, fmt);
+	fprintf(stderr, fmt, ap);
+	va_end(ap);
 }
+#endif
 
-int testCallback(Ihandle* ih, int but, int pressed, int x, int y, char* status) {
-	char temp_string[1024];
-	Ihandle* button = IupButton("CB Test", "");
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "iup.h"
+#include "iupim.h"
 
-  // Attach recursive callback
-	IupSetCallback(button, "BUTTON_CB", (Icallback)testCallback);
-	Ihandle* dialog = IupDialog(button);
-	snprintf(temp_string, 1024, "Iup Activity Title");
 
-	IupSetStrAttribute(dialog, "TITLE", temp_string);
+#define TEST_IMAGE_SIZE 20
 
-  // ?? why does this not open a new window like OnButtonCallback? ??
-	IupShow(dialog);
-
-	return IUP_DEFAULT;
-}
-
-// WARNING: There seems to be a race condition in Emscripten's file system implementation which I believe sometimes causes this config file test code to crash.
-// Running with breakpoints seems to avoid races.
-// Disable this function if this is getting in your way and you need to test other things.
-void testConfigFile()
+static unsigned char image_data_8 [TEST_IMAGE_SIZE*TEST_IMAGE_SIZE] =
 {
-		int ret_val = 0;	
-		Ihandle* config_file = IupConfig();
-		IupSetStrAttribute(config_file, "APP_NAME", "TestApp");
-		ret_val = IupConfigLoad(config_file);
+  5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+  5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+  5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+  5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+  5,0,0,0,1,1,1,1,1,1,2,2,2,2,2,2,0,0,0,5,
+  5,0,0,0,1,1,1,1,1,1,2,2,2,2,2,2,0,0,0,5,
+  5,0,0,0,1,1,1,1,1,1,2,2,2,2,2,2,0,0,0,5,
+  5,0,0,0,1,1,1,1,1,1,2,2,2,2,2,2,0,0,0,5,
+  5,0,0,0,1,1,1,1,1,1,2,2,2,2,2,2,0,0,0,5,
+  5,0,0,0,1,1,1,1,1,1,2,2,2,2,2,2,0,0,0,5,
+  5,0,0,0,3,3,3,3,3,3,4,4,4,4,4,4,0,0,0,5,
+  5,0,0,0,3,3,3,3,3,3,4,4,4,4,4,4,0,0,0,5,
+  5,0,0,0,3,3,3,3,3,3,4,4,4,4,4,4,0,0,0,5,
+  5,0,0,0,3,3,3,3,3,3,4,4,4,4,4,4,0,0,0,5,
+  5,0,0,0,3,3,3,3,3,3,4,4,4,4,4,4,0,0,0,5,
+  5,0,0,0,3,3,3,3,3,3,4,4,4,4,4,4,0,0,0,5,
+  5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+  5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+  5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+  5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+};
 
-		const char* config_value;
-		if(ret_val == 0)
-		{
-			const char* config_value = IupConfigGetVariableStrDef(config_file, "Group1", "Key1", "");
-			MyPrintf("IDBFS worked: found existing config file: config value is %s\n", config_value);
-		}
-		else
-		{
-			MyPrintf("config file not found\n");
-		}
-		IupConfigSetVariableStr(config_file, "Group1", "Key1", "Value1");
-		IupConfigSave(config_file);
-		config_value = IupConfigGetVariableStrDef(config_file, "Group1", "Key1", "");
-		MyPrintf("retrieved saved config value is %s\n", config_value);
-
-
-
-		IupDestroy(config_file);
-		config_file = NULL;
-
-}
-
-Ihandle* DropDownListTest(void)
+static unsigned char image_data_24 [TEST_IMAGE_SIZE*TEST_IMAGE_SIZE*3] =
 {
-  Ihandle* list2;
+  000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,000,000,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,000,000,000,
+  000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,
+};
 
-  list2 = IupList(NULL);
-  //IupSetAttributes(list2, "1=\"Banana\", 2=\"Apple\", 3=\"Orange\", 4=\"Strawberry Shortcake vs. B. Pudding\", 5=\"Grape\","
-  // "DROPDOWN=YES, NAME=list2, TIP=Drop, XXX_VALUE=2, XXX_SORT=YES, XXX_BGCOLOR=\"192 64 192\"");
-  IupSetAttributes(list2,"1=\"Banana\", 2=\"Apple\", 3=\"Orange\", 4=\"Strawberry Shortcake vs. B. Pudding\", 5=\"Grape\","
-                   "DROPDOWN=NO, EDITBOX=NO, MULTIPLE=YES, TIP=List, NAME=list2");
-  //set_callbacks(list2);
-
-  Ihandle* dialog = IupDialog(list2);
-  IupShow(dialog);
-
-  return dialog;
-}
-
-/* void IupEntryPoint() */
-/* { */
-/*   DropDownListTest(); */
-/* } */
-Ihandle *timer1, *timer2;
-
-int timer_cb(Ihandle *n)
+static unsigned char image_data_32 [TEST_IMAGE_SIZE*TEST_IMAGE_SIZE*4] =
 {
-  if(n == timer1) {
-    printf("timer 1 called\n");
-    int et = IupGetInt(timer1, "ELAPSEDTIME");
-    printf("elapsed time on timer1: %d", et);
-  }
+  000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,000,000,255,255,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,255,255,255,192,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,255,
+  000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,
+};
 
-  if(n == timer2)
-  {
-    static int counter = 0;
-    counter++;
-    printf("timer 2: %d called\n", counter);
-    int et = IupGetInt(timer2, "ELAPSEDTIME");
-    printf("elapsed time on timer2: %d", et);
-
-    if (counter > 3) {
-      IupDestroy(timer2);
-      timer2 = NULL;
-    }
-  }
-
+static int button_cb(Ihandle *ih, int but, int pressed, int x, int y, char* status)
+{
+  printf("BUTTON_CB(but=%c (%d), x=%d, y=%d [%s])\n", (char)but, pressed, x, y, status);
   return IUP_DEFAULT;
 }
 
-void TimerTest(void)
+static int enter_cb(Ihandle *ih)
 {
-  timer1 = IupTimer();
-  timer2 = IupTimer();
+  Ihandle *box = IupGetChild(ih, 0);
+  if (IupGetInt(box, "ACTIVE"))
+    IupSetAttribute(box, "ACTIVE", "NO");
+  else
+    IupSetAttribute(box, "ACTIVE", "YES");
+  return IUP_DEFAULT;
+}
 
-  IupSetAttribute(timer1, "TIME", "1000");
-  IupSetAttribute(timer1, "RUN", "YES");
-  IupSetCallback(timer1, "ACTION_CB", (Icallback)timer_cb);
+static int leavewindow_cb(Ihandle *ih)
+{
+  printf("LEAVEWINDOW_CB(%s)\n", IupGetAttribute(ih, "TITLE"));
+  return IUP_DEFAULT;
+}
 
-  IupSetAttribute(timer2, "TIME", "4000");
-  IupSetAttribute(timer2, "RUN", "YES");
-  IupSetCallback(timer2, "ACTION_CB", (Icallback)timer_cb);
+static int enterwindow_cb(Ihandle *ih)
+{
+  printf("ENTERWINDOW_CB(%s)\n", IupGetAttribute(ih, "TITLE"));
+  return IUP_DEFAULT;
+}
+
+void LabelTest(void)
+{
+  Ihandle *dlg, *text_label, *image1, *image2, *image3,
+          *box1, *box2, *fill;
+
+
+  text_label = IupLabel(NULL);
+
+    IupSetAttribute(text_label, "TITLE", "Text Label");
+ 
+#if 1
+	Ihandle* text_label2 = IupLabel(NULL);
+    IupSetAttribute(text_label2, "TITLE", "Text Label 2");
+
+	Ihandle* text_label3 = IupLabel(NULL);
+    IupSetAttribute(text_label3, "TITLE", "Text Label 3");
+	Ihandle* text_label4 = IupLabel(NULL);
+    IupSetAttribute(text_label4, "TITLE", "Text Label 4");
+	Ihandle* text_label5 = IupLabel(NULL);
+    IupSetAttribute(text_label5, "TITLE", "Text Label 5");
+	Ihandle* text_label6 = IupLabel(NULL);
+    IupSetAttribute(text_label6, "TITLE", "Text Label 6");
+
+	Ihandle* button1 = IupButton(NULL, NULL);
+    IupSetAttribute(button1, "TITLE", "button1");
+
+
+#endif
+
+/*
+  label = IupLabel(NULL);
+  IupSetAttributeHandle(label, "IMAGE", image1);
+  //IupSetAttribute(label, "IMAGE", "TECGRAF_BITMAP");
+  //IupSetAttribute(label, "IMAGE", "../test/tecgraf.bmp");
+  //IupSetAttribute(label, "IMAGE", "../test/file_large.xbm");
+  //IupSetAttribute(label, "IMAGE", "gtk-open");
+  //IupSetAttribute(label, "BGCOLOR", IupGetGlobal("DLGBGCOLOR"));
+  IupSetAttribute(label, "PADDING", "0x0");
+  IupSetAttribute(label, "TIP", "Image Label");
+  IupAppend(box2, label);
+
+  label = IupLabel(NULL);
+  IupSetAttribute(label, "SEPARATOR", "HORIZONTAL");
+  IupAppend(box2, label);
+
+  fill = IupFill();
+  IupSetAttribute(fill, "SIZE", "20");
+  IupAppend(box2, fill);
+
+  label = IupLabel(NULL);
+  IupSetAttributeHandle(label, "IMAGE", image1);
+  IupSetAttribute(label, "RASTERSIZE", "150x50");
+  IupAppend(box2, label);
+
+
+  label = IupLabel(NULL);
+  IupSetAttributeHandle(label, "IMAGE", image2);
+  IupSetAttribute(label, "RASTERSIZE", "150x50");
+  IupSetAttribute(label, "ALIGNMENT", "ACENTER");
+  IupAppend(box2, label);
+*/
+
+#if 1 
+  image3 = IupImageRGBA(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_32);
+
+  Ihandle* image_label_32 = IupLabel(NULL);
+  IupSetAttributeHandle(image_label_32, "IMAGE", image3);
+  IupSetAttribute(image_label_32, "RASTERSIZE", "80x80");
+//  IupSetAttribute(image_label_32, "RASTERSIZE", "140x140");
+//  IupSetAttribute(image_label, "ALIGNMENT", "ARIGHT");
+//  IupSetCallback(label, "BUTTON_CB", (Icallback)button_cb);
+//  IupAppend(box2, label);
+ #if 1
+  image2 = IupImageRGB(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_24);
+  Ihandle* image_label_24 = IupLabel(NULL);
+  IupSetAttributeHandle(image_label_24, "IMAGE", image2);
+  IupSetAttribute(image_label_24, "RASTERSIZE", "80x80");
+
+    image1 = IupImage(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_8);
+  IupSetAttribute(image1, "0", "BGCOLOR");
+  IupSetAttribute(image1, "1", "255 0 0");
+  IupSetAttribute(image1, "2", "0 255 0");
+  IupSetAttribute(image1, "3", "0 0 255");
+  IupSetAttribute(image1, "4", "255 255 255");
+  IupSetAttribute(image1, "5", "0 0 0");
+Ihandle* image_label_8 = IupLabel(NULL);
+  IupSetAttributeHandle(image_label_8, "IMAGE", image1);
+  IupSetAttribute(image_label_8, "RASTERSIZE", "80x80");
+
+   Ihandle* image_label_32_load = IupLabel(NULL);
+  IupSetAttribute(image_label_32_load, "IMAGE", "tecgraf.bmp");
+  IupSetAttribute(image_label_32_load, "RASTERSIZE", "80x80");
+#endif
+
+
+//  box1 = IupVbox(text_label, text_label2, text_label3, text_label4, text_label5, text_label6, image_label_32, image_label_24, image_label_8, NULL);
+  box1 = IupVbox(text_label, text_label2, text_label3, text_label4, text_label5, text_label6, button1, image_label_32, image_label_24, image_label_8, image_label_32_load, NULL);
+//  box1 = IupVbox(text_label, text_label2, button1, image_label_32, NULL);
+//  box1 = IupVbox(text_label, text_label2, image_label_32, button1, NULL);
+//  box1 = IupVbox(text_label, text_label2, text_label3, text_label4, text_label5, text_label6, button1, NULL);
+//  IupSetAttribute(box1, "MARGIN", "5x5");
+//  IupSetAttribute(box1, "GAP", "5");
+//  IupSetAttribute(box1, "BGCOLOR", "75 150 170");  /* label must be transparent for BGCOLOR */
+  //IupSetAttribute(box1, "PADDING", "5x5");
+
+#else
+  box1 = IupVbox(text_label, NULL);
+
+#endif
+  dlg = IupDialog(box1);
+
+//  dlg = IupDialog(IupHbox(box1, label, box2, NULL));
+//  IupSetAttribute(dlg, "TITLE", "IupLabel Test");
+//  IupSetAttribute(dlg, "BACKGROUND", "0 0 128");
+//  IupSetAttributeHandle(dlg, "BACKGROUND", image2);
+//  IupSetCallback(dlg, "ENTERWINDOW_CB", enter_cb);
+//  IupSetAttribute(dlg, "FONT", "Helvetica, Bold 12");
+
+  IupShow(dlg);
+//  IupShowXY(dlg,IUP_LEFT,IUP_BOTTOM);
+}
+
+
+
+void IupExitPoint()
+{
+	IupClose();
 }
 
 void IupEntryPoint()
 {
+	IupSetFunction("EXIT_CB", (Icallback)IupExitPoint);
+//  IupImageLibOpen();
 
-  // >>>>>>> e2aa3716cf9f9109ea456efbc714b76dc7ea0725
-	/* { */
-	/* 	testConfigFile(); */
-	/* } */
-
-
-  // create test buttons
-	Ihandle* button = IupButton("Iup Button", "");
-  Ihandle* button2 = IupButton("Callback", "");
-  // create test labels
-  Ihandle* testLabel = IupLabel("HELLO CHRIS");
-  Ihandle* testLabel2 = IupLabel("Callback");
-  Ihandle* testLabel3 = IupLabel("TestLabel----3");
-  // create test list
-  Ihandle* testList = IupList(NULL);
-  /* IupSetAttributes(testList, "1=Gold, 2=Silver, 3=Bronze, 4=Latão, 5=None," */
-  /*                         "DROPDOWN=YES, NAME=testList"); */
-
-  IupSetAttributes(testList, "1=Measurements,"
-                   "DROPDOWN=YES, NAME=testList");
-  Ihandle* testList2 = IupList(NULL);
-  /* IupSetAttributes(testList2, "1=Gold, 2=Silver, 3=Bronze, 4=Latão, 5=None," */
-  /*                  "DROPDOWN=YES, EDITBOX=YES, NAME=testList2"); */
-  IupSetAttributes(testList2, "1=\"US$ 1000\", 2=\"US$ 2000\", 3=\"US$ 300.000.000\", 4=\"Strawberry Shortcake vs. B. Pudding\","
-                   "EDITBOX=NO, DROPDOWN=NO, MULTIPLE=YES, VALUE=\"Edit Here\", NAME=list1");
-                   /* "DROPDOWN=YES, NAME=testList2"); */
-
-  Ihandle* testText2 = IupText(NULL);
-  IupSetAttribute(testText2, "VALUE", "IupText works");
-  IupSetAttribute(testText2, "READONLY", "YES");
-  /* IupSetAttribute(testText2, "SIZE", "200x"); */
-
-  /* IupSetAttribute(testList, "DRAGSOURCE", "YES"); */
-  /* IupSetAttribute(testList, "DRAGTYPES", "ITEMLIST"); */
-
-  /* Ihandle* frm_medal1 = IupFrame(testList); */
-  /* IupSetAttribute(frm_medal1, "TITLE", "List 1"); */
-
-  // test bg and fg color with labels
-
-  /* IupSetAttribute(testLabel, "POSITION", "400x400"); */
-  /* IupSetAttribute(testLabel2, "POSITION", "50x50"); */
-  /* IupSetAttribute(testLabel3, "POSITION", "100x100"); */
-
-  IupSetAttribute(button, "WIDTH", "50px");
-  IupSetAttribute(button, "HEIGHT", "50px");
-  IupSetAttribute(button2, "WIDTH", "50px");
-  IupSetAttribute(button2, "HEIGHT", "50px");
-  // IupSetAttribute(testLabel, "PADDING", "20x20");
-
-  //IupSetAttribute(testLabel, "BGCOLOR", "20 129 115");
-
-  // attach callbacks to test buttons
-	IupSetCallback(button, "ACTION", (Icallback)OnButtonCallback);
-  IupSetCallback(button2, "BUTTON_CB", (Icallback)testCallback);
-
-  // more label-attrib setting, testing in different places (i know its dumb, c is synchronous..)
-  IupSetAttribute(testLabel2, "FGCOLOR", "100 255 100");
-  IupSetAttribute(testLabel3, "FGCOLOR", "70 70 0");
-  /* IupSetAttribute(testLabel, "TITLE", "OVERWRITE"); */
-  /* IupSetAttribute(testLabel2, "PADDING", "20x50"); */
-  IupSetAttribute(testLabel2, "WIDTH", "5");
-
-  /* IupSetAttribute(testLabel2, "TITLE", "CONGRATS"); */
-  IupSetAttribute(testLabel2, "ALIGNMENT", "ARIGHT");
-
-  IupSetAttribute(testLabel3, "ELLIPSIS", "YES");
-  Ihandle* progbar = IupProgressBar();
-
-  TimerTest();
-
-	Ihandle* vb=IupHbox(button, button2, testLabel2, testLabel3, testList, testText2, testList2, NULL);
-
-	/* Ihandle* vb=IupHbox(testText2, NULL); */
-
-	/* IupSetAttribute(vb, "GAP", "10"); */
-	/* IupSetAttribute(vb, "MARGIN", "10x10"); */
-	/* IupSetAttribute(vb, "ALIGNMENT", "ACENTER"); */
-
-	Ihandle* hb=IupHbox(progbar, testLabel, NULL);
-
-
-  Ihandle* the_label = IupLabel("The");
-  IupSetAttribute(the_label, "RASTERSIZE", "80x80");
-  /* IupSetAttribute(the_label, "ELLIPSIS", "YES"); */
-  IupSetAttribute(the_label, "ALIGNMENT", "ACENTER");
-
-	Ihandle* dialog = IupDialog(vb);
-
-	//	IupMap(dialog);
-	IupSetAttribute(dialog, "TITLE", "Iup Activity Title");
-
-	IupShow(dialog);
+  LabelTest();
 }
 
 
-int main(int argc, char* argv[])
+int main(int argc, char * argv[])
 {
-	IupOpen(&argc, &argv);
+	IupOpen(0, NULL);
 	IupSetFunction("ENTRY_POINT", (Icallback)IupEntryPoint);
 	IupMainLoop();
-	return 0;
 }
+
+

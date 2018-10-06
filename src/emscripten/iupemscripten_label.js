@@ -9,7 +9,6 @@ var LibraryIupLabel = {
     // TODO: need to refactor to support image label
     // should create canvas element from image data in iup
     // also need one for separators (horizontal and vertical)
-
     var widget_object;
     widget_object = document.createElement("div");
 
@@ -18,6 +17,27 @@ var LibraryIupLabel = {
 
     return handle_id;
   },
+
+  emjsLabel_CreateImage: function() {
+    var widget_object;
+    //widget_object = document.createElement("CANVAS");
+    widget_object = document.createElement("IMG");
+    var handle_id = IupCommon.RegisterNewObject(widget_object);
+    IupCommon.InitializeObject(widget_object);
+
+    return handle_id;
+  },
+  emjsLabel_CreateSeparatorHorizontal: function(handle_id) {
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+    var h = document.createElement("hr");
+    widget_object.appendChild(h); 
+  },
+
+  emjsLabel_CreateSeparatorVertical: function(handle_id) {
+    var widget_object = IupCommon.GetObjectForID(handle_id);
+    alert("vertical separator");
+  },
+
 
   emjsLabel_DestroyLabel: function(handle_id) {
     // Do I need to removeEventListener?
@@ -102,15 +122,48 @@ var LibraryIupLabel = {
     return 1;
   },
 
-  emjsLabel_CreateSeparator: function(handle_id, type) {
-    var widget_object = IupCommon.GetObjectForID(handle_id);
-    if (type === "horizontal") {
-      var h = document.createElement("hr");
-      widget_object.appendChild(h); 
-    }
-    else if (type === "vertical") {
-      alert("vertical separator");
-    }
+
+  emjsLabel_SetImageAttrib: function(handle_id, pixel_ptr, array_length, width, height, pitch) {
+//    var canvas_widget = IupCommon.GetObjectForID(handle_id);
+	  // NOTE: Originally, I created a Canvas as the root object and just drew to the canvas.
+	  // But growing/shrinking of the image as the canvas was resized does not appear to be built-in.
+	  // But for the IMG object, we get resizing for free.
+	  // The problem is how to go from a pixel array to an image.
+	  // Turns out we can convert a Canvas to an Image using toDataURL.
+	  // So I changed the root object to be IMG instead of CANVAS.
+	  // This means I need to create a temporary CANVAS to render to an IMG.
+	  // All the various data conversions we are doing concern me wrt to performance, but I'm not sure what can be done to improve this.
+	  // I also don't know the impact of creating and collecting a temporary canvas object is.
+	  // Nor do I know how much RAM keeping a temporary canvas in the background always resident would be.
+	  // We could try to reuse/share a single canvas to cut down memory.
+	  // However, if any of this stuff needs to be re-entrant (perhaps we start looking at async/threads?)
+	  // then sharing a canvas would be a bad idea.
+	  // (Also, for some of the IUP alignment attributes, it may turn out we need more control over the drawing and may need to revert back to Canvas.)
+	  // So for now, we do the simple thing of creating a temporary canvas and collecting it.
+	  var canvas_widget = document.createElement("CANVAS");
+	  var canvas_context = canvas_widget.getContext("2d");
+
+
+	  // We must set the Canvas size to match the image size or we get a final png that either has tons of extra padding space around the image or too small.
+	  // TODO: I am not sure if I need to set both the canvas and context sizes.
+	  canvas_widget.width  = width;
+	  canvas_widget.height = height;
+	  canvas_context.canvas.width  = width;
+	  canvas_context.canvas.height = height;
+
+
+	// pitch is effectively width (with alignment padding) * 4 bytes per pixel
+    var pixal_data = Module.HEAPU8.slice(pixel_ptr, pixel_ptr + pitch * height);
+//  var pixal_data = Module.HEAPU8.slice(pixel_ptr, pixel_ptr + width * height * 4);
+    var image_data = canvas_context.getImageData(0, 0, width, height);
+    image_data.data.set(pixal_data);
+    canvas_context.putImageData(image_data, 0, 0);
+	// At this point we have a usable Canvas with an image in it.
+
+	// So now convert the Canvas into something we can use with IMG.
+	var image_dataurl = canvas_widget.toDataURL("image/png");      
+    var image_widget = IupCommon.GetObjectForID(handle_id);
+	image_widget.src = image_dataurl;
   },
 
   emjsLabel_DropFilesTarget: function(handle_id) {

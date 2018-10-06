@@ -9,8 +9,16 @@ var LibraryIupText = {
     var widget_object;
 
     // check what type it is (0 = single-line input, 1 = multi-line input), build accordingly
-    if (subType === 0) widget_object = document.createElement("input");
-    else if (subType === 1) widget_object = document.createElement("textarea");
+    if (subType === 0)
+    {
+      widget_object = document.createElement("input");
+    }
+    else if (subType === 1)
+    {
+      widget_object = document.createElement("textarea");
+      // Need to turn off the user resizable feature so the user can't screw up our layouts.
+      widget_object.style.resize = "none";
+    }
 
     widget_object.type = 'text';
 

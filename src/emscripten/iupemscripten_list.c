@@ -60,6 +60,9 @@ void iupdrvListAddItemSpace(Ihandle* ih, int *h)
   *h += 2;
 }
 
+// Yes, this is marked with KEEPALIVE because it is called from the font.js. (But maybe we can remove this because it is not clear if we need it for "direct".)
+// And yes, this is actually an Ihandle* ih as a parameter coming from JavaScript.
+// This is using a different Emscripten compiler feature we uncovered ("direct" invocation using leading _ underscore).
 EMSCRIPTEN_KEEPALIVE IupEmscriptenListSubType emscriptenListGetSubType(Ihandle* ih)
 {
 	if(ih->data->is_dropdown) {

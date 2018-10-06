@@ -48,6 +48,44 @@
 3. draw widget precisely based on given params
 */
 
+
+extern void emjsDialog_GetSize(int handle_id, int* out_ptr_outer_width, int* out_ptr_outer_height, int* out_ptr_inner_width, int* out_ptr_inner_height);
+
+		
+// FIXME: The innerWidth/innerHeight is what we need for layout computations. 
+// outerWidth/outerHeight is (I think) what we need if the user asks to make a window a certain size or wants the window size.
+// Since the internals use ih->currentwidth and ih->currentheight for layout computation, I think we should set these to inner.
+// That means we need to correctly override anyplace that tries to get the outer window dimensions.
+// We may want to create new fields in ih->outerWidth, etc. 
+EMSCRIPTEN_KEEPALIVE void emscriptenDialogResizeCallbackTrampoline(int handle_id, int outer_width, int outer_height, int inner_width, int inner_height) 
+{
+	Ihandle* ih = iupEmscripten_GetIhandleValueForKey(handle_id);
+//	iupEmscripten_Log("emscriptenDialogResizeCallbackTrampoline is ih:%p, id:%d, <outer_w:%d, outer_h:%d>, <inner_width:%d, inner_h:%d>", ih, handle_id, outer_width, outer_height, inner_width, inner_height);
+	IFnii cb;
+	cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
+	// FIXME: Are the parameters supposed to be the contentView or the entire window. The Windows code comments make me think contentView, but the actual code makes me think entire window. The latter is way easier to do.
+	if(!cb || cb(ih, inner_width, inner_height)!=IUP_IGNORE)
+	{
+		ih->currentwidth = inner_width;
+		ih->currentheight = inner_height;
+		
+//		ih->data->ignore_resize = 1;
+		IupRefresh(ih);
+//		ih->data->ignore_resize = 0;
+	}
+	else
+	{
+		// FIXME: How do we prevent a resize? Is this even possible, e.g. mobile web browser, or in a tab among multiple tabs?
+
+		// For now, do a resize.
+		ih->currentwidth = inner_width;
+		ih->currentheight = inner_height;
+		IupRefresh(ih);
+	}
+
+}
+
+
 /****************************************************************
  Utilities
  ****************************************************************/
@@ -64,8 +102,17 @@ void iupdrvDialogGetSize(Ihandle* ih, InativeHandle* handle, int *w, int *h)
   // first grab dialog element
   // then find width and height
   // then set appropriately below
-	if (w) *w = 1280;
-	if (h) *h = 720;
+
+	int out_outer_width = 0;
+	int out_outer_height = 0;
+	int out_inner_width = 0;
+	int out_inner_height = 0;
+
+	emjsDialog_GetSize(ih->handle->handleID, &out_outer_width, &out_outer_height, &out_inner_width, &out_inner_height);
+
+	// FIXME: Do we use outer or inner?
+	if (w) *w = out_outer_width;
+	if (h) *h = out_outer_height;
 }
 
 void iupdrvDialogSetVisible(Ihandle* ih, int visible)
@@ -96,6 +143,10 @@ void iupdrvDialogSetPosition(Ihandle *ih, int x, int y)
 
 void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu)
 {
+	// TODO: these are placeholder values
+	if(border) *border = 0;
+	if(caption) *caption = 0;
+	if(menu) *menu = 0;
 }
 
 int iupdrvDialogSetPlacement(Ihandle* ih)
@@ -214,12 +265,20 @@ static int emscriptenDialogMapMethod(Ihandle* ih)
 	InativeHandle* new_handle = (InativeHandle*)calloc(1, sizeof(InativeHandle));
 	new_handle->handleID = dialog_id;
 	ih->handle = new_handle;
+	iupEmscripten_SetIntKeyForIhandleValue(dialog_id, ih);
 	
+	int out_outer_width = 0;
+	int out_outer_height = 0;
+	int out_inner_width = 0;
+	int out_inner_height = 0;
+	emjsDialog_GetSize(ih->handle->handleID, &out_outer_width, &out_outer_height, &out_inner_width, &out_inner_height);
+	// FIXME: Do we use outer or inner? I am using inner for now because we need it for layout.
+	ih->currentwidth = out_inner_width;
+	ih->currentheight = out_inner_height;
+	
+//	iupEmscripten_Log("emscriptenDialogMapMethod is ih:%p, id:%d", ih, dialog_id);
 //	iupAttribSet(ih, "RASTERSIZE", "500x400");
 	
-
-//	ih->currentwidth = 200;
-//	ih->currentheight = 200;
 
 	return IUP_NOERROR;
 
@@ -236,24 +295,12 @@ static void emscriptenDialogUnMapMethod(Ihandle* ih)
 	}
 }
 
+#if 1
 static void emscriptenDialogLayoutUpdateMethod(Ihandle* ih)
 {
-#if 0
-	if (ih->data->ignore_resize)
-		return;
-	
-	ih->data->ignore_resize = 1;
-	
-	/* for dialogs the position is not updated here */
-	SetWindowPos(ih->handle, 0, 0, 0, ih->currentwidth, ih->currentheight,
-				 SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOOWNERZORDER|SWP_NOSENDCHANGING);
-	
-	ih->data->ignore_resize = 0;
-#endif
-	
 
 }
-
+#endif
 
 
 void iupdrvDialogInitClass(Iclass* ic)
@@ -262,6 +309,7 @@ void iupdrvDialogInitClass(Iclass* ic)
 	ic->Map = emscriptenDialogMapMethod;
 	ic->UnMap = emscriptenDialogUnMapMethod;
 	ic->LayoutUpdate = emscriptenDialogLayoutUpdateMethod;
+//	ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
 
 #if 0
 	ic->LayoutUpdate = gtkDialogLayoutUpdateMethod;
