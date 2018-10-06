@@ -6,6 +6,10 @@ var LibraryIupLabel = {
   },
 
   emjsLabel_CreateLabel: function() {
+    // TODO: need to refactor to support image label
+    // should create canvas element from image data in iup
+    // also need one for separators (horizontal and vertical)
+
     var widget_object;
     widget_object = document.createElement("div");
 
