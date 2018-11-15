@@ -145,12 +145,14 @@ static int enterwindow_cb(Ihandle *ih)
 void LabelTest(void)
 {
   Ihandle *dlg, *text_label, *image1, *image2, *image3,
-          *box1, *box2, *fill;
+    *box1, *box2, *fill, *prog;
 
 
   text_label = IupLabel(NULL);
+  prog = IupProgressBar();
+  IupSetAttribute(prog, "VALUE", "75");
 
-    IupSetAttribute(text_label, "TITLE", "Text Label");
+  IupSetAttribute(text_label, "TITLE", "Text Label");
  
 #if 1
 	Ihandle* text_label2 = IupLabel(NULL);
@@ -167,7 +169,7 @@ void LabelTest(void)
 
 	Ihandle* button1 = IupButton(NULL, NULL);
     IupSetAttribute(button1, "TITLE", "button1");
-
+  
 
 #endif
 
