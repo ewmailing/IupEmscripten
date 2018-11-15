@@ -28,6 +28,8 @@
 
 #include "iupemscripten_drv.h"
 
+extern void emjsTabs_CreateTabs(int handle_id);
+extern void emjsTabs_DestroyTabs(int handle_id);
 
 int iupdrvTabsExtraDecor(Ihandle* ih)
 {
@@ -59,8 +61,22 @@ int iupdrvTabsIsTabVisible(Ihandle* child, int pos)
 }
 
 
+static void emscriptenTabsUnMapMethod(Ihandle* ih)
+{
+	if (ih && ih->handle) {
+    iupEmscripten_RemoveIntKeyFromIhandleMap(ih->handle->handleID);
+    emjsText_DestroyText(ih->handle->handleID);
+    free(ih->handle);
+    ih->handle = NULL;
+  }
+}
+
+
 void iupdrvTabsInitClass(Iclass* ic)
 {
+  ic->Map = emscriptenTabsMapMethod;
+  ic->UnMap = emscriptenTabsUnMapMethod;
+
 #if 0
   /* Driver Dependent Class functions */
   ic->Map = gtkTabsMapMethod;

@@ -371,7 +371,7 @@ void iupdrvTextInitClass(Iclass* ic)
 {
   /* Driver Dependent Class functions */
   ic->Map = emscriptenTextMapMethod;
-	ic->UnMap = emscriptenTextUnMapMethod;
+  ic->UnMap = emscriptenTextUnMapMethod;
 
   iupClassRegisterAttribute(ic, "VALUE", emscriptenTextGetValueAttrib, emscriptenTextSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "READONLY", emscriptenTextGetReadOnlyAttrib, emscriptenTextSetReadOnlyAttrib, NULL, NULL, IUPAF_DEFAULT);
