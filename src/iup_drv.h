@@ -21,30 +21,30 @@ extern "C" {
  */
 
 
-/** Sets a global environment attribute. Called from IupSetGlobal and IupStoreGlobal.
+IUP_EXPORTI /** Sets a global environment attribute. Called from IupSetGlobal and IupStoreGlobal.
  * Must return 1 is process the attribute, or 0 is not. 
  * \ingroup drv */
 int iupdrvSetGlobal(const char* name, const char* value);
 
-/** Returns a global environment attribute. Called from IupGetGlobal.
+IUP_EXPORTI /** Returns a global environment attribute. Called from IupGetGlobal.
  * \ingroup drv */
 char* iupdrvGetGlobal(const char* name);
 
-/** Changes the idle callback. Called from IupSetFunction.
+IUP_EXPORTI /** Changes the idle callback. Called from IupSetFunction.
  * \ingroup drv */
 void iupdrvSetIdleFunction(Icallback func);
 
 /** Convert the coordinates from screen relative to client area.
  * \ingroup drv */
-void iupdrvScreenToClient(Ihandle* ih, int *x, int *y);
+IUP_EXPORTI void iupdrvScreenToClient(Ihandle* ih, int *x, int *y);
 
 /** Convert the coordinates from relative client area to screen.
  * \ingroup drv */
-void iupdrvClientToScreen(Ihandle* ih, int *x, int *y);
+IUP_EXPORTI void iupdrvClientToScreen(Ihandle* ih, int *x, int *y);
 
 /** Returns true if the element is visible.
  * \ingroup drv */
-int iupdrvIsVisible(Ihandle* ih);
+IUP_EXPORTI int iupdrvIsVisible(Ihandle* ih);
 
 /** Returns true if the element is active.
  * \ingroup drv */
@@ -57,15 +57,15 @@ void iupdrvSetFocus(Ihandle* ih);
 /** Changes the visible state of an element. 
  * Not used for dialogs. 
  * \ingroup drv */
-void iupdrvSetVisible(Ihandle* ih, int enable);
+IUP_EXPORTI void iupdrvSetVisible(Ihandle* ih, int enable);
 
 /** Changes the active state of an element. 
  * \ingroup drv */
-void iupdrvSetActive(Ihandle* ih, int enable);
+IUP_EXPORTI void iupdrvSetActive(Ihandle* ih, int enable);
 
 /** Post a redraw of a control and children.
  * \ingroup drv */
-void iupdrvPostRedraw(Ihandle *ih);
+IUP_EXPORTI void iupdrvPostRedraw(Ihandle *ih);
 
 /** Force a redraw of a control and children.
  * \ingroup drv */
@@ -73,7 +73,7 @@ IUP_EXPORTI void iupdrvRedrawNow(Ihandle *ih);
 
 /** Reparent the native control.
  * \ingroup drv */
-void iupdrvReparent(Ihandle* ih);
+IUP_EXPORTI void iupdrvReparent(Ihandle* ih);
 
 /** Draws a focus rectangle
  * gc is:
@@ -91,7 +91,7 @@ IUP_EXPORTI int iupdrvGetScrollbarSize(void);
 
 /** Activates a button or toggle.
  * \ingroup drv */
-void iupdrvActivate(Ihandle* ih);
+IUP_EXPORTI void iupdrvActivate(Ihandle* ih);
 
 /** Returns the height of a menu bar.
  * \ingroup drv */
@@ -99,27 +99,27 @@ int iupdrvMenuGetMenuBarSize(Ihandle* ih);
 
 /** Sends a global keyboard message.
  * \ingroup drv */
-void iupdrvSendKey(int key, int press);
+IUP_EXPORTI void iupdrvSendKey(int key, int press);
 
 /** Sends a global mouse message.
  * status: 2=double pressed, 1=pressed, 0=released, -1=move
  * \ingroup drv */
-void iupdrvSendMouse(int x, int y, int bt, int status);
+IUP_EXPORTI void iupdrvSendMouse(int x, int y, int bt, int status);
 
 /** Moves the cursor on screen.
  * \ingroup drv */
-void iupdrvWarpPointer(int x, int y);
+IUP_EXPORTI void iupdrvWarpPointer(int x, int y);
 
 /** Translates an IUP key definition into a system definition.
  * \ingroup drv */
-void iupdrvKeyEncode(int key, unsigned int *keyval, unsigned int *state);
+IUP_EXPORTI void iupdrvKeyEncode(int key, unsigned int *keyval, unsigned int *state);
 
 /** Suspends execution for the specified number of milliseconds.
  * \ingroup drv */
 void iupdrvSleep(int time);
 
 
-/* Called only from IupOpen/IupClose. */
+IUP_EXPORTI /* Called only from IupOpen/IupClose. */
 int iupdrvOpen(int *argc, char ***argv);
 void iupdrvClose(void);
 

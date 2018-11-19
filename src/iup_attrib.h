@@ -19,8 +19,8 @@ extern "C" {
  * they are stored in a hash table (see \ref table).
  * \par
  * As a general rule use:
- * - IupGetAttribute, IupSetAttribute, ... : when care about control implementation, hash table, inheritance and default value
- * - iupAttribGetStr,Int,Float: when care about inheritance, hash table and default value
+IUP_EXPORTI  * - IupGetAttribute, IupSetAttribute, ... : when care about control implementation, hash table, inheritance and default value
+IUP_EXPORTI  * - iupAttribGetStr,Int,Float: when care about inheritance, hash table and default value
  * - iupAttribGet,... : ONLY access the hash table
  * These different functions have very different performances and results. So use them wiselly.
  * \par
@@ -145,7 +145,7 @@ IUP_EXPORTI int iupAttribGetInt(Ihandle* ih, const char* name);
 IUP_EXPORTI int iupAttribGetIntInt(Ihandle *ih, const char* name, int *i1, int *i2, char sep);
 
 /** Same as \ref iupAttribGetStr but checks for boolean values.
- * Use \ref iupStrBoolean.
+IUP_EXPORTI  * Use \ref iupStrBoolean.
  * \ingroup attrib */
 IUP_EXPORTI int iupAttribGetBoolean(Ihandle* ih, const char* name);
 
@@ -202,14 +202,14 @@ IUP_EXPORTI char* iupAttribGetInherit(Ihandle* ih, const char* name);
  * Don't check for default values. Don't check at the element.
  * Used for BGCOLOR and BACKGROUND attributes.
  * \ingroup attrib */
-char* iupAttribGetInheritNativeParent(Ihandle* ih, const char* name);
+IUP_EXPORTI char* iupAttribGetInheritNativeParent(Ihandle* ih, const char* name);
 
 /** Returns the attribute from the hash table as a string, 
  * but if not defined then checks in the control implementation, 
  * if still not defined then returns the registered default value if any. \n
- * NO inheritance here. Used only in the IupLayoutDialog.
+IUP_EXPORTI  * NO inheritance here. Used only in the IupLayoutDialog.
  * \ingroup attrib */
-char* iupAttribGetLocal(Ihandle* ih, const char* name);
+IUP_EXPORTI char* iupAttribGetLocal(Ihandle* ih, const char* name);
 
 
 
@@ -253,18 +253,18 @@ void iupAttribUpdateChildren(Ihandle* ih);
 
 
 /* Other functions declared in <iup.h> and implemented here. 
-IupGetAllAttributes
-IupGetAttributes
-IupSetAttributes
+IUP_EXPORTI IupGetAllAttributes
+IUP_EXPORTI IupGetAttributes
+IUP_EXPORTI IupSetAttributes
 IupSetAttribute
-IupStoreAttribute
+IUP_EXPORTI IupStoreAttribute
 IupGetAttribute
-IupGetFloat
-IupGetInt
-IupGetInt2
-IupSetfAttribute
-IupSetAttributeHandle
-IupGetAttributeHandle
+IUP_EXPORTI IupGetFloat
+IUP_EXPORTI IupGetInt
+IUP_EXPORTI IupGetInt2
+IUP_EXPORTI IupSetfAttribute
+IUP_EXPORTI IupSetAttributeHandle
+IUP_EXPORTI IupGetAttributeHandle
 */
 
 

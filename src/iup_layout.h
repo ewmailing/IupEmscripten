@@ -11,11 +11,11 @@
 extern "C" {
 #endif
 
-/* called from IupMap and IupRefresh */
+IUP_EXPORTI /* called from IupMap and IupRefresh */
 void iupLayoutCompute(Ihandle* ih);  /* can be called before map */
-void iupLayoutUpdate(Ihandle* ih);   /* called only after map */
+IUP_EXPORTI void iupLayoutUpdate(Ihandle* ih);   /* called only after map */
 
-void iupLayoutApplyMinMaxSize(Ihandle* ih, int *w, int *h);
+IUP_EXPORTI void iupLayoutApplyMinMaxSize(Ihandle* ih, int *w, int *h);
 
 /* Other functions declared in <iup.h> and implemented here. 
 IupRefresh

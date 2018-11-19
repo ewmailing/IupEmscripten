@@ -13,9 +13,9 @@ extern "C" {
 
 /* Shows a popup menu in the given position.
 * Must return IUP_ERROR or IUP_NOERROR.
-* Called only from IupPopup.
+IUP_EXPORTI * Called only from IupPopup.
 */
-int iupMenuPopup(Ihandle* ih, int x, int y);
+IUP_EXPORTI int iupMenuPopup(Ihandle* ih, int x, int y);
 
 int iupdrvMenuPopup(Ihandle* ih, int x, int y);
 void iupdrvSeparatorInitClass(Iclass* ic);

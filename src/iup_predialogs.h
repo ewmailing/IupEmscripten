@@ -13,18 +13,18 @@ extern "C" {
 
 #include "iup_export.h"
 
-/* Used by the IupScanf implementation */
+IUP_EXPORTI /* Used by the IupScanf implementation */
 IUP_EXPORTI int iupDataEntry(int maxlin, int* maxcol, int* maxscr, char* title, char** text, char** data);
 
-/* Popups a dialog with IUP Version, used in IupOpen */
-void iupShowVersion(void);
+IUP_EXPORTI /* Popups a dialog with IUP Version, used in IupOpen */
+IUP_EXPORTI void iupShowVersion(void);
 
 /* Other functions declared in <iup.h> and implemented here. 
-IupListDialog
-IupAlarm
-IupMessagef
-IupGetFile
-IupGetText
+IUP_EXPORTI IupListDialog
+IUP_EXPORTI IupAlarm
+IUP_EXPORTI IupMessagef
+IUP_EXPORTI IupGetFile
+IUP_EXPORTI IupGetText
 */
 
 #ifdef __cplusplus

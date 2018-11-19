@@ -23,7 +23,7 @@ extern "C" {
 #define ITREE_UPDATEIMAGE_EXPANDED  3
 
 void iupdrvTreeInitClass(Iclass* ic);
-void iupTreeUpdateImages(Ihandle *ih);
+IUP_EXPORTI void iupTreeUpdateImages(Ihandle *ih);
 void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add);
 void iupdrvTreeUpdateMarkMode(Ihandle *ih);
 

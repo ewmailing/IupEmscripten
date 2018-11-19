@@ -15,7 +15,7 @@ extern "C" {
 void iupdrvButtonInitClass(Iclass* ic);
 void iupdrvButtonAddBorders(int *x, int *y);
 
-char* iupButtonGetPaddingAttrib(Ihandle* ih);
+IUP_EXPORTI char* iupButtonGetPaddingAttrib(Ihandle* ih);
 
 enum{IUP_BUTTON_IMAGE=0x01, IUP_BUTTON_TEXT=0x02, IUP_BUTTON_BOTH=0x03};
 enum{IUP_IMGPOS_LEFT, IUP_IMGPOS_RIGHT, IUP_IMGPOS_TOP, IUP_IMGPOS_BOTTOM};

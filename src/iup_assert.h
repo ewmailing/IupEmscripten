@@ -15,7 +15,7 @@ extern "C" {
 
 /** \defgroup assert Assert Utilities
  * \par
- * All functions of the main API (Iup***) calls iupASSERT to check the parameters.
+IUP_EXPORTI  * All functions of the main API (Iup***) calls iupASSERT to check the parameters.
  * \par
  * The IUP main library must be recompiled with the IUP_ASSERT define to enable these checks.
  * iupASSERT is not called inside driver dependent functions nor in each control implementation, 
@@ -26,7 +26,7 @@ extern "C" {
 
 /* internal functions */
 void iupAssert(const char* expr, const char* file, int line, const char* func);
-void iupError(const char* format, ...);
+IUP_EXPORTI void iupError(const char* format, ...);
 
 /** \def iupASSERT
  * \brief If the expression if false, 

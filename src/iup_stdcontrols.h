@@ -12,72 +12,72 @@ extern "C" {
 #endif
 
 
-Iclass* iupDialogNewClass(void);
-Iclass* iupMessageDlgNewClass(void);
+IUP_EXPORTI Iclass* iupDialogNewClass(void);
+IUP_EXPORTI Iclass* iupMessageDlgNewClass(void);
 Iclass* iupColorDlgNewClass(void);
 Iclass* iupFontDlgNewClass(void);
-Iclass* iupFileDlgNewClass(void);
-Iclass* iupProgressDlgNewClass(void);
+IUP_EXPORTI Iclass* iupFileDlgNewClass(void);
+IUP_EXPORTI Iclass* iupProgressDlgNewClass(void);
 
-Iclass* iupLabelNewClass(void);
-Iclass* iupButtonNewClass(void);
-Iclass* iupToggleNewClass(void);
-Iclass* iupRadioNewClass(void);
-Iclass* iupCanvasNewClass(void);
-Iclass* iupFrameNewClass(void);
-Iclass* iupProgressBarNewClass(void);
-Iclass* iupTextNewClass(void);
-Iclass* iupMultilineNewClass(void);
-Iclass* iupValNewClass(void);
-Iclass* iupTabsNewClass(void);
-Iclass* iupSpinNewClass(void);
-Iclass* iupSpinboxNewClass(void);
-Iclass* iupListNewClass(void);
-Iclass* iupTreeNewClass(void);
-Iclass* iupLinkNewClass(void);
-Iclass* iupFlatLabelNewClass(void);
-Iclass* iupFlatButtonNewClass(void);
-Iclass* iupFlatToggleNewClass(void);
-Iclass* iupDropButtonNewClass(void);
-Iclass* iupFlatSeparatorNewClass(void);
-Iclass* iupFlatFrameNewClass(void);
-Iclass* iupFlatTabsNewClass(void);
+IUP_EXPORTI Iclass* iupLabelNewClass(void);
+IUP_EXPORTI Iclass* iupButtonNewClass(void);
+IUP_EXPORTI Iclass* iupToggleNewClass(void);
+IUP_EXPORTI Iclass* iupRadioNewClass(void);
+IUP_EXPORTI Iclass* iupCanvasNewClass(void);
+IUP_EXPORTI Iclass* iupFrameNewClass(void);
+IUP_EXPORTI Iclass* iupProgressBarNewClass(void);
+IUP_EXPORTI Iclass* iupTextNewClass(void);
+IUP_EXPORTI Iclass* iupMultilineNewClass(void);
+IUP_EXPORTI Iclass* iupValNewClass(void);
+IUP_EXPORTI Iclass* iupTabsNewClass(void);
+IUP_EXPORTI Iclass* iupSpinNewClass(void);
+IUP_EXPORTI Iclass* iupSpinboxNewClass(void);
+IUP_EXPORTI Iclass* iupListNewClass(void);
+IUP_EXPORTI Iclass* iupTreeNewClass(void);
+IUP_EXPORTI Iclass* iupLinkNewClass(void);
+IUP_EXPORTI Iclass* iupFlatLabelNewClass(void);
+IUP_EXPORTI Iclass* iupFlatButtonNewClass(void);
+IUP_EXPORTI Iclass* iupFlatToggleNewClass(void);
+IUP_EXPORTI Iclass* iupDropButtonNewClass(void);
+IUP_EXPORTI Iclass* iupFlatSeparatorNewClass(void);
+IUP_EXPORTI Iclass* iupFlatFrameNewClass(void);
+IUP_EXPORTI Iclass* iupFlatTabsNewClass(void);
 Iclass* iupDialNewClass(void);
-Iclass* iupGaugeNewClass(void);
-Iclass* iupColorbarNewClass(void);
-Iclass* iupColorBrowserNewClass(void);
+IUP_EXPORTI Iclass* iupGaugeNewClass(void);
+IUP_EXPORTI Iclass* iupColorbarNewClass(void);
+IUP_EXPORTI Iclass* iupColorBrowserNewClass(void);
 
-Iclass* iupMenuNewClass(void);
-Iclass* iupItemNewClass(void);
-Iclass* iupSeparatorNewClass(void);
-Iclass* iupSubmenuNewClass(void);
+IUP_EXPORTI Iclass* iupMenuNewClass(void);
+IUP_EXPORTI Iclass* iupItemNewClass(void);
+IUP_EXPORTI Iclass* iupSeparatorNewClass(void);
+IUP_EXPORTI Iclass* iupSubmenuNewClass(void);
 
-Iclass* iupFillNewClass(void);
-Iclass* iupHboxNewClass(void);
-Iclass* iupVboxNewClass(void);
-Iclass* iupZboxNewClass(void);
-Iclass* iupCboxNewClass(void);
-Iclass* iupSboxNewClass(void);
-Iclass* iupNormalizerNewClass(void);
-Iclass* iupSplitNewClass(void);
-Iclass* iupScrollBoxNewClass(void);
-Iclass* iupFlatScrollBoxNewClass(void);
+IUP_EXPORTI Iclass* iupFillNewClass(void);
+IUP_EXPORTI Iclass* iupHboxNewClass(void);
+IUP_EXPORTI Iclass* iupVboxNewClass(void);
+IUP_EXPORTI Iclass* iupZboxNewClass(void);
+IUP_EXPORTI Iclass* iupCboxNewClass(void);
+IUP_EXPORTI Iclass* iupSboxNewClass(void);
+IUP_EXPORTI Iclass* iupNormalizerNewClass(void);
+IUP_EXPORTI Iclass* iupSplitNewClass(void);
+IUP_EXPORTI Iclass* iupScrollBoxNewClass(void);
+IUP_EXPORTI Iclass* iupFlatScrollBoxNewClass(void);
 Iclass* iupGridBoxNewClass(void);
-Iclass* iupExpanderNewClass(void);
-Iclass* iupDetachBoxNewClass(void);
-Iclass* iupBackgroundBoxNewClass(void);
-Iclass* iupAnimatedLabelNewClass(void);
-Iclass* iupCalendarNewClass(void);
-Iclass* iupDatePickNewClass(void);
-Iclass* iupParamBoxNewClass(void);
+IUP_EXPORTI Iclass* iupExpanderNewClass(void);
+IUP_EXPORTI Iclass* iupDetachBoxNewClass(void);
+IUP_EXPORTI Iclass* iupBackgroundBoxNewClass(void);
+IUP_EXPORTI Iclass* iupAnimatedLabelNewClass(void);
+IUP_EXPORTI Iclass* iupCalendarNewClass(void);
+IUP_EXPORTI Iclass* iupDatePickNewClass(void);
+IUP_EXPORTI Iclass* iupParamBoxNewClass(void);
 Iclass* iupParamNewClass(void);
 
-Iclass* iupTimerNewClass(void);
-Iclass* iupImageNewClass(void);
-Iclass* iupImageRGBNewClass(void);
-Iclass* iupImageRGBANewClass(void);
-Iclass* iupUserNewClass(void);
-Iclass* iupClipboardNewClass(void);
+IUP_EXPORTI Iclass* iupTimerNewClass(void);
+IUP_EXPORTI Iclass* iupImageNewClass(void);
+IUP_EXPORTI Iclass* iupImageRGBNewClass(void);
+IUP_EXPORTI Iclass* iupImageRGBANewClass(void);
+IUP_EXPORTI Iclass* iupUserNewClass(void);
+IUP_EXPORTI Iclass* iupClipboardNewClass(void);
 
 /*************************************************/
 
@@ -88,11 +88,11 @@ void iupdrvFileDlgInitClass(Iclass* ic);
 
 /************************************************/
 
-Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name);
+IUP_EXPORTI Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name);
 
 /* Common definition of the canvas class */
 typedef struct _iupCanvas {
-  int sb;    /* scrollbar configuration, valid only after map, use iupBaseGetScrollbar before map */
+IUP_EXPORTI   int sb;    /* scrollbar configuration, valid only after map, use iupBaseGetScrollbar before map */
   double posx, posy;
   int inside_resize;
 } iupCanvas;

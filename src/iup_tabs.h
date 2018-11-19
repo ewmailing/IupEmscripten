@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 
-char* iupTabsGetTabOrientationAttrib(Ihandle* ih);
+IUP_EXPORTI char* iupTabsGetTabOrientationAttrib(Ihandle* ih);
 char* iupTabsGetTabTypeAttrib(Ihandle* ih);
 char* iupTabsGetTabPaddingAttrib(Ihandle* ih);
 char* iupTabsGetTabVisibleAttrib(Ihandle* ih, int pos);

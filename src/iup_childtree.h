@@ -18,7 +18,7 @@ extern "C" {
  * Some native containers have an internal native child that 
  * will be the actual container for the children. This native container is 
  * returned by \ref iupClassObjectGetInnerNativeContainerHandle and
- * it is used in iupChildTreeGetNativeParentHandle.
+IUP_EXPORTI  * it is used in iupChildTreeGetNativeParentHandle.
  * \par
  * Some native elements need an extra parent, the ih->handle points to the main element itself, 
  * NOT to the extra parent. This extra parent is stored as "_IUP_EXTRAPARENT". 
@@ -50,13 +50,13 @@ Ihandle* iupChildTreeGetPrevBrother(Ihandle* ih);
 
 
 /* Other functions declared in <iup.h> and implemented here. 
-IupGetDialog
-IupDetach
-IupAppend
-IupGetChild
-IupGetNextChild
-IupGetBrother
-IupGetParent
+IUP_EXPORTI IupGetDialog
+IUP_EXPORTI IupDetach
+IUP_EXPORTI IupAppend
+IUP_EXPORTI IupGetChild
+IUP_EXPORTI IupGetNextChild
+IUP_EXPORTI IupGetBrother
+IUP_EXPORTI IupGetParent
 */
 
 

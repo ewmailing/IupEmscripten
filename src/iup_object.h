@@ -25,7 +25,7 @@ extern "C" {
 
 /* SIZE to RASTERSIZE
  * \ingroup object */
-#define iupWIDTH2RASTER(_w, _cw) iupRound((_w * _cw)/4.0)
+IUP_EXPORTI #define iupWIDTH2RASTER(_w, _cw) iupRound((_w * _cw)/4.0)
 /* SIZE to RASTERSIZE
  * \ingroup object */
 #define iupHEIGHT2RASTER(_h, _ch) iupRound((_h * _ch)/8.0)
@@ -42,7 +42,7 @@ extern "C" {
  * \ingroup object */
 enum Iexpand {
   IUP_EXPAND_NONE = 0x00,
-  IUP_EXPAND_H0   = 0x01,  /* only set by IupFill */
+IUP_EXPORTI   IUP_EXPAND_H0   = 0x01,  /* only set by IupFill */
   IUP_EXPAND_H1   = 0x02,
   IUP_EXPAND_W0   = 0x04,  /* only set by IupFill */
   IUP_EXPAND_W1   = 0x08,
@@ -115,7 +115,7 @@ struct Ihandle_
 
 
 /* Creates an object initializes iclass and nativetype.
- * Called only from IupCreate and IupLoad. */
+IUP_EXPORTI  * Called only from IupCreate and IupLoad. */
 Ihandle* iupObjectCreate(Iclass* ic, void** params);
 
 
@@ -132,9 +132,9 @@ IUP_EXPORTI int iupObjectCheck(Ihandle* ih);
 
 /* Other functions declared in <iup.h> and implemented here. 
 IupCreate 
-IupCreatev
-IupCreatep
-IupDestroy
+IUP_EXPORTI IupCreatev
+IUP_EXPORTI IupCreatep
+IUP_EXPORTI IupDestroy
 */
 
 

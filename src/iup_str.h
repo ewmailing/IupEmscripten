@@ -41,7 +41,7 @@ IUP_EXPORTI int iupStrEqualNoCaseNoSpace(const char* str1, const char* str2);
  * up to a number of characters defined by the strlen of the second string. \n
  * str1 or str2 can be NULL.
  * \ingroup str */
-int iupStrEqualPartial(const char* str1, const char* str2);
+IUP_EXPORTI int iupStrEqualPartial(const char* str1, const char* str2);
 
 /** Returns a non zero value if the two strings are equal but ignores case 
  * up to a number of characters defined by the strlen of the second string. \n
@@ -61,7 +61,7 @@ IUP_EXPORTI int iupStrBoolean(const char* str);
  * Returns 0 otherwise (including NULL or empty). \n
  * To be used when value can be "False" or others different than "True".
  * \ingroup str */
-int iupStrFalse(const char* str);
+IUP_EXPORTI int iupStrFalse(const char* str);
 
 
 
@@ -114,7 +114,7 @@ IUP_EXPORTI char *iupStrGetMemory(int size);
 /** Returns a very large buffer to be used in unknown size string construction.
  * Use snprintf or vsnprintf with the given size.
  * \ingroup str */
-char *iupStrGetLargeMem(int *size);
+IUP_EXPORTI char *iupStrGetLargeMem(int *size);
 
 
 
@@ -153,7 +153,7 @@ IUP_EXPORTI int iupStrHasSpace(const char* str);
 
 /** Checks if the string has only ASCII codes.
  * \ingroup str */
-int iupStrIsAscii(const char* str);
+IUP_EXPORTI int iupStrIsAscii(const char* str);
 
 
 
@@ -296,18 +296,18 @@ IUP_EXPORTI int iupStrToStrStr(const char *str, char *str1, char *str2, char sep
 /** Returns the file extension of a file name.
  * Supports UNIX and Windows directory separators.
  * \ingroup str */
-char* iupStrFileGetExt(const char *file_name);
+IUP_EXPORTI char* iupStrFileGetExt(const char *file_name);
 
 /** Returns the file title of a file name.
  * Supports UNIX and Windows directory separators.
  * \ingroup str */
-char* iupStrFileGetTitle(const char *file_name);
+IUP_EXPORTI char* iupStrFileGetTitle(const char *file_name);
 
 /** Returns the file path of a file name.
  * Supports UNIX and Windows directory separators.
  * The returned value includes the last separator.
  * \ingroup str */
-char* iupStrFileGetPath(const char *file_name);
+IUP_EXPORTI char* iupStrFileGetPath(const char *file_name);
 
 /** Concat path and title addind '/' between if path does not have it.
  * \ingroup str */
@@ -326,16 +326,16 @@ IUP_EXPORTI int iupStrReplace(char* str, char src, char dst);
 
 /** Convert line ends to UNIX format in-place (one \n per line).
  * \ingroup str */
-void iupStrToUnix(char* str);
+IUP_EXPORTI void iupStrToUnix(char* str);
 
 /** Convert line ends to MAC format in-place (one \r per line).
  * \ingroup str */
-void iupStrToMac(char* str);
+IUP_EXPORTI void iupStrToMac(char* str);
 
 /** Convert line ends to DOS/Windows format (the sequence \r\n per line).
  * If returned pointer different the input, it must be freed.
  * \ingroup str */
-char* iupStrToDos(const char* str);
+IUP_EXPORTI char* iupStrToDos(const char* str);
 
 /** Convert string to C format. Process \n, \r and \t.
  * If returned pointer different the input, it must be freed.
@@ -346,11 +346,11 @@ char* iupStrConvertToC(const char* str);
 
 /** Remove the interval from the string. Done in-place.
  * \ingroup str */
-void iupStrRemove(char* value, int start, int end, int dir, int utf8);
+IUP_EXPORTI void iupStrRemove(char* value, int start, int end, int dir, int utf8);
 
 /** Remove the interval from the string and insert the new string at the start.
  * \ingroup str */
-char* iupStrInsert(const char* value, const char* insert_value, int start, int end, int utf8);
+IUP_EXPORTI char* iupStrInsert(const char* value, const char* insert_value, int start, int end, int utf8);
 
 
 
@@ -360,11 +360,11 @@ char* iupStrInsert(const char* value, const char* insert_value, int start, int e
 - -1: remove & and return in c
 - 0: remove &
  * \ingroup str */
-char* iupStrProcessMnemonic(const char* str, char *c, int action);
+IUP_EXPORTI char* iupStrProcessMnemonic(const char* str, char *c, int action);
 
 /** Returns the Mnemonic if found. Zero otherwise.
  * \ingroup str */
-int iupStrFindMnemonic(const char* str);
+IUP_EXPORTI int iupStrFindMnemonic(const char* str);
 
 
 

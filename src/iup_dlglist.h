@@ -18,40 +18,40 @@ extern "C" {
  * \ingroup cpi */
 
 
-/** Adds a dialog to the list. Used only in IupDialog.
+IUP_EXPORTI /** Adds a dialog to the list. Used only in IupDialog.
  * \ingroup dlglist */
-void iupDlgListAdd(Ihandle *ih);
+IUP_EXPORTI void iupDlgListAdd(Ihandle *ih);
 
-/** Removes a dialog from the list. Used only in IupDestroy.
+IUP_EXPORTI /** Removes a dialog from the list. Used only in IupDestroy.
  * \ingroup dlglist */
-void iupDlgListRemove(Ihandle *ih);
+IUP_EXPORTI void iupDlgListRemove(Ihandle *ih);
 
 /** Returns the number of dialogs.
  * \ingroup dlglist */
-int iupDlgListCount(void);
+IUP_EXPORTI int iupDlgListCount(void);
 
 /** Starts a loop for all the created dialogs. 
  * \ingroup dlglist */
-Ihandle* iupDlgListFirst(void);
+IUP_EXPORTI Ihandle* iupDlgListFirst(void);
 
 /** Retrieve the next dialog on the list. Must call iupDlgListFirst first.
  * \ingroup dlglist */
-Ihandle* iupDlgListNext(void);
+IUP_EXPORTI Ihandle* iupDlgListNext(void);
 
 /** Increments the number of visible dialogs. 
  * \ingroup dlglist */
-void iupDlgListVisibleInc(void);
+IUP_EXPORTI void iupDlgListVisibleInc(void);
 
 /** Decrements the number of visible dialogs.
  * \ingroup dlglist */
-void iupDlgListVisibleDec(void);
+IUP_EXPORTI void iupDlgListVisibleDec(void);
 
 /** Returns the number of visible dialogs.
  * \ingroup dlglist */
-int iupDlgListVisibleCount(void);
+IUP_EXPORTI int iupDlgListVisibleCount(void);
 
 /* Destroy all dialogs and the list.
-   Called only from IupClose. */
+IUP_EXPORTI    Called only from IupClose. */
 void iupDlgListDestroyAll(void);
 
 

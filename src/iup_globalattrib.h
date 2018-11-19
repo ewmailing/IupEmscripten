@@ -13,7 +13,7 @@ extern "C" {
 
 #include "iup_export.h"
 
-/* called only in IupOpen and IupClose */
+IUP_EXPORTI /* called only in IupOpen and IupClose */
 void iupGlobalAttribInit(void);
 void iupGlobalAttribFinish(void);
 
@@ -23,9 +23,9 @@ int iupGlobalDefaultColorChanged(const char *name);    /* check if user changed 
 void iupGlobalSetDefaultColorAttrib(const char* name, int r, int g, int b);  /* internal change method */
 
 /* Other functions declared in <iup.h> and implemented here. 
-IupSetGlobal
-IupStoreGlobal
-IupGetGlobal
+IUP_EXPORTI IupSetGlobal
+IUP_EXPORTI IupStoreGlobal
+IUP_EXPORTI IupGetGlobal
 */
 
 #ifdef __cplusplus

@@ -22,24 +22,24 @@ extern "C"
 * \ingroup auxdraw */
 #define iupDrawCheckSwapCoord(_c1, _c2) { if (_c1 > _c2) { int t = _c2; _c2 = _c1; _c1 = t; } }   /* make sure _c1 is smaller than _c2 */
 
-long iupDrawStrToColor(const char* str, long c_def);
-long iupDrawColor(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
-void iupDrawCalcShadows(long bgcolor, long *light_shadow, long *mid_shadow, long *dark_shadow);
-long iupDrawColorMakeInactive(long color, long bgcolor);
+IUP_EXPORTI long iupDrawStrToColor(const char* str, long c_def);
+IUP_EXPORTI long iupDrawColor(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
+IUP_EXPORTI void iupDrawCalcShadows(long bgcolor, long *light_shadow, long *mid_shadow, long *dark_shadow);
+IUP_EXPORTI long iupDrawColorMakeInactive(long color, long bgcolor);
 
 #define iupDrawAlpha(_c)    (unsigned char)(~(((_c) >> 24) & 0xFF))   /* 0=transparent, 255=opaque (default is opaque, internally stored as 0) */
 #define iupDrawRed(_c)      (unsigned char)(((_c) >> 16) & 0xFF)
 #define iupDrawGreen(_c)    (unsigned char)(((_c) >>  8) & 0xFF)
 #define iupDrawBlue(_c)     (unsigned char)(((_c) >>  0) & 0xFF)
 
-void iupDrawSetColor(Ihandle *ih, const char* name, long color);
-void iupDrawRaiseRect(Ihandle *ih, int x1, int y1, int x2, int y2, long light_shadow, long mid_shadow, long dark_shadow);
-void iupDrawVertSunkenMark(Ihandle *ih, int x, int y1, int y2, long light_shadow, long dark_shadow);
-void iupDrawHorizSunkenMark(Ihandle *ih, int x1, int x2, int y, long light_shadow, long dark_shadow);
-void iupDrawSunkenRect(Ihandle *ih, int x1, int y1, int x2, int y2, long light_shadow, long mid_shadow, long dark_shadow);
+IUP_EXPORTI void iupDrawSetColor(Ihandle *ih, const char* name, long color);
+IUP_EXPORTI void iupDrawRaiseRect(Ihandle *ih, int x1, int y1, int x2, int y2, long light_shadow, long mid_shadow, long dark_shadow);
+IUP_EXPORTI void iupDrawVertSunkenMark(Ihandle *ih, int x, int y1, int y2, long light_shadow, long dark_shadow);
+IUP_EXPORTI void iupDrawHorizSunkenMark(Ihandle *ih, int x1, int x2, int y, long light_shadow, long dark_shadow);
+IUP_EXPORTI void iupDrawSunkenRect(Ihandle *ih, int x1, int y1, int x2, int y2, long light_shadow, long mid_shadow, long dark_shadow);
 
-void iupDrawParentBackground(IdrawCanvas* dc, Ihandle* ih);
-char* iupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h);
+IUP_EXPORTI void iupDrawParentBackground(IdrawCanvas* dc, Ihandle* ih);
+IUP_EXPORTI char* iupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h);
 
 
 /**********************************************************************************************************/

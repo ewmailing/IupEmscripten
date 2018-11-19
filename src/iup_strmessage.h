@@ -23,7 +23,7 @@ extern "C" {
 /* Called from iup_global */
 void iupStrMessageUpdateLanguage(const char* language);
 
-/* called only in IupOpen and IupClose */
+IUP_EXPORTI /* called only in IupOpen and IupClose */
 void iupStrMessageInit(void);
 void iupStrMessageFinish(void);
 

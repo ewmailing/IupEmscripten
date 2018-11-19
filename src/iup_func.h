@@ -11,15 +11,15 @@
 extern "C" {
 #endif
 
-/* called only in IupOpen and IupClose */
+IUP_EXPORTI /* called only in IupOpen and IupClose */
 void iupFuncInit(void);
 void iupFuncFinish(void);
 
-char* iupGetCallbackName(Ihandle *ih, const char *name);
+IUP_EXPORTI char* iupGetCallbackName(Ihandle *ih, const char *name);
 
 /* Other functions declared in <iup.h> and implemented here. 
-IupGetFunction
-IupSetFunction
+IUP_EXPORTI IupGetFunction
+IUP_EXPORTI IupSetFunction
 */
 
 #ifdef __cplusplus

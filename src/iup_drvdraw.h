@@ -26,7 +26,7 @@ typedef struct _IdrawCanvas IdrawCanvas;
 
 enum{ IUP_DRAW_FILL, IUP_DRAW_STROKE, IUP_DRAW_STROKE_DASH, IUP_DRAW_STROKE_DOT };
 
-/** Creates a draw canvas based on an IupCanvas.
+IUP_EXPORTI /** Creates a draw canvas based on an IupCanvas.
  * This will create an image for offscreen drawing.
  * \ingroup draw */
 IUP_EXPORTI IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih);
@@ -42,7 +42,7 @@ IUP_EXPORTI void iupdrvDrawFlush(IdrawCanvas* dc);
 /** Rebuild the offscreen image if the canvas size has changed.
  * Automatically done in iupdrvDrawCreateCanvas.
  * \ingroup drvdraw */
-void iupdrvDrawUpdateSize(IdrawCanvas* dc);
+IUP_EXPORTI void iupdrvDrawUpdateSize(IdrawCanvas* dc);
 
 /** Returns the canvas size available for drawing.
  * \ingroup draw */
@@ -85,11 +85,11 @@ IUP_EXPORTI void iupdrvDrawResetClip(IdrawCanvas* dc);
 
 /** Draws a selection rectangle.
  * \ingroup drvdraw */
-void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
+IUP_EXPORTI void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
 
 /** Draws a focus rectangle.
  * \ingroup drvdraw */
-void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
+IUP_EXPORTI void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
 
 
 #ifdef __cplusplus

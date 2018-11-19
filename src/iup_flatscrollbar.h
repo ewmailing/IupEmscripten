@@ -24,7 +24,7 @@ IUP_EXPORTI void iupFlatScrollBarSetChildrenPosition(Ihandle* ih);
 IUP_EXPORTI void iupFlatScrollBarWheelUpdate(Ihandle* ih, float delta);
 IUP_EXPORTI void iupFlatScrollBarMotionUpdate(Ihandle* ih, int x, int y);
 
-/* used only in IupFlatScrollBox */
+IUP_EXPORTI /* used only in IupFlatScrollBox */
 IUP_EXPORTI void iupFlatScrollBarSetPos(Ihandle *ih, int posx, int posy);
 
 

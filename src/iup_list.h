@@ -24,7 +24,7 @@ void iupdrvListRemoveAllItems(Ihandle* ih);
 /* Used by List and Text, implemented in Text */
 int iupEditCallActionCb(Ihandle* ih, IFnis cb, const char* insert_value, int start, int end, void *mask, int nc, int remove_dir, int utf8);
 
-int iupListGetPosAttrib(Ihandle* ih, int id);
+IUP_EXPORTI int iupListGetPosAttrib(Ihandle* ih, int id);
 int iupListSetIdValueAttrib(Ihandle* ih, int id, const char* value);
 char* iupListGetNCAttrib(Ihandle* ih);
 char* iupListGetPaddingAttrib(Ihandle* ih);

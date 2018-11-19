@@ -25,7 +25,7 @@ struct _IcontrolData
   double vmax;
 };
 
-void  iupValCropValue(Ihandle* ih);
+IUP_EXPORTI void  iupValCropValue(Ihandle* ih);
 char* iupValGetValueAttrib(Ihandle* ih);
 char* iupValGetStepAttrib(Ihandle* ih);
 char* iupValGetPageStepAttrib(Ihandle* ih);

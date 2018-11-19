@@ -61,7 +61,7 @@ struct Iclass_
                    * - "g" = (Ihandle**) - array of element handle */
   InativeType nativetype; /**< native type. Default is IUP_TYPEVOID. */
   int childtype;   /**< children count enum: none, many, or n, as described in \ref IchildType. Default is IUP_CHILDNONE. \n
-                    * This identifies a container that can be manipulated with IupReparent, IupAppend and IupInsert. \n
+IUP_EXPORTI                     * This identifies a container that can be manipulated with IupReparent, IupAppend and IupInsert. \n
                     * Used to control the allowed number of children and define its behavior in the layout processing. \n
                     * The element can still have hidden children even if this is none. */
   int is_interactive; /**< keyboard interactive boolean, 
@@ -81,22 +81,22 @@ struct Iclass_
   /* Class methods. */
 
   /** Method that allocates a new instance of the class. \n
-   * Used by inherited classes in \ref iupClassNew.
+IUP_EXPORTI    * Used by inherited classes in \ref iupClassNew.
    */
   Iclass* (*New)(void);
 
 
   /** Method that release the memory allocated by the class.
-   * Called only once at \ref iupClassRelease.
+IUP_EXPORTI    * Called only once at \ref iupClassRelease.
    */
   void (*Release)(Iclass* ic);
 
 
 
   /** Method that creates the element and process the creation parameters. \n
-   * Called only from IupCreate. \n
+IUP_EXPORTI    * Called only from IupCreate. \n
    * The parameters can be NULL for all the controls. \n
-   * The control should also depend on attributes set before IupMap. \n
+IUP_EXPORTI    * The control should also depend on attributes set before IupMap. \n
    * Must return IUP_NOERROR or IUP_ERROR. \n
    * Can be NULL, like all methods.
    */
@@ -109,24 +109,24 @@ struct Iclass_
   int (*Map)(Ihandle* ih);
 
   /** Method that unmap (destroy) the control from the native system. \n
-   * Called only from IupUnmap if the control is mapped. \n
+IUP_EXPORTI    * Called only from IupUnmap if the control is mapped. \n
    * Must return IUP_NOERROR or IUP_ERROR.
    */
   void (*UnMap)(Ihandle* ih);
 
   /** Method that destroys the element. \n
-   * Called only from IupDestroy. Always called even if the control is not mapped.
+IUP_EXPORTI    * Called only from IupDestroy. Always called even if the control is not mapped.
    */
   void (*Destroy)(Ihandle* ih);
 
 
 
   /** Returns the internal native parent. The default implementation returns the handle of itself. \n
-    * Called from \ref iupChildTreeGetNativeParentHandle. \n
+IUP_EXPORTI     * Called from \ref iupChildTreeGetNativeParentHandle. \n
     * This allows native elements to have an internal container
     * that will be the actual native parent, or in other words allows native elements to be a combination of 
     * other native elements in a single IUP element. 
-    * The actual native parent may depend on the child tree (see IupTabs for an example).
+IUP_EXPORTI     * The actual native parent may depend on the child tree (see IupTabs for an example).
    */
   void* (*GetInnerNativeContainerHandle)(Ihandle* ih, Ihandle* child);
 
@@ -136,7 +136,7 @@ struct Iclass_
    */
   void (*ChildAdded)(Ihandle* ih, Ihandle* child);
 
-  /** Notifies the element that a child was removed using IupDetach. \n
+IUP_EXPORTI   /** Notifies the element that a child was removed using IupDetach. \n
    * Called only from IupDetach or IupReparent. 
    * The child is already detached.
    */
@@ -144,7 +144,7 @@ struct Iclass_
 
 
   /** Method that update size and position of the native control. \n
-   * Called only from iupLayoutUpdate and if the element is mapped.
+IUP_EXPORTI    * Called only from iupLayoutUpdate and if the element is mapped.
    */
   void (*LayoutUpdate)(Ihandle* ih);
 
@@ -152,7 +152,7 @@ struct Iclass_
 
   /** Method that computes the natural size based on the user size and the actual natural size. \n
    * Should update expand if a container, but does NOT depends on expand to compute the natural size. \n
-   * Must call the \ref iupBaseComputeNaturalSize for each children.
+IUP_EXPORTI    * Must call the \ref iupBaseComputeNaturalSize for each children.
    * First calculate the native size for the children, then for the element. \n
    * Also called before the element is mapped, so it must be independent of the native control.
    * First call done at iupLayoutCompute for the dialog.
@@ -162,7 +162,7 @@ struct Iclass_
   /** Method that calculates and updates the current size of children based on the available size,
    * the natural size and the expand configuration. \n
    * Called only if there is any children.\n
-   * Must call \ref iupBaseSetCurrentSize for each children. 
+IUP_EXPORTI    * Must call \ref iupBaseSetCurrentSize for each children. 
    * shrink is the dialog attribute passed here for optimization. \n
    * Also called before the element is mapped, so it must be independent of the native control.
    * First call done at iupLayoutCompute for the dialog.
@@ -171,7 +171,7 @@ struct Iclass_
 
   /** Method that calculates and updates the position relative to the parent. \n
    * Called only if there is any children.\n
-   * Must call \ref iupBaseSetPosition for each children.
+IUP_EXPORTI    * Must call \ref iupBaseSetPosition for each children.
    * Also called before the element is mapped, so it must be independent of the native control.
    * First call done at iupLayoutCompute for the dialog.
    */
@@ -182,7 +182,7 @@ struct Iclass_
   /** Method that shows a popup dialog. Called only for native pre-defined dialogs. \n
    * The element is not mapped. \n
    * Must return IUP_ERROR or IUP_NOERROR. \n
-   * Called only from iupDialogPopup.
+IUP_EXPORTI    * Called only from iupDialogPopup.
    */
   int (*DlgPopup)(Ihandle* ih, int x, int y);   
 };
@@ -205,11 +205,11 @@ void iupClassRelease(Iclass* ic);
 /** Check if the class name match the given name. \n
  *  Parent classes are also checked.
  * \ingroup iclass */
-int iupClassMatch(Iclass* ic, const char* classname);
+IUP_EXPORTI int iupClassMatch(Iclass* ic, const char* classname);
 
 
 /** GetAttribute called for a specific attribute.
- * Used by \ref iupClassRegisterAttribute.
+IUP_EXPORTI  * Used by \ref iupClassRegisterAttribute.
  * \ingroup iclass */
 typedef char* (*IattribGetFunc)(Ihandle* ih);
 
@@ -234,7 +234,7 @@ typedef char* (*IattribGetId2Func)(Ihandle* ih, int id1, int id2);
 /** SetAttribute called for a specific attribute. \n
  * If returns 0, the attribute will not be stored in the hash table
  * (except inheritble attributes that are always stored in the hash table). \n
- * When IupSetAttribute is called using value=NULL, the default_value is passed to this function.
+IUP_EXPORTI  * When IupSetAttribute is called using value=NULL, the default_value is passed to this function.
  * Used by \ref iupClassRegisterAttribute.
  * \ingroup iclass */
 typedef int (*IattribSetFunc)(Ihandle* ih, const char* value);
@@ -266,14 +266,14 @@ typedef enum _IattribFlags{
   IUPAF_NO_DEFAULTVALUE=2,  /**< can not has a default value */
   IUPAF_NO_STRING=4,   /**< is not a string */
   IUPAF_NOT_MAPPED=8,  /**< will call the set/get functions also when not mapped */
-  IUPAF_HAS_ID=16,     /**< can has an ID at the end of the name, automatically set by \ref iupClassRegisterAttributeId */
+IUP_EXPORTI   IUPAF_HAS_ID=16,     /**< can has an ID at the end of the name, automatically set by \ref iupClassRegisterAttributeId */
   IUPAF_READONLY=32,   /**< is read-only, can not be changed */
   IUPAF_WRITEONLY=64,  /**< is write-only, usually an action */
-  IUPAF_HAS_ID2=128,   /**< can has two IDs at the end of the name, automatically set by \ref iupClassRegisterAttributeId2 */
+IUP_EXPORTI   IUPAF_HAS_ID2=128,   /**< can has two IDs at the end of the name, automatically set by \ref iupClassRegisterAttributeId2 */
   IUPAF_CALLBACK=256,  /**< is a callback, not an attribute */
   IUPAF_NO_SAVE=512,   /**< can NOT be directly saved, should have at least manual processing */
   IUPAF_NOT_SUPPORTED=1024,  /**< not supported in that driver */
-  IUPAF_IHANDLENAME=2048,    /**< is an Ihandle* name, associated with IupSetHandle */
+IUP_EXPORTI   IUPAF_IHANDLENAME=2048,    /**< is an Ihandle* name, associated with IupSetHandle */
   IUPAF_IHANDLE=4096         /**< is an Ihandle* */
 } IattribFlags;
 
@@ -355,7 +355,7 @@ IUP_EXPORTI void iupClassRegisterCallback(Iclass* ic, const char* name, const ch
 /** Returns the format of the parameters of a registered callback. 
  * If NULL then the default callback definition is assumed.
  * \ingroup iclass */
-char* iupClassCallbackGetFormat(Iclass* ic, const char* name);
+IUP_EXPORTI char* iupClassCallbackGetFormat(Iclass* ic, const char* name);
 
 
 
@@ -370,22 +370,22 @@ char* iupClassCallbackGetFormat(Iclass* ic, const char* name);
 /** Calls \ref Iclass::Create method. 
  * \ingroup iclassobject
  */
-int iupClassObjectCreate(Ihandle* ih, void** params);
+IUP_EXPORTI int iupClassObjectCreate(Ihandle* ih, void** params);
 
 /** Calls \ref Iclass::Map method. 
  * \ingroup iclassobject
  */
-int iupClassObjectMap(Ihandle* ih);
+IUP_EXPORTI int iupClassObjectMap(Ihandle* ih);
 
 /** Calls \ref Iclass::UnMap method. 
  * \ingroup iclassobject
  */
-void iupClassObjectUnMap(Ihandle* ih);
+IUP_EXPORTI void iupClassObjectUnMap(Ihandle* ih);
 
 /** Calls \ref Iclass::Destroy method. 
  * \ingroup iclassobject
  */
-void iupClassObjectDestroy(Ihandle* ih);
+IUP_EXPORTI void iupClassObjectDestroy(Ihandle* ih);
 
 /** Calls \ref Iclass::GetInnerNativeContainerHandle method. Returns ih->handle if there is no inner parent.
  * The parent class is ignored. If necessary the child class must handle the parent class internally.
@@ -396,12 +396,12 @@ void* iupClassObjectGetInnerNativeContainerHandle(Ihandle* ih, Ihandle* child);
 /** Calls \ref Iclass::ChildAdded method. 
  * \ingroup iclassobject
  */
-void iupClassObjectChildAdded(Ihandle* ih, Ihandle* child);
+IUP_EXPORTI void iupClassObjectChildAdded(Ihandle* ih, Ihandle* child);
 
 /** Calls \ref Iclass::ChildRemoved method. 
  * \ingroup iclassobject
  */
-void iupClassObjectChildRemoved(Ihandle* ih, Ihandle* child, int pos);
+IUP_EXPORTI void iupClassObjectChildRemoved(Ihandle* ih, Ihandle* child, int pos);
 
 /** Calls \ref Iclass::LayoutUpdate method. 
  * \ingroup iclassobject
@@ -411,44 +411,44 @@ IUP_EXPORTI void iupClassObjectLayoutUpdate(Ihandle* ih);
 /** Calls \ref Iclass::ComputeNaturalSize method. 
  * \ingroup iclassobject
  */
-void iupClassObjectComputeNaturalSize(Ihandle* ih, int *w, int *h, int *children_expand);
+IUP_EXPORTI void iupClassObjectComputeNaturalSize(Ihandle* ih, int *w, int *h, int *children_expand);
 
 /** Calls \ref Iclass::SetChildrenCurrentSize method. 
  * \ingroup iclassobject
  */
-void iupClassObjectSetChildrenCurrentSize(Ihandle* ih, int shrink);
+IUP_EXPORTI void iupClassObjectSetChildrenCurrentSize(Ihandle* ih, int shrink);
 
 /** Calls \ref Iclass::SetChildrenPosition method. 
  * \ingroup iclassobject
  */
-void iupClassObjectSetChildrenPosition(Ihandle* ih, int x, int y);
+IUP_EXPORTI void iupClassObjectSetChildrenPosition(Ihandle* ih, int x, int y);
 
 /** Calls \ref Iclass::DlgPopup method. 
  * \ingroup iclassobject
  */
-int iupClassObjectDlgPopup(Ihandle* ih, int x, int y);
+IUP_EXPORTI int iupClassObjectDlgPopup(Ihandle* ih, int x, int y);
 
 
 
 /* Handle attributes, but since the attribute function table is shared by the class hierarchy,
  * the attribute function is retrieved only from the current class.
- * Set is called from iupAttribUpdate (IupMap), IupStoreAttribute and IupSetAttribute.
- * Get is called only from IupGetAttribute.
+IUP_EXPORTI  * Set is called from iupAttribUpdate (IupMap), IupStoreAttribute and IupSetAttribute.
+IUP_EXPORTI  * Get is called only from IupGetAttribute.
  */
-int   iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char* value, int *inherit);
-char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value, int *inherit);
+IUP_EXPORTI int   iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char* value, int *inherit);
+IUP_EXPORTI char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value, int *inherit);
 int   iupClassObjectSetAttributeId(Ihandle* ih, const char* name, int id, const char* value);
 char* iupClassObjectGetAttributeId(Ihandle* ih, const char* name, int id);
 int   iupClassObjectSetAttributeId2(Ihandle* ih, const char* name, int id1, int id2, const char* value);
 char* iupClassObjectGetAttributeId2(Ihandle* ih, const char* name, int id1, int id2);
 
-/* Used only in iupAttribGetStr */
-void  iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_value, int *inherit);
+IUP_EXPORTI /* Used only in iupAttribGetStr */
+IUP_EXPORTI void  iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_value, int *inherit);
 
-/* Used only in iupAttribIsNotString */
-int   iupClassObjectAttribIsNotString(Ihandle* ih, const char* name);
+IUP_EXPORTI /* Used only in iupAttribIsNotString */
+IUP_EXPORTI int   iupClassObjectAttribIsNotString(Ihandle* ih, const char* name);
 
-/* Used only in iupAttribIsIhandle */
+IUP_EXPORTI /* Used only in iupAttribIsIhandle */
 int   iupClassObjectAttribIsIhandle(Ihandle* ih, const char* name);
 
 /* Used only in iupAttribUpdateFromParent */
@@ -460,7 +460,7 @@ void iupClassObjectEnsureDefaultAttributes(Ihandle* ih);
 /* Used in iupRegisterUpdateClasses */
 void iupClassUpdate(Iclass* ic);
 
-/* Used in IupLayoutDialog */
+IUP_EXPORTI /* Used in IupLayoutDialog */
 int iupClassAttribIsRegistered(Iclass* ic, const char* name);
 void iupClassGetAttribNameInfo(Iclass* ic, const char* name, char* *def_value, int *flags);
 
@@ -469,8 +469,8 @@ int iupClassIsGlobalDefault(const char* name, int colors);
 
 
 /* Other functions declared in <iup.h> and implemented here. 
-IupGetClassType
-IupGetClassName
+IUP_EXPORTI IupGetClassType
+IUP_EXPORTI IupGetClassName
 IupClassMatch
 */
 

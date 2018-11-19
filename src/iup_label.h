@@ -14,7 +14,7 @@ extern "C" {
 
 void iupdrvLabelInitClass(Iclass* ic);
 
-char* iupLabelGetPaddingAttrib(Ihandle* ih);
+IUP_EXPORTI char* iupLabelGetPaddingAttrib(Ihandle* ih);
 int iupLabelGetTypeBeforeMap(Ihandle* ih);
 
 /* label types */

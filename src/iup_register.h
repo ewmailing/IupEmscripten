@@ -15,13 +15,13 @@ extern "C" {
 
 /** \defgroup register Class Registration
  * \par
- * All controls are registered so the creation using IupCreate can work.
+IUP_EXPORTI  * All controls are registered so the creation using IupCreate can work.
  * \par
  * See \ref iup_register.h
  * \ingroup cpi */
 
 
-/** Returns a class instance from a class name. The class name must be previously registered using \ref iupRegisterClass.
+IUP_EXPORTI /** Returns a class instance from a class name. The class name must be previously registered using \ref iupRegisterClass.
  * \ingroup register */
 IUP_EXPORTI Iclass* iupRegisterFindClass(const char* name);
 
@@ -30,7 +30,7 @@ IUP_EXPORTI Iclass* iupRegisterFindClass(const char* name);
 IUP_EXPORTI void iupRegisterClass(Iclass* ic);
                                      
                                      
-/* Register the internal classes. Called only from IupOpen. */
+IUP_EXPORTI /* Register the internal classes. Called only from IupOpen. */
 void iupRegisterInternalClasses(void);
 
 /* Class ClassUpdate for all classes that have it */

@@ -17,17 +17,17 @@ extern "C" {
 /* Shows the dialog in the given position and disable interaction with other dialogs.
  * The element must be already mapped.
  * Must return IUP_ERROR or IUP_NOERROR.
- * Called only from IupPopup. */
-int iupDialogPopup(Ihandle* ih, int x, int y);
+IUP_EXPORTI  * Called only from IupPopup. */
+IUP_EXPORTI int iupDialogPopup(Ihandle* ih, int x, int y);
 
 /* Shows the dialog in the given position.
  * The dialog must be already mapped.
  * Must return IUP_ERROR or IUP_NOERROR.
- * Called only from IupShow and IupShowXY. */
+IUP_EXPORTI  * Called only from IupShow and IupShowXY. */
 int iupDialogShowXY(Ihandle* ih, int x, int y);
 
 /* Hides the dialog.
- * Called only from IupHide. */
+IUP_EXPORTI  * Called only from IupHide. */
 void iupDialogHide(Ihandle* ih);
 
 /* Returns a unique number to be as child id. */

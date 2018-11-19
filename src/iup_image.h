@@ -18,9 +18,9 @@ void* iupdrvImageCreateIcon(Ihandle *ih);
 void* iupdrvImageCreateCursor(Ihandle *ih);
 void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive);
 
-enum {IUPIMAGE_IMAGE, IUPIMAGE_ICON, IUPIMAGE_CURSOR};
+IUP_EXPORTI enum {IUPIMAGE_IMAGE, IUPIMAGE_ICON, IUPIMAGE_CURSOR};
 void* iupdrvImageLoad(const char* name, int type);
-void  iupdrvImageDestroy(void* handle, int type);
+IUP_EXPORTI void  iupdrvImageDestroy(void* handle, int type);
 int   iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp);  /* only for IUPIMAGE_IMAGE */
 void  iupdrvImageGetData(void* handle, unsigned char* imgdata);   /* only for IUPIMAGE_IMAGE */
 
@@ -48,9 +48,9 @@ int iupImageNormBpp(int bpp);
 /* In Windows, RAW data is a DIB handle. 
    imgdata here is bottom-up arranged and has separated planes
    Used only by IupGetImageNativeHandle and IupGetNativeHandleImage */
-void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata);
-int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colors, int *colors_count);
-void iupdrvImageGetRawData(void* handle, unsigned char* imgdata);
+IUP_EXPORTI void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata);
+IUP_EXPORTI int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colors, int *colors_count);
+IUP_EXPORTI void iupdrvImageGetRawData(void* handle, unsigned char* imgdata);
 
 void iupImageStockInit(void);
 void iupImageStockFinish(void);

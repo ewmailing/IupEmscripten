@@ -13,7 +13,7 @@ extern "C" {
 
 
 void iupdrvCanvasInitClass(Iclass* ic);
-void iupCanvasCalcScrollIntPos(double min, double max, double page, double pos, 
+IUP_EXPORTI void iupCanvasCalcScrollIntPos(double min, double max, double page, double pos, 
                                  int imin,   int imax,  int *ipage,  int *ipos);
 void iupCanvasCalcScrollRealPos(double min, double max, double *pos, 
                                  int imin,   int imax,  int ipage,  int *ipos);
@@ -26,7 +26,7 @@ char* iupCanvasGetPosYAttrib(Ihandle* ih);
 /* this must match the iupCanvas public definition in "iup_stdcontrols.h" */
 struct _IcontrolData 
 {
-  int sb;    /* scrollbar configuration, valid only after map, use iupBaseGetScrollbar before map */
+IUP_EXPORTI   int sb;    /* scrollbar configuration, valid only after map, use iupBaseGetScrollbar before map */
   double posx, posy;
   int inside_resize;
 };

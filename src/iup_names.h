@@ -11,20 +11,20 @@
 extern "C" {
 #endif
 
-/* called only in IupOpen and IupClose */
+IUP_EXPORTI /* called only in IupOpen and IupClose */
 void iupNamesInit(void);
 void iupNamesFinish(void);
 void iupNamesDestroyHandles(void);
 
-/* called from IupDestroy */
+IUP_EXPORTI /* called from IupDestroy */
 void iupRemoveNames(Ihandle* ih);
 
 /* Other functions declared in <iup.h> and implemented here.
-IupGetName
-IupGetAllDialogs
-IupGetAllNames
-IupSetHandle
-IupGetHandle
+IUP_EXPORTI IupGetName
+IUP_EXPORTI IupGetAllDialogs
+IUP_EXPORTI IupGetAllNames
+IUP_EXPORTI IupSetHandle
+IUP_EXPORTI IupGetHandle
 */
 
 #ifdef __cplusplus
