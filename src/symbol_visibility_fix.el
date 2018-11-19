@@ -35,7 +35,7 @@
 		  ;; start from first point in buffer
 		  (goto-char 1)
 		  ;; search for our function definition
-		  (when (search-forward searchStr nil t)
+		  (when (search-forward (concat searchStr "(") nil t)
 			;; go to beginning of function def line
 			(beginning-of-line)
 			;; if it's not already inserted, insert the flag
@@ -50,4 +50,4 @@
 
 
 ;; apply main function to the function list to get everything started
-(mapc 'sym-vis-fix '("iupArrayGetData" "iupMaskDestroy" "iupMaskCreateInt" "iupMaskCreateFloat" "iupMaskCreateReal" "iupMaskCheck" "iupMaskGetStr"))
+(mapc 'sym-vis-fix searchList)

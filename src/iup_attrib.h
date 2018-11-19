@@ -202,14 +202,14 @@ IUP_EXPORTI char* iupAttribGetInherit(Ihandle* ih, const char* name);
  * Don't check for default values. Don't check at the element.
  * Used for BGCOLOR and BACKGROUND attributes.
  * \ingroup attrib */
-char* iupAttribGetInheritNativeParent(Ihandle* ih, const char* name);
+IUP_EXPORTI char* iupAttribGetInheritNativeParent(Ihandle* ih, const char* name);
 
 /** Returns the attribute from the hash table as a string, 
  * but if not defined then checks in the control implementation, 
  * if still not defined then returns the registered default value if any. \n
  * NO inheritance here. Used only in the IupLayoutDialog.
  * \ingroup attrib */
-char* iupAttribGetLocal(Ihandle* ih, const char* name);
+IUP_EXPORTI char* iupAttribGetLocal(Ihandle* ih, const char* name);
 
 
 

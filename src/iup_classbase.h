@@ -39,7 +39,7 @@ IUP_EXPORTI void iupBaseRegisterVisualAttrib(Iclass* ic);
 /** Register all common callbacks: \n
 * MAP_CB, UNMAP_CB, GETFOCUS_CB, KILLFOCUS_CB, ENTERWINDOW_CB, LEAVEWINDOW_CB, K_ANY, HELP_CB.
 * \ingroup iclassbase */
-void iupBaseRegisterCommonCallbacks(Iclass* ic);
+IUP_EXPORTI void iupBaseRegisterCommonCallbacks(Iclass* ic);
 
 /* Register driver dependent common attributes. 
    Used only from iupBaseRegisterCommonAttrib */
@@ -52,7 +52,7 @@ void iupdrvBaseRegisterVisualAttrib(Iclass* ic);
 /** Updates the expand member of the IUP object from the EXPAND attribute.
  * Should be called in the beginning of the ComputeNaturalSize for a container.
  * \ingroup iclassbase */
-void iupBaseContainerUpdateExpand(Ihandle* ih);
+IUP_EXPORTI void iupBaseContainerUpdateExpand(Ihandle* ih);
 
 /** Initializes the natural size using the user size, then
  * if a container then update the "expand" member from the EXPAND attribute, then
@@ -61,21 +61,21 @@ void iupBaseContainerUpdateExpand(Ihandle* ih);
  * Must be called for each children in the container. \n
  * First call is in iupLayoutCompute.
  * \ingroup iclassbase */
-void iupBaseComputeNaturalSize(Ihandle* ih);
+IUP_EXPORTI void iupBaseComputeNaturalSize(Ihandle* ih);
 
 /** Update the current size from the available size, the natural size, expand and shrink.
  * Call \ref iupClassObjectSetChildrenCurrentSize for containers if they have children.
  * Must be called for each children in the container. \n
  * First call is in iupLayoutCompute.
  * \ingroup iclassbase */
-void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink);
+IUP_EXPORTI void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink);
 
 /** Set the current position and update children position for containers.
  * Call \ref iupClassObjectSetChildrenPosition for containers if they have children.
  * Must be called for each children in the container. \n
  * First call is in iupLayoutCompute.
  * \ingroup iclassbase */
-void iupBaseSetPosition(Ihandle* ih, int x, int y);
+IUP_EXPORTI void iupBaseSetPosition(Ihandle* ih, int x, int y);
 
 /* Updates the SIZE attribute if defined. 
    Called only from iupdrvSetFontAttrib. */
@@ -98,7 +98,7 @@ IUP_EXPORTI void iupdrvBaseUnMapMethod(Ihandle* ih);
 
 /** Native type void \ref Iclass::Map method.
  * \ingroup iclassbasemethod */
-int iupBaseTypeVoidMapMethod(Ihandle* ih);
+IUP_EXPORTI int iupBaseTypeVoidMapMethod(Ihandle* ih);
 
 
 /** \defgroup iclassbaseattribfunc Base Class Attribute Functions
@@ -111,14 +111,14 @@ int iupBaseTypeVoidMapMethod(Ihandle* ih);
  */
 
 /* common */
-char* iupBaseGetWidAttrib(Ihandle* ih);
+IUP_EXPORTI char* iupBaseGetWidAttrib(Ihandle* ih);
 int iupBaseSetNameAttrib(Ihandle* ih, const char* value);
-int iupBaseSetRasterSizeAttrib(Ihandle* ih, const char* value);
-int iupBaseSetSizeAttrib(Ihandle* ih, const char* value);
-char* iupBaseGetSizeAttrib(Ihandle* ih);
+IUP_EXPORTI int iupBaseSetRasterSizeAttrib(Ihandle* ih, const char* value);
+IUP_EXPORTI int iupBaseSetSizeAttrib(Ihandle* ih, const char* value);
+IUP_EXPORTI char* iupBaseGetSizeAttrib(Ihandle* ih);
 char* iupBaseGetCurrentSizeAttrib(Ihandle* ih);
-char* iupBaseGetRasterSizeAttrib(Ihandle* ih);
-char* iupBaseGetClientOffsetAttrib(Ihandle* ih);
+IUP_EXPORTI char* iupBaseGetRasterSizeAttrib(Ihandle* ih);
+IUP_EXPORTI char* iupBaseGetClientOffsetAttrib(Ihandle* ih);
 int iupBaseSetMaxSizeAttrib(Ihandle* ih, const char* value);
 int iupBaseSetMinSizeAttrib(Ihandle* ih, const char* value);
 char* iupBaseGetExpandAttrib(Ihandle* ih);
@@ -129,20 +129,20 @@ IUP_EXPORTI char* iupBaseGetVisibleAttrib(Ihandle* ih);
 IUP_EXPORTI int iupBaseSetVisibleAttrib(Ihandle* ih, const char* value);
 IUP_EXPORTI char* iupBaseGetActiveAttrib(Ihandle *ih);
 IUP_EXPORTI int iupBaseSetActiveAttrib(Ihandle* ih, const char* value);
-int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value);
-int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value);
-int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value);
+IUP_EXPORTI int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value);
+IUP_EXPORTI int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value);
+IUP_EXPORTI int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value);
 char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih);
 IUP_EXPORTI int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value);
 int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value);
 char* iupBaseNativeParentGetBgColorAttrib(Ihandle* ih);
 
 /* other */
-char* iupBaseContainerGetExpandAttrib(Ihandle* ih);
-int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value);
+IUP_EXPORTI char* iupBaseContainerGetExpandAttrib(Ihandle* ih);
+IUP_EXPORTI int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value);
 
 /* drag&drop */
-void iupdrvRegisterDragDropAttrib(Iclass* ic);
+IUP_EXPORTI void iupdrvRegisterDragDropAttrib(Iclass* ic);
 
 /* util */
 int iupBaseNoSaveCheck(Ihandle* ih, const char* name);
@@ -160,7 +160,7 @@ int iupBaseNoSaveCheck(Ihandle* ih, const char* name);
  */
 
 #define iupMAX(_a,_b) ((_a)>(_b)?(_a):(_b))
-#define iupROUND(_x) ((int)((_x)>0? (_x)+0.5: (_x)-0.5))
+IUP_EXPORTI #define iupROUND(_x) ((int)((_x)>0? (_x)+0.5: (_x)-0.5))
 IUP_EXPORTI int     iupRound(double x);
 
 #define iupCOLOR8TO16(_x) ((unsigned short)(_x*257))  

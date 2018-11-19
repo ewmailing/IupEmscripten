@@ -52,11 +52,11 @@ IUP_EXPORTI double iupdrvGetScreenDpi(void);
 
 /** Returns a string with the system version number.
  * \ingroup drvinfo */
-char *iupdrvGetSystemVersion(void);
+IUP_EXPORTI char *iupdrvGetSystemVersion(void);
 
 /** Returns a string with the system name.
  * \ingroup drvinfo */
-char* iupdrvGetSystemName(void);
+IUP_EXPORTI char* iupdrvGetSystemName(void);
 
 /** Returns a string with the computer name.
  * \ingroup drvinfo */
@@ -80,19 +80,19 @@ IUP_EXPORTI void iupdrvGetCursorPos(int *x, int *y);
 /** Returns the driver "Display" in UNIX and NULL in Windows.
  * Must be implemented somewhere else.
  * \ingroup drvinfo */
-void* iupdrvGetDisplay(void);
+IUP_EXPORTI void* iupdrvGetDisplay(void);
 
 /** Returns the current locale name.
  * \ingroup drvinfo */
-char* iupdrvLocaleInfo(void);
+IUP_EXPORTI char* iupdrvLocaleInfo(void);
 
 /** Changes the current directory.
 * \ingroup drvinfo */
-int iupdrvSetCurrentDirectory(const char* dir);
+IUP_EXPORTI int iupdrvSetCurrentDirectory(const char* dir);
 
 /** Returns the current directory.
 * \ingroup drvinfo */
-char* iupdrvGetCurrentDirectory(void);
+IUP_EXPORTI char* iupdrvGetCurrentDirectory(void);
 
 
 #ifdef __cplusplus

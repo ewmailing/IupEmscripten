@@ -20,7 +20,7 @@ extern HINSTANCE iupwin_dll_hinstance;  /* iupwindows_main.c */
 
 
 /* open */
-void iupwinShowLastError(void);
+IUP_EXPORTI void iupwinShowLastError(void);
 
 /* focus */
 void iupwinWmSetFocus(Ihandle *ih);
@@ -84,7 +84,7 @@ typedef int (*IFwmCommand)(Ihandle* ih, WPARAM wp, LPARAM lp);
 typedef int (*IwinMsgProc)(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result);
 
 /* Base IwinMsgProc callback used by native controls. */
-int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result);
+IUP_EXPORTI int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result);
 
 /* Base IwinMsgProc callback used by native containers. 
    Handle messages that are sent to the parent Window.  */
@@ -96,9 +96,9 @@ LRESULT CALLBACK iupwinBaseWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
 
 void iupwinChangeWndProc(Ihandle *ih, WNDPROC newProc);
 
-int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
-int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
-int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
+IUP_EXPORTI int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
+IUP_EXPORTI int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
+IUP_EXPORTI int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 void iupwinTrackMouseLeave(Ihandle* ih);
 void iupwinRefreshCursor(Ihandle* ih);
 
@@ -113,7 +113,7 @@ HWND iupwinCreateWindowEx(HWND hParent, LPCTSTR lpClassName, DWORD dwExStyle, DW
 
 /* Creates the Window with native parent and child ID, associate HWND with Ihandle*, 
    and replace the WinProc by iupwinBaseWndProc */
-int iupwinCreateWindow(Ihandle* ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, void* clientdata);
+IUP_EXPORTI int iupwinCreateWindow(Ihandle* ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, void* clientdata);
 
 void iupwinGetNativeParentStyle(Ihandle* ih, DWORD *dwExStyle, DWORD *dwStyle);
 void iupwinMergeStyle(Ihandle* ih, DWORD old_mask, DWORD value);

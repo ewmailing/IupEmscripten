@@ -88,7 +88,7 @@ void iupdrvFileDlgInitClass(Iclass* ic);
 
 /************************************************/
 
-Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name);
+IUP_EXPORTI Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name);
 
 /* Common definition of the canvas class */
 typedef struct _iupCanvas {

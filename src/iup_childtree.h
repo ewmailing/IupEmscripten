@@ -34,7 +34,7 @@ IUP_EXPORTI Ihandle* iupChildTreeGetNativeParent(Ihandle* ih);
 
 /** Returns the native parent handle. Uses \ref iupChildTreeGetNativeParent and \ref iupClassObjectGetInnerNativeContainerHandle.
  * \ingroup childtree */
-InativeHandle* iupChildTreeGetNativeParentHandle(Ihandle* ih);
+IUP_EXPORTI InativeHandle* iupChildTreeGetNativeParentHandle(Ihandle* ih);
 
 /** Adds the child directly to the parent tree.
  * \ingroup childtree */

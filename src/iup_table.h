@@ -49,7 +49,7 @@ typedef struct _Itable Itable;
 
 
 /** Creates a hash table with an initial default size.
- * This function is equivalent to iupTableCreateSized(0);
+IUP_EXPORTI  * This function is equivalent to iupTableCreateSized(0);
  * \ingroup table */
 IUP_EXPORTI Itable *iupTableCreate(Itable_IndexTypes indexType);
 
@@ -70,11 +70,11 @@ IUP_EXPORTI void iupTableDestroy(Itable *it);
 /** Removes all items in the table.
  * This function does also free the memory of strings contained in the table!!!!
  * \ingroup table */
-void iupTableClear(Itable *it);
+IUP_EXPORTI void iupTableClear(Itable *it);
 
 /** Returns the number of keys stored in the table.
  * \ingroup table */
-int iupTableCount(Itable *it);
+IUP_EXPORTI int iupTableCount(Itable *it);
 
 /** Store an element in the table.
  * \ingroup table */
@@ -83,28 +83,28 @@ IUP_EXPORTI void iupTableSet(Itable *it, const char *key, void *value, Itable_Ty
 /** Store a function pointer in the table.
  * Type is set to IUPTABLE_FUNCPOINTER.
  * \ingroup table */
-void iupTableSetFunc(Itable *it, const char *key, Ifunc func);
+IUP_EXPORTI void iupTableSetFunc(Itable *it, const char *key, Ifunc func);
 
 /** Retrieves an element from the table.
  * Returns NULL if not found.
  * \ingroup table */
-void *iupTableGet(Itable *it, const char *key);
+IUP_EXPORTI void *iupTableGet(Itable *it, const char *key);
 
 /** Retrieves a function pointer from the table. 
  * If not a function or not found returns NULL.
  * value always contains the element pointer.
  * \ingroup table */
-Ifunc iupTableGetFunc(Itable *it, const char *key, void **value);
+IUP_EXPORTI Ifunc iupTableGetFunc(Itable *it, const char *key, void **value);
 
 /** Retrieves an element from the table and its type.
  * \ingroup table */
-void *iupTableGetTyped(Itable *it, const char *key, Itable_Types *itemType);
+IUP_EXPORTI void *iupTableGetTyped(Itable *it, const char *key, Itable_Types *itemType);
 
 /** Removes the entry at the specified key from the
  * hash table and frees the memory used by it if
  * it is a string...
  * \ingroup table */
-void iupTableRemove(Itable *it, const char *key);
+IUP_EXPORTI void iupTableRemove(Itable *it, const char *key);
 
 /** Key iteration function. Returns a key.
  * To iterate over all keys call iupTableFirst at the first
@@ -112,7 +112,7 @@ void iupTableRemove(Itable *it, const char *key);
  * until 0 is returned...
  * Do NOT change the content of the hash table during iteration.
  * During an iteration you can use context with
- * iupTableGetCurr() to access the value of the key
+IUP_EXPORTI  * iupTableGetCurr() to access the value of the key
  * very fast.
  * \ingroup table */
 IUP_EXPORTI char *iupTableFirst(Itable *it);
@@ -135,7 +135,7 @@ IUP_EXPORTI void *iupTableGetCurr(Itable *it);
  * Same as \ref iupTableGetCurr but returns the type.
  * Returns -1 if failed.
  * \ingroup table */
-int iupTableGetCurrType(Itable *it);
+IUP_EXPORTI int iupTableGetCurrType(Itable *it);
 
 /** Replaces the data at the current position.
  * \ingroup table */
@@ -144,7 +144,7 @@ IUP_EXPORTI void iupTableSetCurr(Itable *it, void* value, Itable_Types itemType)
 /** Removes the current element and returns the next key.
  * Use this function to remove an element during an iteration.
  * \ingroup table */
-char *iupTableRemoveCurr(Itable *it);
+IUP_EXPORTI char *iupTableRemoveCurr(Itable *it);
 
 
 #ifdef __cplusplus

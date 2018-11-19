@@ -200,12 +200,12 @@ IUP_EXPORTI Iclass* iupClassNew(Iclass* ic_parent);
  *  Calls the \ref Iclass::Release method. \n
  *  Called from iupRegisterFinish.
  * \ingroup iclass */
-void iupClassRelease(Iclass* ic);
+IUP_EXPORTI void iupClassRelease(Iclass* ic);
 
 /** Check if the class name match the given name. \n
  *  Parent classes are also checked.
  * \ingroup iclass */
-int iupClassMatch(Iclass* ic, const char* classname);
+IUP_EXPORTI int iupClassMatch(Iclass* ic, const char* classname);
 
 
 /** GetAttribute called for a specific attribute.
@@ -355,7 +355,7 @@ IUP_EXPORTI void iupClassRegisterCallback(Iclass* ic, const char* name, const ch
 /** Returns the format of the parameters of a registered callback. 
  * If NULL then the default callback definition is assumed.
  * \ingroup iclass */
-char* iupClassCallbackGetFormat(Iclass* ic, const char* name);
+IUP_EXPORTI char* iupClassCallbackGetFormat(Iclass* ic, const char* name);
 
 
 
@@ -370,22 +370,22 @@ char* iupClassCallbackGetFormat(Iclass* ic, const char* name);
 /** Calls \ref Iclass::Create method. 
  * \ingroup iclassobject
  */
-int iupClassObjectCreate(Ihandle* ih, void** params);
+IUP_EXPORTI int iupClassObjectCreate(Ihandle* ih, void** params);
 
 /** Calls \ref Iclass::Map method. 
  * \ingroup iclassobject
  */
-int iupClassObjectMap(Ihandle* ih);
+IUP_EXPORTI int iupClassObjectMap(Ihandle* ih);
 
 /** Calls \ref Iclass::UnMap method. 
  * \ingroup iclassobject
  */
-void iupClassObjectUnMap(Ihandle* ih);
+IUP_EXPORTI void iupClassObjectUnMap(Ihandle* ih);
 
 /** Calls \ref Iclass::Destroy method. 
  * \ingroup iclassobject
  */
-void iupClassObjectDestroy(Ihandle* ih);
+IUP_EXPORTI void iupClassObjectDestroy(Ihandle* ih);
 
 /** Calls \ref Iclass::GetInnerNativeContainerHandle method. Returns ih->handle if there is no inner parent.
  * The parent class is ignored. If necessary the child class must handle the parent class internally.
@@ -396,12 +396,12 @@ void* iupClassObjectGetInnerNativeContainerHandle(Ihandle* ih, Ihandle* child);
 /** Calls \ref Iclass::ChildAdded method. 
  * \ingroup iclassobject
  */
-void iupClassObjectChildAdded(Ihandle* ih, Ihandle* child);
+IUP_EXPORTI void iupClassObjectChildAdded(Ihandle* ih, Ihandle* child);
 
 /** Calls \ref Iclass::ChildRemoved method. 
  * \ingroup iclassobject
  */
-void iupClassObjectChildRemoved(Ihandle* ih, Ihandle* child, int pos);
+IUP_EXPORTI void iupClassObjectChildRemoved(Ihandle* ih, Ihandle* child, int pos);
 
 /** Calls \ref Iclass::LayoutUpdate method. 
  * \ingroup iclassobject
@@ -411,22 +411,22 @@ IUP_EXPORTI void iupClassObjectLayoutUpdate(Ihandle* ih);
 /** Calls \ref Iclass::ComputeNaturalSize method. 
  * \ingroup iclassobject
  */
-void iupClassObjectComputeNaturalSize(Ihandle* ih, int *w, int *h, int *children_expand);
+IUP_EXPORTI void iupClassObjectComputeNaturalSize(Ihandle* ih, int *w, int *h, int *children_expand);
 
 /** Calls \ref Iclass::SetChildrenCurrentSize method. 
  * \ingroup iclassobject
  */
-void iupClassObjectSetChildrenCurrentSize(Ihandle* ih, int shrink);
+IUP_EXPORTI void iupClassObjectSetChildrenCurrentSize(Ihandle* ih, int shrink);
 
 /** Calls \ref Iclass::SetChildrenPosition method. 
  * \ingroup iclassobject
  */
-void iupClassObjectSetChildrenPosition(Ihandle* ih, int x, int y);
+IUP_EXPORTI void iupClassObjectSetChildrenPosition(Ihandle* ih, int x, int y);
 
 /** Calls \ref Iclass::DlgPopup method. 
  * \ingroup iclassobject
  */
-int iupClassObjectDlgPopup(Ihandle* ih, int x, int y);
+IUP_EXPORTI int iupClassObjectDlgPopup(Ihandle* ih, int x, int y);
 
 
 
@@ -435,18 +435,18 @@ int iupClassObjectDlgPopup(Ihandle* ih, int x, int y);
  * Set is called from iupAttribUpdate (IupMap), IupStoreAttribute and IupSetAttribute.
  * Get is called only from IupGetAttribute.
  */
-int   iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char* value, int *inherit);
-char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value, int *inherit);
+IUP_EXPORTI int   iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char* value, int *inherit);
+IUP_EXPORTI char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value, int *inherit);
 int   iupClassObjectSetAttributeId(Ihandle* ih, const char* name, int id, const char* value);
 char* iupClassObjectGetAttributeId(Ihandle* ih, const char* name, int id);
 int   iupClassObjectSetAttributeId2(Ihandle* ih, const char* name, int id1, int id2, const char* value);
 char* iupClassObjectGetAttributeId2(Ihandle* ih, const char* name, int id1, int id2);
 
 /* Used only in iupAttribGetStr */
-void  iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_value, int *inherit);
+IUP_EXPORTI void  iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_value, int *inherit);
 
 /* Used only in iupAttribIsNotString */
-int   iupClassObjectAttribIsNotString(Ihandle* ih, const char* name);
+IUP_EXPORTI int   iupClassObjectAttribIsNotString(Ihandle* ih, const char* name);
 
 /* Used only in iupAttribIsIhandle */
 int   iupClassObjectAttribIsIhandle(Ihandle* ih, const char* name);

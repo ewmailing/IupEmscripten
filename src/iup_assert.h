@@ -25,8 +25,8 @@ extern "C" {
  * \ingroup util */
 
 /* internal functions */
-void iupAssert(const char* expr, const char* file, int line, const char* func);
-void iupError(const char* format, ...);
+IUP_EXPORTI void iupAssert(const char* expr, const char* file, int line, const char* func);
+IUP_EXPORTI void iupError(const char* format, ...);
 
 /** \def iupASSERT
  * \brief If the expression if false, 

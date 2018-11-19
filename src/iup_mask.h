@@ -24,19 +24,19 @@ typedef struct _Imask Imask;
 /** Creates a mask given a string.  \n
  * If casei is true, will turn the mask case insensitive.
  * \ingroup mask */
-Imask* iupMaskCreate(const char* mask_str);
+IUP_EXPORTI Imask* iupMaskCreate(const char* mask_str);
 
 /** Creates an integer mask with limits.
  * \ingroup mask */
-Imask* iupMaskCreateInt(int min, int max);
+IUP_EXPORTI Imask* iupMaskCreateInt(int min, int max);
 
 /** Creates a real mask with limits.
  * \ingroup mask */
-Imask* iupMaskCreateFloat(float min, float max, const char* decimal_symbol);
+IUP_EXPORTI Imask* iupMaskCreateFloat(float min, float max, const char* decimal_symbol);
 
 /** Creates a real mask.
 * \ingroup mask */
-Imask* iupMaskCreateReal(int positive, const char* decimal_symbol);
+IUP_EXPORTI Imask* iupMaskCreateReal(int positive, const char* decimal_symbol);
 
 /** If casei is 1, will turn the mask case insensitive.
 * Default is case sensitive.
@@ -50,16 +50,16 @@ void iupMaskSetNoEmpty(Imask* mask, int noempty);
 
 /** Destroys the mask.
  * \ingroup mask */
-void iupMaskDestroy(Imask* mask);
+IUP_EXPORTI void iupMaskDestroy(Imask* mask);
 
 /** Check if the value is valid using the mask to filter it.
  * Returns 1 if full match, -1 if partial match, and 0 otherwise.
  * \ingroup mask */
-int iupMaskCheck(Imask* mask, const char *value);
+IUP_EXPORTI int iupMaskCheck(Imask* mask, const char *value);
 
 /** Returns the mask string.
  * \ingroup mask */
-char* iupMaskGetStr(Imask* mask);
+IUP_EXPORTI char* iupMaskGetStr(Imask* mask);
 
 
 #ifdef __cplusplus

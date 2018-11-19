@@ -17,7 +17,7 @@ extern "C" {
 IUP_EXPORTI int iupDataEntry(int maxlin, int* maxcol, int* maxscr, char* title, char** text, char** data);
 
 /* Popups a dialog with IUP Version, used in IupOpen */
-void iupShowVersion(void);
+IUP_EXPORTI void iupShowVersion(void);
 
 /* Other functions declared in <iup.h> and implemented here. 
 IupListDialog

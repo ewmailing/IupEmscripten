@@ -25,7 +25,7 @@ extern "C" {
 
 /* SIZE to RASTERSIZE
  * \ingroup object */
-#define iupWIDTH2RASTER(_w, _cw) iupRound((_w * _cw)/4.0)
+IUP_EXPORTI #define iupWIDTH2RASTER(_w, _cw) iupRound((_w * _cw)/4.0)
 /* SIZE to RASTERSIZE
  * \ingroup object */
 #define iupHEIGHT2RASTER(_h, _ch) iupRound((_h * _ch)/8.0)

@@ -45,7 +45,7 @@ IUP_EXPORTI void iupdrvFontGetTextSize(const char* font, const char* str, int *w
 
 /** Returns the System default font.
  * \ingroup drvfont */
-char* iupdrvGetSystemFont(void);
+IUP_EXPORTI char* iupdrvGetSystemFont(void);
 
 /** FONT attribute set function.
  * \ingroup drvfont */
@@ -55,7 +55,7 @@ IUP_EXPORTI int iupdrvSetFontAttrib(Ihandle* ih, const char* value);
 
 /** Compensates IupMatrix limitation in Get FONT.
   * \ingroup drvfont */
-char* iupGetFontValue(Ihandle* ih);
+IUP_EXPORTI char* iupGetFontValue(Ihandle* ih);
 
 /** Parse the font format description.
  * Returns a non zero value if successful.
@@ -65,42 +65,42 @@ IUP_EXPORTI int iupGetFontInfo(const char* font, char* typeface, int *size, int 
 /** Parse the Pango font format description.
  * Returns a non zero value if successful.
  * \ingroup drvfont */
-int iupFontParsePango(const char *value, char* typeface, int *size, int *bold, int *italic, int *underline, int *strikeout);
+IUP_EXPORTI int iupFontParsePango(const char *value, char* typeface, int *size, int *bold, int *italic, int *underline, int *strikeout);
 
 /** Parse the old IUP Windows font format description.
  * Returns a non zero value if successful.
  * \ingroup drvfont */
-int iupFontParseWin(const char *value, char* typeface, int *size, int *bold, int *italic, int *underline, int *strikeout);
+IUP_EXPORTI int iupFontParseWin(const char *value, char* typeface, int *size, int *bold, int *italic, int *underline, int *strikeout);
 
 /** Parse the X-Windows font format description.
  * Returns a non zero value if successful.
  * \ingroup drvfont */
-int iupFontParseX(const char *value, char *typeface, int *size, int *bold, int *italic, int *underline, int *strikeout);
+IUP_EXPORTI int iupFontParseX(const char *value, char *typeface, int *size, int *bold, int *italic, int *underline, int *strikeout);
 
 
 /** Changes the FONT style only.
  * \ingroup attribfunc */
-int iupSetFontStyleAttrib(Ihandle* ih, const char* value);
+IUP_EXPORTI int iupSetFontStyleAttrib(Ihandle* ih, const char* value);
 
 /** Changes the FONT size only.
  * \ingroup attribfunc */
-int iupSetFontSizeAttrib(Ihandle* ih, const char* value);
+IUP_EXPORTI int iupSetFontSizeAttrib(Ihandle* ih, const char* value);
 
 /** Changes the FONT face only.
 * \ingroup attribfunc */
-int iupSetFontFaceAttrib(Ihandle* ih, const char* value);
+IUP_EXPORTI int iupSetFontFaceAttrib(Ihandle* ih, const char* value);
 
 /** Returns the FONT style.
  * \ingroup attribfunc */
-char* iupGetFontStyleAttrib(Ihandle* ih);
+IUP_EXPORTI char* iupGetFontStyleAttrib(Ihandle* ih);
 
 /** Returns the FONT size.
  * \ingroup attribfunc */
-char* iupGetFontSizeAttrib(Ihandle* ih);
+IUP_EXPORTI char* iupGetFontSizeAttrib(Ihandle* ih);
 
 /** Returns the FONT face.
  * \ingroup attribfunc */
-char* iupGetFontFaceAttrib(Ihandle* ih);
+IUP_EXPORTI char* iupGetFontFaceAttrib(Ihandle* ih);
 
 /* Used in Global Attributes */
 void  iupSetDefaultFontSizeGlobalAttrib(const char* value);

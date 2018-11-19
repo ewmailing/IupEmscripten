@@ -1,4 +1,3 @@
-EXPORTS
 IupAlarm
 IupAppend
 IupButton
@@ -263,7 +262,6 @@ IupDial
 IupGauge
 IupColorbar
 IupColorBrowser
-
 iupdrvSetVisible
 iupdrvSetFontAttrib
 iupGetFontValue
@@ -313,7 +311,6 @@ iupdrvImageGetRawInfo
 iupdrvImageGetRawData
 iupdrvImageDestroy
 iupdrvRegisterDragDropAttrib
-
 iupShowVersion
 iupTableSetFunc
 iupTableSet
@@ -505,7 +502,6 @@ iupFlatScrollBarSetChildrenPosition
 iupFlatScrollBarWheelUpdate
 iupFlatScrollBarMotionUpdate
 iupFlatScrollBarSetPos
-
 iupAttribSetClassObject
 iupAttribSetClassObjectId
 iupAttribSetClassObjectId2
@@ -597,7 +593,6 @@ iupLineFileGetBuffer
 iupLineFileClose
 iupLineFileEOF
 iupStrConvertToUTF8
-
 IupConfig
 IupConfigLoad
 IupConfigSave
@@ -625,7 +620,6 @@ IupConfigRecentUpdate
 IupConfigDialogShow
 IupConfigDialogClosed
 IupConfigSetListVariable
-
 iupwinMouseMove
 iupwinCreateWindow
 iupwinBaseMsgProc
