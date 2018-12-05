@@ -144,15 +144,16 @@ static int enterwindow_cb(Ihandle *ih)
 
 void LabelTest(void)
 {
-  Ihandle *dlg, *text_label, *image1, *image2, *image3,
-    *box1, *box2, *fill, *prog;
+	Ihandle *dlg, *text_label, *image1, *image2, *image3,
+		*box1, *box2, *fill, *prog;
 
 
-  text_label = IupLabel(NULL);
-  prog = IupProgressBar();
-  IupSetAttribute(prog, "VALUE", "75");
+	text_label = IupLabel(NULL);
+	prog = IupProgressBar();
+	IupSetAttribute(prog, "VALUE", "75");
 
-  IupSetAttribute(text_label, "TITLE", "Text Label");
+	IupSetAttribute(text_label, "TITLE", "Text Label");
+	IupSetAttribute(text_label, "DROPFILESTARGET", "YES");
  
 #if 1
 	Ihandle* text_label2 = IupLabel(NULL);
@@ -278,7 +279,7 @@ void IupEntryPoint()
 	IupSetFunction("EXIT_CB", (Icallback)IupExitPoint);
 //  IupImageLibOpen();
 
-  LabelTest();
+	LabelTest();
 }
 
 
